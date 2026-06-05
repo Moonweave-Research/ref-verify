@@ -1,0 +1,6 @@
+The thermotropic actuation of iLCEs is capable of self-reporting the actuation
+state due to temperature-dependent electrical resistance. RMEDDT-IMIL coated
+with LM actuates the iLCE via Joule heating. In the uncoated region of the iLCE,
+Cu electrodes were attached to both sides of the sample and used to measure the
+resistance through the thickness. This LM layer served as a flexible Joule
+heater when electrically powered.
