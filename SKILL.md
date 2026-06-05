@@ -78,6 +78,11 @@ A paper is confirmed only if titles essentially match and first-author last name
 
 Extract from confirmed sources and compare: title, all authors (last names), year, journal full name, DOI, volume/pages (mark `[NOT IN SOURCE]` if absent). If any field differs between sources, show both — do not silently pick one.
 
+Author-name caveats — flag, do not auto-reject, when:
+- CJK names: CrossRef may store given/family in either order ("Wei Zhang" with given="Wei" vs given="Zhang"). Match on the name *set*, not position, and note the ambiguity.
+- Hyphenated Korean names: "Min-Yeong", "Min Yeong", "Minyeong" are the same person — normalize spacing/hyphens before comparing.
+- Consortium / 50+-author papers: "first author" may be a collaboration name. Note this rather than forcing a single-author match.
+
 **Layer 3 — Content Traceability** ← most important layer
 
 This is where the skill's core value lies. The goal is not just "does this paper exist" but "does this paper actually contain the claim being attributed to it."
@@ -90,9 +95,11 @@ Before checking content, classify the claim depth:
 Fetch the abstract using this priority order:
 1. CrossRef raw JSON: `https://api.crossref.org/works/{DOI}` — check the `abstract` field
 2. Semantic Scholar: append `&fields=abstract` to your S2 DOI lookup
-3. Open-access fallback: `https://api.unpaywall.org/v2/{DOI}?email=verify@ref-verify.local` — check `is_oa` and `oa_locations`
+3. Open-access fallback: `https://api.unpaywall.org/v2/{DOI}?email={user_email}` — check `is_oa` and `oa_locations`. Unpaywall requires a real, valid email; ask the user for theirs once and reuse it. A placeholder address may be rejected or rate-limited.
 4. arXiv fallback for preprints: `https://export.arxiv.org/api/query?id_list={arxiv_id}`
 5. PubMed Central for life/bio papers: `https://www.ncbi.nlm.nih.gov/pmc/articles/{PMCID}/`
+
+CrossRef abstracts are wrapped in JATS XML (`<jats:p>`, `<jats:italic>`, etc.). Strip these tags before quoting — the verbatim requirement means the abstract *text*, not the markup. An empty-string `abstract` field counts as absent, not as a fetched abstract; fall through to the next source.
 
 For Tier-2 claims, also fetch full text before assigning support:
 1. PubMed Central article HTML/XML when a PMCID exists
@@ -124,13 +131,21 @@ After fetching, check: does the right source contain the specific claim being ci
 
 For Tier-2, keyword co-occurrence is not support. The quoted sentence(s) must bind the mechanism actors and relation: what component does the action, where it is located, what path/current/stimulus is used, and what role the material plays. If the quote says "LM layer served as a flexible Joule heater" and the claim says "the LCE bulk served as the Joule heater," that is `CONTRADICTED`, not partial support.
 
+**Scope limit — know where this degrades**: many journals deposit no abstract in CrossRef or S2, and paywall full text everywhere else. This is common in materials science, polymer, and engineering venues (Smart Materials and Structures, Sensors and Actuators A, etc.). For Tier-1 claims, the content layer can legitimately end at `UNVERIFIABLE` when no abstract is openly available. For Tier-2 claims, a topic-matching abstract without full text ends at `ABSTRACT-LEVEL ONLY` — that is the skill working correctly, not failing. Existence, metadata, and DOI resolution still verify; only the content claim cannot. Tell the user plainly which source depth is missing rather than implying the citation is fully cleared.
+
 **Layer 4 — DOI Resolution**
 
 Fetch `https://doi.org/{DOI}`. Confirm the landing page matches the expected paper. A 403 (bot-blocked) from a URL slug containing the title and volume is not a dead link — note it as paywalled. A redirect to an unrelated page is a critical failure.
 
+**Not every DOI is registered with CrossRef.** Before declaring a DOI dead, check the registration agency. arXiv preprints (`10.48550/arXiv.*`), Zenodo/figshare datasets, and many preprints are registered with **DataCite**, not CrossRef — they return 404 from `api.crossref.org` while being perfectly valid. If CrossRef 404s, try:
+- DataCite: `https://api.datacite.org/dois/{DOI}`
+- Or content negotiation: `https://doi.org/{DOI}` with `Accept: application/vnd.citationstyles.csl+json`
+
+Only mark `DEAD` if the DOI fails to resolve at doi.org AND is absent from both CrossRef and DataCite. A DataCite-only DOI is valid — note the registrar rather than downgrading it.
+
 **Layer 5 — Retraction**
 
-Search `"{first author last name}" "{journal name}" retraction` and check the DOI landing page for retraction banners. A retracted paper must not be used as a primary source.
+Search `"{first author last name}" "{journal name}" retraction` and check the DOI landing page for retraction banners. Also check the CrossRef JSON `relation`/`update-to` fields, which flag retractions and corrections structurally. Free-text search alone produces false negatives for recent or poorly-indexed retractions — treat a clean search as "no retraction found," not "definitely not retracted." A retracted paper must not be used as a primary source.
 
 ---
 
