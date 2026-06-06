@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src=".github/assets/ref-verify-mark.svg" alt="ref-verify mark" width="96">
+<img src=".github/assets/ref-verify-mark-512.png" alt="ref-verify mark" width="96">
 
 </div>
 
