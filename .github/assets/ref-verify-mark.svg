@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">ref-verify mark</title>
+  <desc id="desc">A reference card connected to verification nodes.</desc>
+  <defs>
+    <linearGradient id="g" x1="118" y1="414" x2="414" y2="118" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#39c5cf"/>
+      <stop offset="0.55" stop-color="#8250df"/>
+      <stop offset="1" stop-color="#f2cc60"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="#0b1020"/>
+  <rect x="110" y="104" width="292" height="334" rx="38" fill="#f0f6fc"/>
+  <path d="M160 174h142M160 238h196M160 302h112" stroke="#3b4965" stroke-width="22" stroke-linecap="round"/>
+  <path d="M322 338l38 38 78-92" fill="none" stroke="url(#g)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M98 402c78-60 132-68 188-26 50 38 99 29 154-34" fill="none" stroke="#39c5cf" stroke-width="14" stroke-linecap="round" opacity="0.65"/>
+  <circle cx="98" cy="402" r="18" fill="#39c5cf"/>
+  <circle cx="286" cy="376" r="16" fill="#8250df"/>
+  <circle cx="440" cy="342" r="18" fill="#f2cc60"/>
+</svg>

@@ -1,3 +1,9 @@
+<div align="center">
+
+<img src=".github/assets/ref-verify-mark.svg" alt="ref-verify mark" width="96">
+
+</div>
+
 # ref-verify
 
 **Stop citing papers that don't say what you think they say.**
@@ -12,7 +18,7 @@ You asked your AI agent to find papers. The DOIs look plausible. The author name
 
 ```bash
 # requires npx (comes with Node.js)
-npx skills add moonweave/ref-verify -g
+npx skills add Moonweave-Research/ref-verify -g
 ```
 
 Works with **Claude Code, Cursor, Codex**, and any agent that supports the `npx skills` ecosystem.
@@ -185,5 +191,5 @@ A paper can mention a number that looks exactly right but refers to a different 
 
 ## Related
 
-- [anneal-skill](https://github.com/moonweave/anneal-skill) — measure-first decision discipline for AI agents
-- [decide-skill](https://github.com/Moon-python/decide-skill) — decision automation for non-expert domains
+- [anneal-skill](https://github.com/Moonweave-Systems/anneal-skill) — measure-first decision discipline for AI agents
+- [decide-skill](https://github.com/Moonweave-Systems/decide-skill) — decision automation for non-expert domains

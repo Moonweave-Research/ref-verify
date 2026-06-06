@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640">
+  <defs>
+    <radialGradient id="bg" cx="24%" cy="20%" r="90%">
+      <stop offset="0" stop-color="#2b1a58"/>
+      <stop offset="0.56" stop-color="#0b1020"/>
+      <stop offset="1" stop-color="#05070f"/>
+    </radialGradient>
+    <linearGradient id="g" x1="150" y1="500" x2="480" y2="140" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#39c5cf"/>
+      <stop offset="0.55" stop-color="#8250df"/>
+      <stop offset="1" stop-color="#f2cc60"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="640" rx="56" fill="url(#bg)"/>
+  <g transform="translate(130 112) scale(.82)">
+    <rect x="110" y="104" width="292" height="334" rx="38" fill="#f0f6fc"/>
+    <path d="M160 174h142M160 238h196M160 302h112" stroke="#3b4965" stroke-width="22" stroke-linecap="round"/>
+    <path d="M322 338l38 38 78-92" fill="none" stroke="url(#g)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M98 402c78-60 132-68 188-26 50 38 99 29 154-34" fill="none" stroke="#39c5cf" stroke-width="14" stroke-linecap="round" opacity="0.65"/>
+    <circle cx="98" cy="402" r="18" fill="#39c5cf"/>
+    <circle cx="286" cy="376" r="16" fill="#8250df"/>
+    <circle cx="440" cy="342" r="18" fill="#f2cc60"/>
+  </g>
+  <text x="560" y="250" fill="#f0f6fc" font-family="Inter, Arial, sans-serif" font-size="88" font-weight="800">ref-verify</text>
+  <text x="564" y="324" fill="#c9b8ff" font-family="Inter, Arial, sans-serif" font-size="34">Citation checks before manuscript claims</text>
+  <text x="564" y="392" fill="#f2cc60" font-family="Inter, Arial, sans-serif" font-size="28">CrossRef · Semantic Scholar · PubMed · retractions</text>
+</svg>
