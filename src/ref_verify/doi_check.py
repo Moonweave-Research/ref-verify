@@ -12,6 +12,9 @@ def verify_doi_metadata(
 ) -> MetadataCheckResult:
     mismatches: list[str] = []
 
+    if provided.doi and not _doi_matches(provided.doi, fetched.doi):
+        mismatches.append("doi")
+
     if not _has_comparison_metadata(provided):
         mismatches.append("metadata")
 
@@ -32,7 +35,7 @@ def verify_doi_metadata(
     if not mismatches:
         verdict = "PASS"
         reason = "Provided citation metadata matches the fetched CrossRef record."
-    elif any(field in mismatches for field in ("title", "first_author")):
+    elif any(field in mismatches for field in ("doi", "title", "first_author")):
         verdict = "REJECT"
         reason = "DOI resolves to a materially different paper than provided."
     elif "metadata" in mismatches:
@@ -53,6 +56,17 @@ def verify_doi_metadata(
 
 def _has_comparison_metadata(provided: CitationInput) -> bool:
     return bool(provided.title and provided.first_author)
+
+
+def _doi_matches(provided: str, fetched: str) -> bool:
+    return _normalize_doi(provided) == _normalize_doi(fetched)
+
+
+def _normalize_doi(value: str) -> str:
+    normalized = value.strip().lower()
+    normalized = re.sub(r"^https?://(?:dx\.)?doi\.org/", "", normalized)
+    normalized = re.sub(r"^doi:\s*", "", normalized)
+    return normalized.strip()
 
 
 def _titles_match(provided: str, fetched: str) -> bool:

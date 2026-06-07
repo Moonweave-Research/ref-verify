@@ -51,6 +51,40 @@ _TEXT_CLAIM_COMPARATIVE_SUFFIXES = {
     "than",
 }
 
+_TEXT_CLAIM_SCOPE_SUFFIXES = {
+    "after",
+    "before",
+    "during",
+    "except",
+    "following",
+    "only",
+    "then",
+    "under",
+    "unless",
+    "until",
+    "when",
+    "while",
+}
+
+_UNRELATED_PERCENTAGE_SUBJECT_STEMS = {
+    "breakdown",
+    "conductivity",
+    "cycle",
+    "efficiency",
+    "energy",
+    "field",
+    "force",
+    "frequency",
+    "lifetime",
+    "modulus",
+    "power",
+    "pressure",
+    "speed",
+    "stress",
+    "temperature",
+    "voltage",
+}
+
 _UNSUPPORTED_CLAIM_FRAME_PATTERNS = (
     r"\baccording to\b",
     r"\bwhether\b",
@@ -194,7 +228,8 @@ def _sentence_supports_percentage_claim(
 ) -> bool:
     if _has_unsupported_claim_frame(sentence):
         return False
-    for value, context in _percentage_contexts(sentence):
+    contexts = _percentage_contexts(sentence)
+    for index, (value, context) in enumerate(contexts):
         if _mentions_prestrain_context(context):
             continue
         if _has_unsupported_claim_frame(context):
@@ -203,6 +238,15 @@ def _sentence_supports_percentage_claim(
             continue
         evidence_comparator = _evidence_percentage_comparator(context)
         if _evidence_entails_claim(value, evidence_comparator, threshold, comparator):
+            if _has_contradictory_percentage_context(
+                contexts,
+                index,
+                threshold,
+                comparator,
+                claim,
+                sentence,
+            ):
+                continue
             return True
     return False
 
@@ -242,6 +286,93 @@ def _compare_percentage(value: float, threshold: float, comparator: str) -> bool
     if comparator == "gt":
         return value > threshold
     return value == threshold
+
+
+def _has_contradictory_percentage_context(
+    contexts: list[tuple[float, str]],
+    supporting_index: int,
+    threshold: float,
+    claim_comparator: str,
+    claim: str,
+    sentence: str,
+) -> bool:
+    for index, (value, context) in enumerate(contexts):
+        if index == supporting_index:
+            continue
+        if _mentions_prestrain_context(context):
+            continue
+        if _has_unsupported_claim_frame(context):
+            continue
+        if not _has_percentage_subject_context(context, sentence, claim):
+            continue
+        evidence_comparator = _evidence_percentage_comparator(context)
+        if _evidence_contradicts_claim(
+            value,
+            evidence_comparator,
+            threshold,
+            claim_comparator,
+        ):
+            return True
+    return False
+
+
+def _has_percentage_subject_context(context: str, sentence: str, claim: str) -> bool:
+    if _has_actuation_strain_context(context, claim):
+        return True
+    return _inherits_actuation_strain_subject(context, sentence, claim)
+
+
+def _inherits_actuation_strain_subject(context: str, sentence: str, claim: str) -> bool:
+    claim_terms = {_stem(token) for token in _tokens(claim)}
+    if "actuat" not in claim_terms:
+        return False
+
+    sentence_terms = {_stem(token) for token in _tokens(sentence)}
+    if not {"actuat", "strain"} <= sentence_terms:
+        return False
+
+    context_terms = {_stem(token) for token in _tokens(context)}
+    if context_terms & _STRAIN_QUALIFIER_STEMS:
+        return False
+    return not bool(context_terms & _UNRELATED_PERCENTAGE_SUBJECT_STEMS)
+
+
+def _evidence_contradicts_claim(
+    value: float,
+    evidence_comparator: str,
+    threshold: float,
+    claim_comparator: str,
+) -> bool:
+    if claim_comparator == "lt":
+        return (
+            (evidence_comparator == "exact" and value >= threshold)
+            or (evidence_comparator == "gt" and value >= threshold)
+            or (evidence_comparator == "gte" and value >= threshold)
+        )
+    if claim_comparator == "lte":
+        return (
+            (evidence_comparator == "exact" and value > threshold)
+            or (evidence_comparator == "gt" and value >= threshold)
+            or (evidence_comparator == "gte" and value > threshold)
+        )
+    if claim_comparator == "gt":
+        return (
+            (evidence_comparator == "exact" and value <= threshold)
+            or (evidence_comparator in {"lt", "lte", "up_to"} and value <= threshold)
+        )
+    if claim_comparator == "gte":
+        return (
+            (evidence_comparator == "exact" and value < threshold)
+            or (evidence_comparator == "lt" and value <= threshold)
+            or (evidence_comparator in {"lte", "up_to"} and value < threshold)
+        )
+    return (
+        (evidence_comparator == "exact" and value != threshold)
+        or (evidence_comparator == "lt" and value <= threshold)
+        or (evidence_comparator in {"lte", "up_to"} and value < threshold)
+        or (evidence_comparator == "gt" and value >= threshold)
+        or (evidence_comparator == "gte" and value > threshold)
+    )
 
 
 def _sentence_supports_text_claim(sentence: str, claim: str) -> bool:
@@ -378,6 +509,8 @@ def _has_comparative_suffix(tokens: list[str], claim_end: int) -> bool:
 
     suffix = tokens[claim_end:]
     if any(token in _TEXT_CLAIM_COMPARATIVE_SUFFIXES for token in suffix):
+        return True
+    if any(token in _TEXT_CLAIM_SCOPE_SUFFIXES for token in suffix):
         return True
     return False
 

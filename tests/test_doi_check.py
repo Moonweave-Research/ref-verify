@@ -49,6 +49,27 @@ class DoiCheckTests(unittest.TestCase):
         self.assertIn("first_author", result.mismatches)
         self.assertIn("year", result.mismatches)
 
+    def test_rejects_when_resolved_doi_differs_from_requested_doi(self):
+        provided = CitationInput(
+            doi="10.1000/requested",
+            title="Dielectric elastomer actuators",
+            first_author="Pelrine",
+            year=2000,
+        )
+        fetched = PaperRecord(
+            doi="10.1000/other",
+            title="Dielectric elastomer actuators",
+            authors=["Pelrine", "Kornbluh"],
+            year=2000,
+            abstract=None,
+            source="fixture",
+        )
+
+        result = verify_doi_metadata(provided, fetched)
+
+        self.assertEqual(result.verdict, "REJECT")
+        self.assertIn("doi", result.mismatches)
+
     def test_rejects_high_similarity_title_when_numeric_tokens_differ(self):
         provided = CitationInput(
             doi="10.1000/near-miss",

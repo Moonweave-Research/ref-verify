@@ -272,6 +272,30 @@ class ClaimCheckTests(unittest.TestCase):
                 self.assertEqual(result.verdict, "WARN")
                 self.assertIn("does not explicitly support", result.reason)
 
+    def test_percentage_claim_rejects_contradictory_coordinated_context(self):
+        cases = (
+            "Actuated strain remained below 50%, and occasionally reached 60%.",
+            "Actuated strain was below 50% but later reached 60%.",
+            "Actuated strain stayed under 50% and later exceeded 60%.",
+        )
+
+        for abstract in cases:
+            with self.subTest(abstract=abstract):
+                record = PaperRecord(
+                    doi="10.1000/coordinated",
+                    title="Coordinated strain actuator",
+                    authors=["Lee"],
+                    year=2020,
+                    abstract=abstract,
+                    source="fixture",
+                )
+
+                result = check_claim_support(record, "actuation strain below 50%")
+
+                self.assertEqual(result.status, "PARTIAL")
+                self.assertEqual(result.verdict, "WARN")
+                self.assertIn("does not explicitly support", result.reason)
+
     def test_percentage_claim_rejects_reporting_and_negation_frames(self):
         cases = (
             "We investigated whether actuation strain above 100% was achievable.",
@@ -404,6 +428,38 @@ class ClaimCheckTests(unittest.TestCase):
         self.assertEqual(result.status, "PARTIAL")
         self.assertEqual(result.verdict, "WARN")
         self.assertIn("does not explicitly support", result.reason)
+
+    def test_non_percentage_claim_rejects_scope_qualifier_suffix(self):
+        cases = (
+            (
+                "The device lifetime was 5000 cycles before annealing and "
+                "1000 cycles after annealing."
+            ),
+            "The device lifetime was 5000 cycles, then dropped to 1000 after annealing.",
+            "Healthy cells are stiffer than cancer cells, but only before treatment.",
+        )
+        claims = (
+            "the device lifetime was 5000 cycles",
+            "the device lifetime was 5000 cycles",
+            "healthy cells are stiffer than cancer cells",
+        )
+
+        for abstract, claim in zip(cases, claims):
+            with self.subTest(abstract=abstract):
+                record = PaperRecord(
+                    doi="10.1000/scoped",
+                    title="Scoped text claim",
+                    authors=["Lee"],
+                    year=2020,
+                    abstract=abstract,
+                    source="fixture",
+                )
+
+                result = check_claim_support(record, claim)
+
+                self.assertEqual(result.status, "PARTIAL")
+                self.assertEqual(result.verdict, "WARN")
+                self.assertIn("does not explicitly support", result.reason)
 
     def test_non_percentage_claim_reversal_is_not_supported_by_same_words(self):
         record = PaperRecord(
