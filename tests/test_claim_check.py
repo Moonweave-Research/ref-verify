@@ -1,0 +1,186 @@
+import unittest
+
+from ref_verify.claim_check import check_claim_support
+from ref_verify.models import PaperRecord
+
+
+class ClaimCheckTests(unittest.TestCase):
+    def test_supported_when_claim_threshold_is_reported_as_actuated_strain(self):
+        record = PaperRecord(
+            doi="10.1000/example",
+            title="Dielectric elastomer actuators",
+            authors=["Pelrine", "Kornbluh"],
+            year=2000,
+            abstract=(
+                "Actuated strains up to 117% were demonstrated with silicone "
+                "elastomers, and up to 215% with acrylic elastomers."
+            ),
+            source="fixture",
+        )
+
+        result = check_claim_support(record, "actuation strain above 100%")
+
+        self.assertEqual(result.status, "SUPPORTED")
+        self.assertEqual(result.verdict, "ACCEPT")
+        self.assertIn("117%", result.evidence)
+
+    def test_supported_actuated_strain_even_when_sentence_mentions_prestrained_films(self):
+        record = PaperRecord(
+            doi="10.1000/science",
+            title="High-speed electrically actuated elastomers",
+            authors=["Pelrine"],
+            year=2000,
+            abstract=(
+                "Actuated strains up to 117% were demonstrated with silicone "
+                "elastomers, and up to 215% with acrylic elastomers using "
+                "biaxially and uniaxially prestrained films."
+            ),
+            source="fixture",
+        )
+
+        result = check_claim_support(record, "actuation strain above 100%")
+
+        self.assertEqual(result.status, "SUPPORTED")
+        self.assertEqual(result.verdict, "ACCEPT")
+        self.assertIn("117%", result.evidence)
+
+    def test_supported_when_later_sentence_matches_quantitative_claim(self):
+        record = PaperRecord(
+            doi="10.1000/multisentence",
+            title="Optimized elastomer actuators",
+            authors=["Lee"],
+            year=2024,
+            abstract=(
+                "Actuation strain below 50% was common in stiff samples. "
+                "Actuated strains up to 117% were demonstrated in optimized samples."
+            ),
+            source="fixture",
+        )
+
+        result = check_claim_support(record, "actuation strain above 100%")
+
+        self.assertEqual(result.status, "SUPPORTED")
+        self.assertEqual(result.verdict, "ACCEPT")
+        self.assertIn("117%", result.evidence)
+
+    def test_partial_when_percentage_is_prestrain_not_actuation_output(self):
+        record = PaperRecord(
+            doi="10.1000/prestrain",
+            title="Breakdown fields in elastomers",
+            authors=["Kofod"],
+            year=2003,
+            abstract=(
+                "Breakdown field was measured at 500% pre-strain for acrylic "
+                "elastomers."
+            ),
+            source="fixture",
+        )
+
+        result = check_claim_support(record, "actuation strain above 100%")
+
+        self.assertEqual(result.status, "PARTIAL")
+        self.assertEqual(result.verdict, "WARN")
+        self.assertIn("pre-strain", result.reason)
+
+    def test_below_claim_is_not_supported_by_higher_abstract_percentage(self):
+        record = PaperRecord(
+            doi="10.1000/highstrain",
+            title="Dielectric elastomer actuators",
+            authors=["Pelrine"],
+            year=2000,
+            abstract="Actuated strains up to 117% were demonstrated.",
+            source="fixture",
+        )
+
+        result = check_claim_support(record, "actuation strain below 50%")
+
+        self.assertEqual(result.status, "PARTIAL")
+        self.assertEqual(result.verdict, "WARN")
+        self.assertIn("does not explicitly support", result.reason)
+
+    def test_at_most_claim_is_supported_by_lower_abstract_percentage(self):
+        record = PaperRecord(
+            doi="10.1000/lowstrain",
+            title="Low strain actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="Actuated strain reached 42% under the tested voltage.",
+            source="fixture",
+        )
+
+        result = check_claim_support(record, "actuation strain at most 50%")
+
+        self.assertEqual(result.status, "SUPPORTED")
+        self.assertEqual(result.verdict, "ACCEPT")
+        self.assertIn("42%", result.evidence)
+
+    def test_supported_when_non_percentage_claim_is_stated_in_abstract(self):
+        record = PaperRecord(
+            doi="10.1000/lifetime",
+            title="Hydrogel actuator lifetime",
+            authors=["Lee"],
+            year=2022,
+            abstract=(
+                "A hydrogel actuator showed 10% strain under 5 V. "
+                "The device lifetime was 5000 cycles."
+            ),
+            source="fixture",
+        )
+
+        result = check_claim_support(record, "the device lifetime was 5000 cycles")
+
+        self.assertEqual(result.status, "SUPPORTED")
+        self.assertEqual(result.verdict, "ACCEPT")
+        self.assertIn("5000 cycles", result.evidence)
+
+    def test_non_percentage_claim_requires_matching_numeric_value(self):
+        record = PaperRecord(
+            doi="10.1000/lifetime",
+            title="Hydrogel actuator lifetime",
+            authors=["Lee"],
+            year=2022,
+            abstract="The device lifetime was 5000 cycles.",
+            source="fixture",
+        )
+
+        result = check_claim_support(record, "the device lifetime was 10000 cycles")
+
+        self.assertEqual(result.status, "PARTIAL")
+        self.assertEqual(result.verdict, "WARN")
+        self.assertIn("does not explicitly support", result.reason)
+
+    def test_unverifiable_without_abstract(self):
+        record = PaperRecord(
+            doi="10.1000/noabstract",
+            title="Smart material paper",
+            authors=["Kim"],
+            year=2021,
+            abstract=None,
+            source="fixture",
+        )
+
+        result = check_claim_support(record, "actuation strain above 100%")
+
+        self.assertEqual(result.status, "UNVERIFIABLE")
+        self.assertEqual(result.verdict, "WARN")
+        self.assertEqual(result.evidence, "")
+
+    def test_absent_claim_is_warn_not_contradiction_without_explicit_conflict(self):
+        record = PaperRecord(
+            doi="10.1000/unrelated",
+            title="Unrelated materials paper",
+            authors=["Smith"],
+            year=2020,
+            abstract="The polymer film was characterized by optical microscopy.",
+            source="fixture",
+        )
+
+        result = check_claim_support(record, "actuation strain above 100%")
+
+        self.assertEqual(result.status, "PARTIAL")
+        self.assertEqual(result.verdict, "WARN")
+        self.assertIn("does not explicitly support", result.reason)
+
+
+if __name__ == "__main__":
+    unittest.main()

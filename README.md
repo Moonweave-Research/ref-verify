@@ -23,6 +23,32 @@ npx skills add Moonweave-Research/ref-verify -g
 
 Works with **Claude Code, Cursor, Codex**, and any agent that supports the `npx skills` ecosystem.
 
+### Optional executable engine
+
+The skill is the agent workflow. The Python CLI is the reproducible execution engine that the skill, future MCP server, and future Zotero workflows can call.
+
+Current CLI scope: CrossRef-backed DOI metadata checks and CrossRef-abstract claim checks. If CrossRef does not expose an abstract, `check-claim` returns `UNVERIFIABLE`; the agent skill can still continue with the manual Semantic Scholar, Unpaywall, arXiv, and PubMed fallback protocol.
+
+```bash
+git clone https://github.com/Moonweave-Research/ref-verify.git
+cd ref-verify
+python3 -m pip install -e .
+```
+
+Then run focused checks directly:
+
+```bash
+ref-verify verify-doi 10.1126/science.287.5454.836 \
+  --title "High-Speed Electrically Actuated Elastomers with Strain Greater Than 100%" \
+  --first-author Pelrine \
+  --year 2000 \
+  --json
+
+ref-verify check-claim 10.1126/science.287.5454.836 \
+  --claim "actuation strain above 100%" \
+  --json
+```
+
 ---
 
 ## What gets caught
@@ -164,8 +190,24 @@ Stays quiet for: general topic questions, prose editing, APA formatting, citatio
 **Quick Screen** — for DOIs you already have.
 Hits CrossRef, confirms title + author match, verifies DOI resolves. Seconds per paper.
 
+For the CrossRef metadata portion, use:
+
+```bash
+ref-verify verify-doi <doi> --title "<title>" --first-author <last-name> --year <year> --json
+```
+
 **Full Audit** — for searching from scratch or final pre-submission review.
 Fetches the abstract live from CrossRef → Semantic Scholar → Unpaywall → arXiv → PubMed (in order). Checks whether the abstract actually contains the specific claim being cited. Explicitly marks any paper as `UNVERIFIABLE` if no abstract is accessible — never guesses.
+
+For a single DOI-backed claim, use:
+
+```bash
+ref-verify check-claim <doi> --claim "<specific claim>" --json
+```
+
+This command is intentionally conservative. It accepts only what the fetched CrossRef abstract supports and marks missing abstracts as `UNVERIFIABLE`.
+
+The CLI does not yet replace the full manual Quick Screen: still follow the skill protocol for DOI landing-page resolution, second-source confirmation, and retraction checks when those layers are required.
 
 > **The rule that cannot be relaxed:** Every content statement must come from a live-fetched abstract, quoted verbatim. If the abstract is inaccessible after all fallbacks, the output says so — it does not fill the gap with training data.
 
