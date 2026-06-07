@@ -192,12 +192,10 @@ def _sentence_supports_text_claim(sentence: str, claim: str) -> bool:
     if claim_numbers and not claim_numbers <= set(_numbers(sentence)):
         return False
 
-    claim_terms = {_stem(token) for token in _tokens(claim)}
-    if not claim_terms:
+    claim_phrase = _normalize_phrase(claim)
+    if not claim_phrase:
         return False
-    sentence_terms = {_stem(token) for token in _tokens(sentence)}
-    overlap = claim_terms & sentence_terms
-    return len(overlap) / len(claim_terms) >= 0.8
+    return claim_phrase in _normalize_phrase(sentence)
 
 
 def _all_percentage_evidence_is_prestrain(value: str) -> bool:
@@ -234,7 +232,7 @@ def _evidence_percentage_comparator(context: str) -> str:
 
 
 def _clause_bounds(value: str, start: int, end: int) -> tuple[int, int]:
-    boundary = r"(?:[.;:]\s+|,\s+(?:and|but|while|whereas|although)\b)"
+    boundary = r"(?:[.;:]\s+|,?\s+\b(?:and|but|while|whereas|although)\b\s+)"
     context_start = 0
     for match in re.finditer(boundary, value[:start]):
         context_start = match.end()
@@ -278,6 +276,10 @@ def _numbers(value: str) -> list[str]:
         number.replace(",", "")
         for number in re.findall(r"\d+(?:,\d{3})*(?:\.\d+)?", value)
     ]
+
+
+def _normalize_phrase(value: str) -> str:
+    return " ".join(re.findall(r"[a-zA-Z0-9]+", value.lower()))
 
 
 def _stem(token: str) -> str:

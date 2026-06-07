@@ -159,23 +159,33 @@ class ClaimCheckTests(unittest.TestCase):
         self.assertEqual(different_result.verdict, "WARN")
 
     def test_unrelated_strain_percentage_in_same_sentence_does_not_support_claim(self):
-        record = PaperRecord(
-            doi="10.1000/mixedstrain",
-            title="Mixed strain contexts",
-            authors=["Lee"],
-            year=2020,
-            abstract=(
+        abstracts = (
+            (
                 "Actuated strain reached 42%, and the film tolerated 200% "
                 "tensile strain before failure."
             ),
-            source="fixture",
+            (
+                "Actuated strain reached 42% and the film tolerated 200% "
+                "tensile strain before failure."
+            ),
         )
 
-        result = check_claim_support(record, "actuation strain above 100%")
+        for abstract in abstracts:
+            with self.subTest(abstract=abstract):
+                record = PaperRecord(
+                    doi="10.1000/mixedstrain",
+                    title="Mixed strain contexts",
+                    authors=["Lee"],
+                    year=2020,
+                    abstract=abstract,
+                    source="fixture",
+                )
 
-        self.assertEqual(result.status, "PARTIAL")
-        self.assertEqual(result.verdict, "WARN")
-        self.assertIn("does not explicitly support", result.reason)
+                result = check_claim_support(record, "actuation strain above 100%")
+
+                self.assertEqual(result.status, "PARTIAL")
+                self.assertEqual(result.verdict, "WARN")
+                self.assertIn("does not explicitly support", result.reason)
 
     def test_upper_bound_evidence_does_not_support_lower_bound_claim(self):
         cases = (
@@ -240,6 +250,38 @@ class ClaimCheckTests(unittest.TestCase):
         )
 
         result = check_claim_support(record, "the device lifetime was 10000 cycles")
+
+        self.assertEqual(result.status, "PARTIAL")
+        self.assertEqual(result.verdict, "WARN")
+        self.assertIn("does not explicitly support", result.reason)
+
+    def test_non_percentage_claim_reversal_is_not_supported_by_same_words(self):
+        record = PaperRecord(
+            doi="10.1000/reversal",
+            title="Cell stiffness reversal",
+            authors=["Lee"],
+            year=2020,
+            abstract="Healthy cells are stiffer than cancer cells.",
+            source="fixture",
+        )
+
+        result = check_claim_support(record, "cancer cells are stiffer than healthy cells")
+
+        self.assertEqual(result.status, "PARTIAL")
+        self.assertEqual(result.verdict, "WARN")
+        self.assertIn("does not explicitly support", result.reason)
+
+    def test_non_percentage_claim_negation_is_not_supported_by_same_words(self):
+        record = PaperRecord(
+            doi="10.1000/negation",
+            title="Device lifetime negation",
+            authors=["Lee"],
+            year=2020,
+            abstract="The device lifetime was not 5000 cycles.",
+            source="fixture",
+        )
+
+        result = check_claim_support(record, "the device lifetime was 5000 cycles")
 
         self.assertEqual(result.status, "PARTIAL")
         self.assertEqual(result.verdict, "WARN")
