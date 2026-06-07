@@ -425,8 +425,13 @@ class ClaimCheckTests(unittest.TestCase):
             "Previous work reported actuation strain above 100% in acrylic films.",
             "According to prior work, actuation strain above 100% was observed.",
             "These results suggest actuation strain exceeded 117%.",
+            "These results indicate actuation strain exceeded 117%.",
+            "These results imply actuation strain exceeded 117%.",
             "The paper reports actuation strain exceeded 117%.",
             "The authors claim actuation strain exceeded 117%.",
+            "Actuation strain may exceed 117%.",
+            "Actuation strain might exceed 117%.",
+            "Actuation strain appears to exceed 117%.",
         )
 
         for abstract in cases:
@@ -467,6 +472,32 @@ class ClaimCheckTests(unittest.TestCase):
                 record = PaperRecord(
                     doi="10.1000/approximate-percentage",
                     title="Approximate percentage actuator",
+                    authors=["Lee"],
+                    year=2020,
+                    abstract=abstract,
+                    source="fixture",
+                )
+
+                result = check_claim_support(record, claim)
+
+                self.assertEqual(result.status, "PARTIAL")
+                self.assertEqual(result.verdict, "WARN")
+                self.assertIn("does not explicitly support", result.reason)
+
+    def test_percentage_claim_rejects_aggregate_context(self):
+        cases = (
+            ("Actuation strain was 117% on average.", "actuation strain 117%"),
+            ("Actuation strain exceeded 117% on average.", "actuation strain above 100%"),
+            ("Mean actuation strain was 117%.", "actuation strain 117%"),
+            ("Median actuation strain was 117%.", "actuation strain 117%"),
+            ("Actuation strain typically exceeded 117%.", "actuation strain above 100%"),
+        )
+
+        for abstract, claim in cases:
+            with self.subTest(abstract=abstract):
+                record = PaperRecord(
+                    doi="10.1000/aggregate-percentage",
+                    title="Aggregate percentage actuator",
                     authors=["Lee"],
                     year=2020,
                     abstract=abstract,
@@ -543,6 +574,9 @@ class ClaimCheckTests(unittest.TestCase):
             "Previous work reported the device lifetime was 5000 cycles.",
             "According to Lee, the device lifetime was 5000 cycles.",
             "These results suggest the device lifetime was 5000 cycles.",
+            "These results indicate the device lifetime was 5000 cycles.",
+            "These results imply the device lifetime was 5000 cycles.",
+            "The device lifetime appears to be 5000 cycles.",
             "The paper reports the device lifetime was 5000 cycles.",
             "The authors claim the device lifetime was 5000 cycles.",
             (
@@ -600,6 +634,9 @@ class ClaimCheckTests(unittest.TestCase):
             "The device lifetime was 5000 cycles at 5 V.",
             "The device lifetime was 5000 cycles for acrylic elastomers.",
             "The device lifetime was 5000 cycles from the second cycle onward.",
+            "The device lifetime was 5000 cycles on average.",
+            "The mean device lifetime was 5000 cycles.",
+            "The device lifetime was typically 5000 cycles.",
         )
         claims = (
             "healthy cells are stiffer than cancer cells",
@@ -610,6 +647,9 @@ class ClaimCheckTests(unittest.TestCase):
             "the device lifetime was 5000 cycles",
             "the device lifetime was 5000 cycles",
             "healthy cells are stiffer than cancer cells",
+            "the device lifetime was 5000 cycles",
+            "the device lifetime was 5000 cycles",
+            "the device lifetime was 5000 cycles",
             "the device lifetime was 5000 cycles",
             "the device lifetime was 5000 cycles",
             "the device lifetime was 5000 cycles",
