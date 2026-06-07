@@ -55,11 +55,16 @@ _TEXT_CLAIM_COMPARATIVE_SUFFIXES = {
 }
 
 _TEXT_CLAIM_SCOPE_SUFFIXES = {
+    "across",
     "after",
+    "among",
+    "at",
     "before",
     "during",
     "except",
     "following",
+    "for",
+    "from",
     "in",
     "only",
     "then",
@@ -68,6 +73,17 @@ _TEXT_CLAIM_SCOPE_SUFFIXES = {
     "until",
     "when",
     "while",
+    "within",
+}
+
+_PERCENTAGE_APPROXIMATION_MODIFIERS = {
+    "about",
+    "approx",
+    "approximately",
+    "around",
+    "circa",
+    "nearly",
+    "roughly",
 }
 
 _UNRELATED_PERCENTAGE_SUBJECT_STEMS = {
@@ -252,6 +268,8 @@ def _sentence_supports_percentage_claim(
         if _has_percentage_scope_prefix(sentence, percentage_start):
             continue
         if _has_percentage_scope_suffix(context):
+            continue
+        if _has_approximate_percentage_context(context):
             continue
         if not _has_actuation_strain_context(context, claim):
             continue
@@ -458,7 +476,7 @@ def _evidence_percentage_comparator(context: str) -> str:
 
 def _has_sentence_scope_prefix(value: str) -> bool:
     tokens = _phrase_tokens(value)
-    return bool(tokens) and tokens[0] in _TEXT_CLAIM_SCOPE_SUFFIXES
+    return _has_scope_qualifier_tokens(tokens[:2])
 
 
 def _has_percentage_scope_suffix(context: str) -> bool:
@@ -466,12 +484,22 @@ def _has_percentage_scope_suffix(context: str) -> bool:
     if not percentage:
         return False
     suffix_tokens = _phrase_tokens(context[percentage.end() :])
-    return any(token in _TEXT_CLAIM_SCOPE_SUFFIXES for token in suffix_tokens)
+    return _has_scope_qualifier_tokens(suffix_tokens)
 
 
 def _has_percentage_scope_prefix(sentence: str, percentage_start: int) -> bool:
     prefix_tokens = _phrase_tokens(sentence[:percentage_start])
-    return any(token in _TEXT_CLAIM_SCOPE_SUFFIXES for token in prefix_tokens)
+    return _has_scope_qualifier_tokens(prefix_tokens)
+
+
+def _has_approximate_percentage_context(context: str) -> bool:
+    percentage = _PERCENTAGE_PATTERN.search(context)
+    if not percentage:
+        return False
+    prefix_tokens = _phrase_tokens(context[: percentage.start()])
+    suffix_tokens = _phrase_tokens(context[percentage.end() :])
+    nearby_tokens = prefix_tokens[-3:] + suffix_tokens[:2]
+    return any(token in _PERCENTAGE_APPROXIMATION_MODIFIERS for token in nearby_tokens)
 
 
 def _parse_percentage_value(value: str) -> float:
@@ -558,14 +586,24 @@ def _has_comparative_suffix(tokens: list[str], claim_end: int) -> bool:
     suffix = tokens[claim_end:]
     if any(token in _TEXT_CLAIM_COMPARATIVE_SUFFIXES for token in suffix):
         return True
-    if any(token in _TEXT_CLAIM_SCOPE_SUFFIXES for token in suffix):
+    if _has_scope_qualifier_tokens(suffix):
         return True
     return False
 
 
 def _has_scope_qualifier_prefix(tokens: list[str], claim_start: int) -> bool:
     prefix = tokens[:claim_start]
-    return any(token in _TEXT_CLAIM_SCOPE_SUFFIXES for token in prefix)
+    return _has_scope_qualifier_tokens(prefix)
+
+
+def _has_scope_qualifier_tokens(tokens: list[str]) -> bool:
+    for index, token in enumerate(tokens):
+        next_token = tokens[index + 1] if index + 1 < len(tokens) else ""
+        if token == "at" and next_token in {"least", "most"}:
+            continue
+        if token in _TEXT_CLAIM_SCOPE_SUFFIXES:
+            return True
+    return False
 
 
 def _stem(token: str) -> str:

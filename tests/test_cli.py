@@ -475,7 +475,7 @@ class CliTests(unittest.TestCase):
             title="Thousand strain actuator",
             authors=["Lee"],
             year=2020,
-            abstract="Actuated strain reached 1,200% at the tested voltage.",
+            abstract="Actuated strain reached 1,200%.",
             source="fixture",
         )
         output = io.StringIO()
@@ -547,6 +547,62 @@ class CliTests(unittest.TestCase):
                     "10.1000/introductory-scope",
                     "--claim",
                     "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["status"], "PARTIAL")
+        self.assertEqual(payload["verdict"], "WARN")
+
+    def test_check_claim_exits_nonzero_for_condition_scoped_percentage(self):
+        record = PaperRecord(
+            doi="10.1000/condition-scope",
+            title="Condition scope actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="Actuation strain exceeded 117% at 5 V.",
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/condition-scope",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["status"], "PARTIAL")
+        self.assertEqual(payload["verdict"], "WARN")
+
+    def test_check_claim_exits_nonzero_for_approximate_percentage(self):
+        record = PaperRecord(
+            doi="10.1000/approximate-percentage",
+            title="Approximate percentage actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="Actuation strain was approximately 117%.",
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/approximate-percentage",
+                    "--claim",
+                    "actuation strain 117%",
                     "--json",
                 ],
                 client=FakeClient(record),

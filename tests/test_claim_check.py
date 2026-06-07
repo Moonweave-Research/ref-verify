@@ -104,7 +104,7 @@ class ClaimCheckTests(unittest.TestCase):
             title="Boundary strain actuator",
             authors=["Lee"],
             year=2020,
-            abstract="Actuated strain reached 50% at the tested voltage.",
+            abstract="Actuated strain reached 50%.",
             source="fixture",
         )
 
@@ -122,7 +122,7 @@ class ClaimCheckTests(unittest.TestCase):
             title="Low strain actuator",
             authors=["Lee"],
             year=2020,
-            abstract="Actuated strain reached 42% at the tested voltage.",
+            abstract="Actuated strain reached 42%.",
             source="fixture",
         )
 
@@ -138,7 +138,7 @@ class ClaimCheckTests(unittest.TestCase):
             title="Exact strain actuator",
             authors=["Lee"],
             year=2020,
-            abstract="Actuated strain reached 50% at the tested voltage.",
+            abstract="Actuated strain reached 50%.",
             source="fixture",
         )
         different_record = PaperRecord(
@@ -146,7 +146,7 @@ class ClaimCheckTests(unittest.TestCase):
             title="Different strain actuator",
             authors=["Lee"],
             year=2020,
-            abstract="Actuated strain reached 60% at the tested voltage.",
+            abstract="Actuated strain reached 60%.",
             source="fixture",
         )
 
@@ -204,7 +204,7 @@ class ClaimCheckTests(unittest.TestCase):
             title="Thousand strain actuator",
             authors=["Lee"],
             year=2020,
-            abstract="Actuated strain reached 1,200% at the tested voltage.",
+            abstract="Actuated strain reached 1,200%.",
             source="fixture",
         )
 
@@ -290,7 +290,7 @@ class ClaimCheckTests(unittest.TestCase):
                 "actuation strain at least 45%",
             ),
             (
-                "Actuated strain reached at most 50% at the tested voltage.",
+                "Actuated strain reached at most 50%.",
                 "actuation strain above 49%",
             ),
             (
@@ -359,6 +359,23 @@ class ClaimCheckTests(unittest.TestCase):
                 "Experimentally, under standard conditions, actuation strain exceeded 117%.",
                 "actuation strain above 100%",
             ),
+            ("Actuation strain exceeded 117% at 5 V.", "actuation strain above 100%"),
+            (
+                "Actuation strain exceeded 117% for acrylic elastomers.",
+                "actuation strain above 100%",
+            ),
+            (
+                "Actuation strain exceeded 117% among prestretched films.",
+                "actuation strain above 100%",
+            ),
+            (
+                "Actuation strain exceeded 117% across tested samples.",
+                "actuation strain above 100%",
+            ),
+            (
+                "Actuation strain exceeded 117% from the second cycle onward.",
+                "actuation strain above 100%",
+            ),
         )
 
         for abstract, claim in cases:
@@ -414,6 +431,33 @@ class ClaimCheckTests(unittest.TestCase):
                 )
 
                 result = check_claim_support(record, "actuation strain above 100%")
+
+                self.assertEqual(result.status, "PARTIAL")
+                self.assertEqual(result.verdict, "WARN")
+                self.assertIn("does not explicitly support", result.reason)
+
+    def test_percentage_claim_rejects_approximate_context(self):
+        cases = (
+            ("Actuation strain was about 117%.", "actuation strain 117%"),
+            ("Actuation strain was approximately 117%.", "actuation strain 117%"),
+            ("Actuation strain was around 117%.", "actuation strain 117%"),
+            ("Actuation strain was roughly 117%.", "actuation strain 117%"),
+            ("Actuation strain was nearly 117%.", "actuation strain 117%"),
+            ("Actuation strain exceeded approximately 117%.", "actuation strain above 100%"),
+        )
+
+        for abstract, claim in cases:
+            with self.subTest(abstract=abstract):
+                record = PaperRecord(
+                    doi="10.1000/approximate-percentage",
+                    title="Approximate percentage actuator",
+                    authors=["Lee"],
+                    year=2020,
+                    abstract=abstract,
+                    source="fixture",
+                )
+
+                result = check_claim_support(record, claim)
 
                 self.assertEqual(result.status, "PARTIAL")
                 self.assertEqual(result.verdict, "WARN")
@@ -537,6 +581,9 @@ class ClaimCheckTests(unittest.TestCase):
             "The device lifetime was 5000 cycles, then dropped to 1000 after annealing.",
             "The device lifetime was 5000 cycles in saline solution.",
             "Healthy cells are stiffer than cancer cells, but only before treatment.",
+            "The device lifetime was 5000 cycles at 5 V.",
+            "The device lifetime was 5000 cycles for acrylic elastomers.",
+            "The device lifetime was 5000 cycles from the second cycle onward.",
         )
         claims = (
             "healthy cells are stiffer than cancer cells",
@@ -547,6 +594,9 @@ class ClaimCheckTests(unittest.TestCase):
             "the device lifetime was 5000 cycles",
             "the device lifetime was 5000 cycles",
             "healthy cells are stiffer than cancer cells",
+            "the device lifetime was 5000 cycles",
+            "the device lifetime was 5000 cycles",
+            "the device lifetime was 5000 cycles",
         )
 
         for abstract, claim in zip(cases, claims):
