@@ -175,6 +175,10 @@ class ClaimCheckTests(unittest.TestCase):
             "Actuation strain was 117% maximum.",
             "Actuation strain was 117% min.",
             "Actuation strain was 117% max.",
+            "Actuation strain was no greater than 117%.",
+            "Actuation strain was no less than 117%.",
+            "Actuation strain was less than or equal to 117%.",
+            "Actuation strain was greater than or equal to 117%.",
         )
 
         for abstract in cases:
@@ -321,6 +325,18 @@ class ClaimCheckTests(unittest.TestCase):
                 "Actuation strain was ≤117%.",
                 "actuation strain above 100%",
             ),
+            (
+                "Actuation strain was no greater than 117%.",
+                "actuation strain above 100%",
+            ),
+            (
+                "Actuation strain was no higher than 117%.",
+                "actuation strain above 100%",
+            ),
+            (
+                "Actuation strain was less than or equal to 117%.",
+                "actuation strain above 100%",
+            ),
         )
 
         for abstract, claim in cases:
@@ -339,6 +355,31 @@ class ClaimCheckTests(unittest.TestCase):
                 self.assertEqual(result.status, "PARTIAL")
                 self.assertEqual(result.verdict, "WARN")
                 self.assertIn("does not explicitly support", result.reason)
+
+    def test_lower_bound_phrasing_supports_above_claim(self):
+        cases = (
+            "Actuation strain was no less than 117%.",
+            "Actuation strain was no lower than 117%.",
+            "Actuation strain was greater than or equal to 117%.",
+            "Actuation strain was higher than or equal to 117%.",
+        )
+
+        for abstract in cases:
+            with self.subTest(abstract=abstract):
+                record = PaperRecord(
+                    doi="10.1000/lower-bound",
+                    title="Lower bound actuator",
+                    authors=["Lee"],
+                    year=2020,
+                    abstract=abstract,
+                    source="fixture",
+                )
+
+                result = check_claim_support(record, "actuation strain above 100%")
+
+                self.assertEqual(result.status, "SUPPORTED")
+                self.assertEqual(result.verdict, "ACCEPT")
+                self.assertIn("117%", result.evidence)
 
     def test_percentage_claim_rejects_contradictory_coordinated_context(self):
         cases = (

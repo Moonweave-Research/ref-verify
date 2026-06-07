@@ -562,6 +562,18 @@ def _evidence_percentage_comparator(context: str, trailing_text: str = "") -> st
         return "gt"
     if stripped_prefix.endswith("<"):
         return "lt"
+    if re.search(
+        r"\b(?:no (?:more|greater|higher) than|"
+        r"(?:less|lower|fewer) than or equal to)\s*$",
+        prefix,
+    ):
+        return "lte"
+    if re.search(
+        r"\b(?:no (?:less|lower|fewer) than|"
+        r"(?:more|greater|higher) than or equal to)\s*$",
+        prefix,
+    ):
+        return "gte"
     if re.search(r"\b(at least|not less than)\s*$", prefix):
         return "gte"
     if re.search(r"\b(at most|no more than)\s*$", prefix):

@@ -940,6 +940,62 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "PARTIAL")
         self.assertEqual(payload["verdict"], "WARN")
 
+    def test_check_claim_exits_nonzero_for_no_greater_upper_bound(self):
+        record = PaperRecord(
+            doi="10.1000/no-greater-bound",
+            title="No greater bound actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="Actuation strain was no greater than 117%.",
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/no-greater-bound",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["status"], "PARTIAL")
+        self.assertEqual(payload["verdict"], "WARN")
+
+    def test_check_claim_exits_nonzero_for_less_than_or_equal_upper_bound(self):
+        record = PaperRecord(
+            doi="10.1000/less-than-equal-bound",
+            title="Less than equal bound actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="Actuation strain was less than or equal to 117%.",
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/less-than-equal-bound",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["status"], "PARTIAL")
+        self.assertEqual(payload["verdict"], "WARN")
+
     def test_check_claim_exits_nonzero_for_named_bounded_text_claim(self):
         record = PaperRecord(
             doi="10.1000/named-bound-text",
