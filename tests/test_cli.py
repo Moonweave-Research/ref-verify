@@ -346,6 +346,34 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "SUPPORTED")
         self.assertEqual(payload["verdict"], "ACCEPT")
 
+    def test_check_claim_accepts_first_person_result_frame(self):
+        record = PaperRecord(
+            doi="10.1000/direct-result",
+            title="Direct result actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="We found actuated strains above 120%.",
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/direct-result",
+                    "--claim",
+                    "actuated strains above 100%",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["status"], "SUPPORTED")
+        self.assertEqual(payload["verdict"], "ACCEPT")
+
     def test_check_claim_exits_nonzero_when_fetched_doi_differs(self):
         record = PaperRecord(
             doi="10.1000/other",

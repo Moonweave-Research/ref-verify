@@ -130,6 +130,17 @@ _UNRELATED_PERCENTAGE_SUBJECT_STEMS = {
     "voltage",
 }
 
+_GENERIC_PERCENTAGE_QUALIFIER_STEMS = {
+    "actuator",
+    "device",
+    "elastomer",
+    "film",
+    "material",
+    "polymer",
+    "sample",
+    "specimen",
+}
+
 _UNSUPPORTED_CLAIM_FRAME_PATTERNS = (
     r"\baccording to\b",
     r"\bwhether\b",
@@ -156,15 +167,15 @@ _UNSUPPORTED_CLAIM_FRAME_PATTERNS = (
     r"\b(?:may|might|could|can|would|should)\b",
     r"\b(?:appear|appears|appeared|appearing) to\b",
     r"\b(?:seem|seems|seemed|seeming) to\b",
-    r"\b(?:report|reports|reported|reporting)\b",
+    r"\b(?:the )?(?:paper|article|study|work) "
+    r"(?:report|reports|reported|reporting)\b",
+    r"\b(?:the )?authors? "
+    r"(?:report|reports|reported|found|finds|observed|observes|noted|notes)\b",
     r"\breportedly\b",
     r"\b(?:claim|claims|claimed|claiming)\b",
     r"\b(?:suggest|suggests|suggested|suggesting)\b",
     r"\b(?:indicate|indicates|indicated|indicating)\b",
     r"\b(?:imply|implies|implied|implying)\b",
-    r"\b(?:find|finds|found|finding)\b",
-    r"\b(?:note|notes|noted|noting)\b",
-    r"\b(?:observe|observes|observed|observing)\b",
     r"\bsaid to\b",
     r"\b(?:expect|expects|expected|expecting) to\b",
     r"\b(?:project|projects|projected|projecting) to\b",
@@ -390,6 +401,7 @@ def _has_contradictory_percentage_context(
     claim: str,
     sentence: str,
 ) -> bool:
+    supporting_context = contexts[supporting_index][1]
     for index, (value, context, _, percentage_end) in enumerate(contexts):
         if index == supporting_index:
             continue
@@ -398,6 +410,11 @@ def _has_contradictory_percentage_context(
         if _has_unsupported_claim_frame(context):
             continue
         if not _has_percentage_subject_context(context, sentence, claim):
+            continue
+        if claim_comparator == "exact" and _has_distinct_percentage_qualifiers(
+            supporting_context,
+            context,
+        ):
             continue
         evidence_comparator = _evidence_percentage_comparator(
             context,
@@ -411,6 +428,23 @@ def _has_contradictory_percentage_context(
         ):
             return True
     return False
+
+
+def _has_distinct_percentage_qualifiers(left: str, right: str) -> bool:
+    left_terms = _percentage_qualifier_terms(left)
+    right_terms = _percentage_qualifier_terms(right)
+    return bool(left_terms and right_terms and left_terms.isdisjoint(right_terms))
+
+
+def _percentage_qualifier_terms(context: str) -> set[str]:
+    percentage = _PERCENTAGE_PATTERN.search(context)
+    if not percentage:
+        return set()
+    return {
+        _stem(token)
+        for token in _tokens(context[percentage.end() :])
+        if _stem(token) not in _GENERIC_PERCENTAGE_QUALIFIER_STEMS
+    }
 
 
 def _has_cross_sentence_contradictory_percentage_context(

@@ -121,6 +121,67 @@ class ClaimCheckTests(unittest.TestCase):
         self.assertEqual(result.verdict, "ACCEPT")
         self.assertIn("117%", result.evidence)
 
+    def test_supported_when_first_person_result_frame_reports_claim(self):
+        percentage_cases = (
+            (
+                "We found actuated strains above 120%.",
+                "actuated strains above 100%",
+            ),
+            (
+                "We observed actuation strain reached 117%.",
+                "actuation strain 117%",
+            ),
+        )
+
+        for abstract, claim in percentage_cases:
+            with self.subTest(claim=claim):
+                record = PaperRecord(
+                    doi="10.1000/direct-result",
+                    title="Direct result actuator",
+                    authors=["Lee"],
+                    year=2020,
+                    abstract=abstract,
+                    source="fixture",
+                )
+
+                result = check_claim_support(record, claim)
+
+                self.assertEqual(result.status, "SUPPORTED")
+                self.assertEqual(result.verdict, "ACCEPT")
+
+        text_record = PaperRecord(
+            doi="10.1000/direct-lifetime",
+            title="Direct lifetime actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="We report the device lifetime was 5000 cycles.",
+            source="fixture",
+        )
+
+        result = check_claim_support(text_record, "the device lifetime was 5000 cycles")
+
+        self.assertEqual(result.status, "SUPPORTED")
+        self.assertEqual(result.verdict, "ACCEPT")
+
+    def test_exact_percentage_claim_accepts_matching_value_with_different_material_values(self):
+        record = PaperRecord(
+            doi="10.1000/multimaterial",
+            title="Multimaterial actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract=(
+                "Actuated strains reached 117% with silicone elastomers and "
+                "215% with acrylic elastomers."
+            ),
+            source="fixture",
+        )
+
+        result = check_claim_support(record, "actuation strain 117%")
+
+        self.assertEqual(result.status, "SUPPORTED")
+        self.assertEqual(result.verdict, "ACCEPT")
+        self.assertIn("117%", result.evidence)
+
     def test_partial_when_percentage_is_prestrain_not_actuation_output(self):
         record = PaperRecord(
             doi="10.1000/prestrain",
