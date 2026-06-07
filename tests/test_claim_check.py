@@ -52,7 +52,7 @@ class ClaimCheckTests(unittest.TestCase):
             year=2024,
             abstract=(
                 "Actuation strain below 50% was common in stiff samples. "
-                "Actuated strains up to 117% were demonstrated in optimized samples."
+                "Actuated strains up to 117% were demonstrated."
             ),
             source="fixture",
         )
@@ -303,8 +303,10 @@ class ClaimCheckTests(unittest.TestCase):
                 "Under standard conditions, actuation strain exceeded 117%.",
                 "actuation strain above 100%",
             ),
+            ("In saline solution, actuation strain exceeded 117%.", "actuation strain above 100%"),
             ("After annealing, actuation strain remained below 50%.", "actuation strain below 50%"),
             ("Actuation strain was below 50% before treatment.", "actuation strain below 50%"),
+            ("Actuation strain exceeded 117% in saline solution.", "actuation strain above 100%"),
         )
 
         for abstract, claim in cases:
@@ -334,6 +336,8 @@ class ClaimCheckTests(unittest.TestCase):
             "Actuation strain failed to exceed 117% in this material.",
             "Actuation strain was unable to exceed 117% in this material.",
             "Actuation strain was measured without exceeding 117%.",
+            "No actuation strain above 100% was observed.",
+            "No actuation strain exceeding 117% was observed.",
             "Actuation strain exceeded 117% in no sample.",
             "No sample showed actuation strain above 100%.",
             "None of the samples showed actuation strain above 100%.",
@@ -467,15 +471,19 @@ class ClaimCheckTests(unittest.TestCase):
             "Before treatment, healthy cells are stiffer than cancer cells.",
             "After annealing, the device lifetime was 5000 cycles.",
             "Under standard conditions, the device lifetime was 5000 cycles.",
+            "In saline solution, the device lifetime was 5000 cycles.",
             (
                 "The device lifetime was 5000 cycles before annealing and "
                 "1000 cycles after annealing."
             ),
             "The device lifetime was 5000 cycles, then dropped to 1000 after annealing.",
+            "The device lifetime was 5000 cycles in saline solution.",
             "Healthy cells are stiffer than cancer cells, but only before treatment.",
         )
         claims = (
             "healthy cells are stiffer than cancer cells",
+            "the device lifetime was 5000 cycles",
+            "the device lifetime was 5000 cycles",
             "the device lifetime was 5000 cycles",
             "the device lifetime was 5000 cycles",
             "the device lifetime was 5000 cycles",

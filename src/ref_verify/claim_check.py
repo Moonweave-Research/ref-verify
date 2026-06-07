@@ -57,6 +57,7 @@ _TEXT_CLAIM_SCOPE_SUFFIXES = {
     "during",
     "except",
     "following",
+    "in",
     "only",
     "then",
     "under",
@@ -100,6 +101,7 @@ _UNSUPPORTED_CLAIM_FRAME_PATTERNS = (
     r"\bunable to\b",
     r"\bwithout\b",
     r"\bnever\b",
+    r"\bno\b.*\b(?:observed|found|shown|showed|reported|measured|demonstrated)\b",
     r"\bno "
     r"(?:sample|samples|specimen|specimens|device|devices|case|cases|paper|papers|study|studies)\b",
     r"\bnone of (?:the )?"
