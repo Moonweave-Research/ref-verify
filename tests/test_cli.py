@@ -78,6 +78,62 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "SUPPORTED")
         self.assertEqual(payload["verdict"], "ACCEPT")
 
+    def test_check_claim_exits_nonzero_when_claim_is_partial(self):
+        record = PaperRecord(
+            doi="10.1000/example",
+            title="Dielectric elastomer actuators",
+            authors=["Pelrine", "Kornbluh"],
+            year=2000,
+            abstract="Actuated strain remained below 50% throughout testing.",
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/example",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["status"], "PARTIAL")
+        self.assertEqual(payload["verdict"], "WARN")
+
+    def test_check_claim_exits_nonzero_when_claim_is_unverifiable(self):
+        record = PaperRecord(
+            doi="10.1000/noabstract",
+            title="Smart material paper",
+            authors=["Kim"],
+            year=2021,
+            abstract=None,
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/noabstract",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["status"], "UNVERIFIABLE")
+        self.assertEqual(payload["verdict"], "WARN")
+
 
 if __name__ == "__main__":
     unittest.main()

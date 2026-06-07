@@ -121,7 +121,12 @@ def _claim_percentage_comparator(claim: str) -> str:
         return "lte"
     if re.search(r"\b(below|under|less than)\b", normalized):
         return "lt"
-    return "gt"
+    if re.search(
+        r"\b(above|over|greater than|more than|exceeded|exceeds|exceeding)\b",
+        normalized,
+    ):
+        return "gt"
+    return "exact"
 
 
 def _ranked_evidence_sentences(abstract: str, claim: str) -> list[str]:
@@ -177,7 +182,9 @@ def _compare_percentage(value: float, threshold: float, comparator: str) -> bool
         return value <= threshold
     if comparator == "gte":
         return value >= threshold
-    return value > threshold
+    if comparator == "gt":
+        return value > threshold
+    return value == threshold
 
 
 def _sentence_supports_text_claim(sentence: str, claim: str) -> bool:

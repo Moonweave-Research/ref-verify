@@ -72,7 +72,7 @@ def _check_claim(args: argparse.Namespace, client: CrossrefClient) -> int:
     fetched = client.fetch_work(args.doi)
     result = check_claim_support(fetched, args.claim)
     _emit(result.to_dict(), as_json=args.json)
-    return 2 if result.verdict == "REJECT" else 0
+    return 0 if result.verdict == "ACCEPT" else 2
 
 
 def _emit(payload: dict, *, as_json: bool) -> None:

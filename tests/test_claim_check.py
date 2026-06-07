@@ -132,6 +132,32 @@ class ClaimCheckTests(unittest.TestCase):
         self.assertEqual(result.verdict, "ACCEPT")
         self.assertIn("42%", result.evidence)
 
+    def test_exact_percentage_claim_requires_exact_value(self):
+        exact_record = PaperRecord(
+            doi="10.1000/exact",
+            title="Exact strain actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="Actuated strain reached 50% under the tested voltage.",
+            source="fixture",
+        )
+        different_record = PaperRecord(
+            doi="10.1000/different",
+            title="Different strain actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="Actuated strain reached 60% under the tested voltage.",
+            source="fixture",
+        )
+
+        exact_result = check_claim_support(exact_record, "actuation strain 50%")
+        different_result = check_claim_support(different_record, "actuation strain 50%")
+
+        self.assertEqual(exact_result.status, "SUPPORTED")
+        self.assertEqual(exact_result.verdict, "ACCEPT")
+        self.assertEqual(different_result.status, "PARTIAL")
+        self.assertEqual(different_result.verdict, "WARN")
+
     def test_unrelated_strain_percentage_in_same_sentence_does_not_support_claim(self):
         record = PaperRecord(
             doi="10.1000/mixedstrain",

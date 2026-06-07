@@ -211,6 +211,8 @@ ref-verify check-claim <doi> --claim "<specific claim>" --json
 
 This command is intentionally conservative. It accepts only what the fetched CrossRef abstract supports and marks missing abstracts as `UNVERIFIABLE`.
 
+`check-claim` exits `0` only for `ACCEPT`; `WARN`, `PARTIAL`, and `UNVERIFIABLE` return a non-zero exit code for automation gates.
+
 The CLI does not yet replace the full manual Quick Screen: still follow the skill protocol for DOI landing-page resolution, second-source confirmation, and retraction checks when those layers are required.
 
 > **The rule that cannot be relaxed:** Every content statement must come from a live-fetched abstract, quoted verbatim. If the abstract is inaccessible after all fallbacks, the output says so — it does not fill the gap with training data.
