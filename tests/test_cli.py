@@ -413,6 +413,34 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "PARTIAL")
         self.assertEqual(payload["verdict"], "WARN")
 
+    def test_check_claim_exits_nonzero_for_suffix_bounded_percentage(self):
+        record = PaperRecord(
+            doi="10.1000/suffix-bound",
+            title="Suffix bound actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="Actuation strain was 117% or less.",
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/suffix-bound",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["status"], "PARTIAL")
+        self.assertEqual(payload["verdict"], "WARN")
+
     def test_check_claim_exits_nonzero_for_non_strain_percentage(self):
         record = PaperRecord(
             doi="10.1000/mixed-quantity",

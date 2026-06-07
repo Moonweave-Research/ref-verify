@@ -428,9 +428,14 @@ def _evidence_percentage_comparator(context: str) -> str:
         return "exact"
 
     prefix = context[: percentage.start()].lower()
+    suffix = context[percentage.end() :].lower()
     if re.search(r"\b(at least|not less than)\s*$", prefix):
         return "gte"
     if re.search(r"\b(at most|no more than)\s*$", prefix):
+        return "lte"
+    if re.search(r"^\s*(?:or\s+)?(?:more|greater|higher)\b", suffix):
+        return "gte"
+    if re.search(r"^\s*(?:or\s+)?(?:less|fewer|lower)\b", suffix):
         return "lte"
     if re.search(r"\bup to\s*$", prefix):
         return "up_to"

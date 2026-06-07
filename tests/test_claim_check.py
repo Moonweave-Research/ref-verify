@@ -159,20 +159,28 @@ class ClaimCheckTests(unittest.TestCase):
         self.assertEqual(different_result.verdict, "WARN")
 
     def test_exact_percentage_claim_is_not_supported_by_up_to_upper_bound(self):
-        record = PaperRecord(
-            doi="10.1000/upto",
-            title="Upper bound strain actuator",
-            authors=["Lee"],
-            year=2020,
-            abstract="Actuated strains up to 117% were demonstrated.",
-            source="fixture",
+        cases = (
+            "Actuated strains up to 117% were demonstrated.",
+            "Actuation strain was 117% or more.",
+            "Actuation strain was 117% or less.",
         )
 
-        result = check_claim_support(record, "actuation strain 117%")
+        for abstract in cases:
+            with self.subTest(abstract=abstract):
+                record = PaperRecord(
+                    doi="10.1000/bounded",
+                    title="Bounded strain actuator",
+                    authors=["Lee"],
+                    year=2020,
+                    abstract=abstract,
+                    source="fixture",
+                )
 
-        self.assertEqual(result.status, "PARTIAL")
-        self.assertEqual(result.verdict, "WARN")
-        self.assertIn("does not explicitly support", result.reason)
+                result = check_claim_support(record, "actuation strain 117%")
+
+                self.assertEqual(result.status, "PARTIAL")
+                self.assertEqual(result.verdict, "WARN")
+                self.assertIn("does not explicitly support", result.reason)
 
     def test_unrelated_strain_percentage_in_same_sentence_does_not_support_claim(self):
         abstracts = (
@@ -252,6 +260,14 @@ class ClaimCheckTests(unittest.TestCase):
             (
                 "Actuated strain reached at most 50% at the tested voltage.",
                 "actuation strain above 49%",
+            ),
+            (
+                "Actuation strain was 117% or less.",
+                "actuation strain above 100%",
+            ),
+            (
+                "Actuation strain was 117% or more.",
+                "actuation strain below 200%",
             ),
         )
 
