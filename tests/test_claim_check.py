@@ -271,6 +271,45 @@ class ClaimCheckTests(unittest.TestCase):
         self.assertEqual(result.verdict, "WARN")
         self.assertIn("does not explicitly support", result.reason)
 
+    def test_non_percentage_claim_rejects_comparative_suffix(self):
+        cases = (
+            "The device lifetime was 5000 cycles longer after annealing.",
+            "The device lifetime was 5000 cycles or more after annealing.",
+        )
+
+        for abstract in cases:
+            with self.subTest(abstract=abstract):
+                record = PaperRecord(
+                    doi="10.1000/comparative",
+                    title="Hydrogel actuator lifetime",
+                    authors=["Lee"],
+                    year=2022,
+                    abstract=abstract,
+                    source="fixture",
+                )
+
+                result = check_claim_support(record, "the device lifetime was 5000 cycles")
+
+                self.assertEqual(result.status, "PARTIAL")
+                self.assertEqual(result.verdict, "WARN")
+                self.assertIn("does not explicitly support", result.reason)
+
+    def test_non_percentage_claim_rejects_reporting_frame(self):
+        record = PaperRecord(
+            doi="10.1000/reporting",
+            title="Hydrogel actuator lifetime",
+            authors=["Lee"],
+            year=2022,
+            abstract="We tested whether the device lifetime was 5000 cycles.",
+            source="fixture",
+        )
+
+        result = check_claim_support(record, "the device lifetime was 5000 cycles")
+
+        self.assertEqual(result.status, "PARTIAL")
+        self.assertEqual(result.verdict, "WARN")
+        self.assertIn("does not explicitly support", result.reason)
+
     def test_non_percentage_claim_reversal_is_not_supported_by_same_words(self):
         record = PaperRecord(
             doi="10.1000/reversal",

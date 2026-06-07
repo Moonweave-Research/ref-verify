@@ -91,6 +91,25 @@ class DoiCheckTests(unittest.TestCase):
         self.assertEqual(result.verdict, "WARN")
         self.assertEqual(result.mismatches, ["year"])
 
+    def test_warns_when_provided_year_is_missing_from_fetched_record(self):
+        provided = CitationInput(
+            doi="10.1000/missing-year",
+            year=2020,
+        )
+        fetched = PaperRecord(
+            doi="10.1000/missing-year",
+            title="Dielectric elastomer actuators",
+            authors=["Pelrine", "Kornbluh"],
+            year=None,
+            abstract=None,
+            source="fixture",
+        )
+
+        result = verify_doi_metadata(provided, fetched)
+
+        self.assertEqual(result.verdict, "WARN")
+        self.assertEqual(result.mismatches, ["year"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -24,10 +24,8 @@ def verify_doi_metadata(
     ):
         mismatches.append("first_author")
 
-    if (
-        provided.year is not None
-        and fetched.year is not None
-        and provided.year != fetched.year
+    if provided.year is not None and (
+        fetched.year is None or provided.year != fetched.year
     ):
         mismatches.append("year")
 

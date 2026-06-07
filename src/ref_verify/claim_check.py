@@ -35,6 +35,22 @@ _STRAIN_QUALIFIER_STEMS = {
     "torsional",
 }
 
+_TEXT_CLAIM_COMPARATIVE_SUFFIXES = {
+    "additional",
+    "decreased",
+    "extra",
+    "fewer",
+    "greater",
+    "higher",
+    "increased",
+    "less",
+    "longer",
+    "lower",
+    "more",
+    "shorter",
+    "than",
+}
+
 
 def check_claim_support(record: PaperRecord, claim: str) -> ClaimSupportResult:
     if not record.abstract:
@@ -204,10 +220,19 @@ def _sentence_supports_text_claim(sentence: str, claim: str) -> bool:
     if claim_numbers and not claim_numbers <= set(_numbers(sentence)):
         return False
 
-    claim_phrase = _normalize_phrase(claim)
-    if not claim_phrase:
+    claim_tokens = _phrase_tokens(claim)
+    if not claim_tokens:
         return False
-    return claim_phrase in _normalize_phrase(sentence)
+    sentence_tokens = _phrase_tokens(sentence)
+
+    for start in _token_sequence_offsets(sentence_tokens, claim_tokens):
+        end = start + len(claim_tokens)
+        if _has_reporting_frame(sentence_tokens, start):
+            continue
+        if _has_comparative_suffix(sentence_tokens, end):
+            continue
+        return True
+    return False
 
 
 def _all_percentage_evidence_is_prestrain(value: str) -> bool:
@@ -293,8 +318,36 @@ def _numbers(value: str) -> list[str]:
     ]
 
 
-def _normalize_phrase(value: str) -> str:
-    return " ".join(re.findall(r"[a-zA-Z0-9]+", value.lower()))
+def _phrase_tokens(value: str) -> list[str]:
+    return re.findall(r"[a-zA-Z0-9]+", value.lower())
+
+
+def _token_sequence_offsets(tokens: list[str], target: list[str]) -> list[int]:
+    width = len(target)
+    return [
+        index
+        for index in range(0, len(tokens) - width + 1)
+        if tokens[index : index + width] == target
+    ]
+
+
+def _has_reporting_frame(tokens: list[str], claim_start: int) -> bool:
+    prefix = tokens[max(0, claim_start - 6) : claim_start]
+    return "whether" in prefix or "if" in prefix
+
+
+def _has_comparative_suffix(tokens: list[str], claim_end: int) -> bool:
+    if claim_end >= len(tokens):
+        return False
+
+    next_token = tokens[claim_end]
+    if next_token in _TEXT_CLAIM_COMPARATIVE_SUFFIXES:
+        return True
+    return (
+        next_token == "or"
+        and claim_end + 1 < len(tokens)
+        and tokens[claim_end + 1] in {"less", "more"}
+    )
 
 
 def _stem(token: str) -> str:

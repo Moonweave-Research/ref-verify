@@ -76,6 +76,34 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["verdict"], "WARN")
         self.assertIn("metadata", payload["mismatches"])
 
+    def test_verify_doi_exits_nonzero_when_requested_year_is_unavailable(self):
+        record = PaperRecord(
+            doi="10.1000/missing-year",
+            title="Dielectric elastomer actuators",
+            authors=["Pelrine", "Kornbluh"],
+            year=None,
+            abstract=None,
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "verify-doi",
+                    "10.1000/missing-year",
+                    "--year",
+                    "2020",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["verdict"], "WARN")
+        self.assertIn("year", payload["mismatches"])
+
     def test_check_claim_outputs_claim_status(self):
         record = PaperRecord(
             doi="10.1000/example",
