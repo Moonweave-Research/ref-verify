@@ -251,6 +251,26 @@ class ClaimCheckTests(unittest.TestCase):
         self.assertEqual(result.verdict, "ACCEPT")
         self.assertIn("42%", result.evidence)
 
+    def test_natural_language_inclusive_comparators_accept_exact_threshold(self):
+        record = PaperRecord(
+            doi="10.1000/inclusive",
+            title="Inclusive strain actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="Actuation strain reached 100%.",
+            source="fixture",
+        )
+
+        for claim in (
+            "actuation strain less than or equal to 100%",
+            "actuation strain greater than or equal to 100%",
+        ):
+            with self.subTest(claim=claim):
+                result = check_claim_support(record, claim)
+
+                self.assertEqual(result.status, "SUPPORTED")
+                self.assertEqual(result.verdict, "ACCEPT")
+
     def test_exact_percentage_claim_requires_exact_value(self):
         exact_record = PaperRecord(
             doi="10.1000/exact",

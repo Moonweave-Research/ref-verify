@@ -288,6 +288,10 @@ def _claim_percentage_comparator(claim: str) -> str:
         return "gt"
     if "<" in normalized:
         return "lt"
+    if re.search(r"\b(?:more|greater|higher) than or equal to\b", normalized):
+        return "gte"
+    if re.search(r"\b(?:less|lower|fewer) than or equal to\b", normalized):
+        return "lte"
     if re.search(r"\b(at least|not less than)\b", normalized):
         return "gte"
     if re.search(r"\b(at most|no more than)\b", normalized):

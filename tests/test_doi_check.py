@@ -162,6 +162,16 @@ class DoiCheckTests(unittest.TestCase):
             with self.subTest(raw_doi=raw_doi):
                 self.assertEqual(normalize_doi(raw_doi), expected)
 
+    def test_normalizes_percent_encoded_pasted_doi(self):
+        cases = (
+            ("https://doi.org/10.1000%2Fexample", "10.1000/example"),
+            ("doi:10.1000%2F%28example%29", "10.1000/(example)"),
+        )
+
+        for raw_doi, expected in cases:
+            with self.subTest(raw_doi=raw_doi):
+                self.assertEqual(normalize_doi(raw_doi), expected)
+
     def test_warns_when_only_year_differs(self):
         provided = CitationInput(
             doi="10.1000/example",

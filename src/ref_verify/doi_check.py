@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from urllib.parse import unquote
 
 from ref_verify.models import CitationInput, MetadataCheckResult, PaperRecord
 
@@ -65,6 +66,7 @@ def normalize_doi(value: str) -> str:
     normalized = value.strip().casefold()
     normalized = re.sub(r"^(?:https?://)?(?:dx\.)?doi\.org/", "", normalized)
     normalized = re.sub(r"^doi:\s*", "", normalized)
+    normalized = unquote(normalized)
     return _strip_trailing_doi_punctuation(normalized)
 
 
