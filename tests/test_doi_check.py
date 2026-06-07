@@ -26,6 +26,27 @@ class DoiCheckTests(unittest.TestCase):
         self.assertEqual(result.verdict, "PASS")
         self.assertEqual(result.mismatches, [])
 
+    def test_passes_matching_accented_author_surname(self):
+        provided = CitationInput(
+            doi="10.1000/example",
+            title="Dielectric elastomer actuators",
+            first_author="Garcia",
+            year=2020,
+        )
+        fetched = PaperRecord(
+            doi="10.1000/example",
+            title="Dielectric elastomer actuators",
+            authors=["García", "Lee"],
+            year=2020,
+            abstract=None,
+            source="fixture",
+        )
+
+        result = verify_doi_metadata(provided, fetched)
+
+        self.assertEqual(result.verdict, "PASS")
+        self.assertEqual(result.mismatches, [])
+
     def test_rejects_wrong_resolved_paper(self):
         provided = CitationInput(
             doi="10.1000/chapter",
@@ -149,6 +170,27 @@ class DoiCheckTests(unittest.TestCase):
 
         self.assertEqual(result.verdict, "REJECT")
         self.assertIn("title", result.mismatches)
+
+    def test_passes_transliterated_greek_letter_title(self):
+        provided = CitationInput(
+            doi="10.1000/phase",
+            title="beta-phase PVDF actuators",
+            first_author="Lee",
+            year=2020,
+        )
+        fetched = PaperRecord(
+            doi="10.1000/phase",
+            title="β-phase PVDF actuators",
+            authors=["Lee"],
+            year=2020,
+            abstract=None,
+            source="fixture",
+        )
+
+        result = verify_doi_metadata(provided, fetched)
+
+        self.assertEqual(result.verdict, "PASS")
+        self.assertEqual(result.mismatches, [])
 
     def test_normalizes_pasted_doi_trailing_punctuation(self):
         cases = (

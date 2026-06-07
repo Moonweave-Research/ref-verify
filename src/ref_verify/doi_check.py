@@ -1,9 +1,38 @@
 from __future__ import annotations
 
 import re
+import unicodedata
 from urllib.parse import unquote
 
 from ref_verify.models import CitationInput, MetadataCheckResult, PaperRecord
+
+_GREEK_LETTER_NAMES = {
+    "\u03b1": "alpha",
+    "\u03b2": "beta",
+    "\u03b3": "gamma",
+    "\u03b4": "delta",
+    "\u03b5": "epsilon",
+    "\u03b6": "zeta",
+    "\u03b7": "eta",
+    "\u03b8": "theta",
+    "\u03b9": "iota",
+    "\u03ba": "kappa",
+    "\u03bb": "lambda",
+    "\u03bc": "mu",
+    "\u03bd": "nu",
+    "\u03be": "xi",
+    "\u03bf": "omicron",
+    "\u03c0": "pi",
+    "\u03c1": "rho",
+    "\u03c2": "sigma",
+    "\u03c3": "sigma",
+    "\u03c4": "tau",
+    "\u03c5": "upsilon",
+    "\u03c6": "phi",
+    "\u03c7": "chi",
+    "\u03c8": "psi",
+    "\u03c9": "omega",
+}
 
 
 def verify_doi_metadata(
@@ -98,7 +127,8 @@ def _author_matches(provided: str, fetched: str | None) -> bool:
 
 
 def _normalize_author(value: str) -> str:
-    cleaned = re.sub(r"[^a-zA-Z -]", " ", value).strip().lower()
+    normalized = _strip_diacritics(value.casefold())
+    cleaned = re.sub(r"[^a-z -]", " ", normalized).strip()
     parts = [part for part in re.split(r"\s+", cleaned) if part]
     return parts[-1] if parts else ""
 
@@ -111,10 +141,26 @@ def _numbers(value: str) -> list[str]:
 
 
 def _title_tokens(value: str) -> list[str]:
-    return [_singularize(token) for token in re.findall(r"[^\W_]+", value.casefold())]
+    normalized = _transliterate_greek_letters(_strip_diacritics(value.casefold()))
+    return [_singularize(token) for token in re.findall(r"[^\W_]+", normalized)]
 
 
 def _singularize(token: str) -> str:
     if token.endswith("s") and len(token) > 3:
         return token[:-1]
     return token
+
+
+def _strip_diacritics(value: str) -> str:
+    return "".join(
+        char
+        for char in unicodedata.normalize("NFKD", value)
+        if not unicodedata.combining(char)
+    )
+
+
+def _transliterate_greek_letters(value: str) -> str:
+    return "".join(
+        f" {_GREEK_LETTER_NAMES[char]} " if char in _GREEK_LETTER_NAMES else char
+        for char in value
+    )
