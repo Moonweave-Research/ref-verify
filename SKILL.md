@@ -38,9 +38,33 @@ The expensive part is Full Audit (5-layer, abstract fetch). Quick Screen costs ~
 
 ## Executable Engine
 
-If the `ref-verify` CLI is installed, prefer it for DOI-backed checks before doing manual verification in chat. The CLI gives stable JSON that can be reused by manuscript preflight, MCP tools, and Zotero workflows.
+Use this as a skill-level workflow. Do not build or require MCP for this path.
+The CLI is an execution engine the skill can call from the terminal; the manual
+protocol remains the fallback and the source of truth for layers the CLI does
+not yet cover.
 
-Current CLI scope is CrossRef-backed. If `check-claim` returns `UNVERIFIABLE` because CrossRef has no abstract, continue the manual fallback chain below instead of treating the claim as rejected or supported.
+### CLI Availability Check
+
+Before a DOI-backed check, see whether the executable engine is available:
+
+```bash
+ref-verify --help
+```
+
+If the console script is unavailable but the repository source is present, use:
+
+```bash
+PYTHONPATH=src python3 -m ref_verify.cli --help
+```
+
+If both commands fail, follow the manual fallback protocol below. Do not pretend
+the CLI ran, and do not invent a result from memory.
+
+### CLI-first workflow
+
+Use the CLI first when the user provides a DOI or asks whether a DOI-backed
+abstract supports a specific factual claim. Current CLI scope is CrossRef-backed
+DOI metadata and CrossRef-abstract claim checks.
 
 CrossRef metadata screen:
 
@@ -52,7 +76,28 @@ ref-verify verify-doi <doi> \
   --json
 ```
 
-`verify-doi` exits `0` only for `PASS`; `WARN` and `REJECT` return non-zero. Supplying only a DOI checks that CrossRef resolves but is not enough to pass metadata verification.
+Source-checkout fallback:
+
+```bash
+PYTHONPATH=src python3 -m ref_verify.cli verify-doi <doi> \
+  --title "<provided title>" \
+  --first-author <provided-first-author-last-name> \
+  --year <provided-year> \
+  --json
+```
+
+`verify-doi` exits `0` only for `PASS`; `WARN` and `REJECT` return non-zero.
+Supplying only a DOI checks that CrossRef resolves but is not enough to pass
+metadata verification.
+
+Route the result:
+
+- `PASS`: report the metadata match, then continue Layer 4 DOI landing-page
+  resolution and Layer 5 retraction checks when the selected mode requires them.
+- `WARN`: report the missing or weak metadata, then continue manual fallback for
+  the missing layers instead of silently accepting the reference.
+- `REJECT`: stop using that citation as verified; report the mismatch and ask
+  for a corrected DOI or citation unless the user explicitly wants alternatives.
 
 Single claim check against a DOI abstract:
 
@@ -60,9 +105,25 @@ Single claim check against a DOI abstract:
 ref-verify check-claim <doi> --claim "<specific factual claim>" --json
 ```
 
-If the CLI is unavailable, follow the manual protocol below. Do not pretend the CLI ran.
+Source-checkout fallback:
 
-The CLI does not replace Layer 4 DOI landing-page resolution, two-source existence checks, or retraction checks. Continue the manual protocol for those layers when the selected mode requires them.
+```bash
+PYTHONPATH=src python3 -m ref_verify.cli check-claim <doi> --claim "<specific factual claim>" --json
+```
+
+Route the result:
+
+- `ACCEPT`: quote the CLI evidence and continue any required manual DOI
+  resolution, second-source existence, and retraction layers.
+- `WARN` or `PARTIAL`: report what the CrossRef abstract did and did not
+  support, then continue manual fallback when more sources are required.
+- `UNVERIFIABLE`: CrossRef did not expose enough abstract evidence. Continue the
+  manual fallback chain below instead of treating the claim as rejected or
+  supported.
+
+The CLI does not replace Layer 4 DOI landing-page resolution, two-source
+existence checks, or retraction checks. Continue the manual protocol for those
+layers when the selected mode requires them.
 
 ---
 
