@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import re
-from difflib import SequenceMatcher
 
 from ref_verify.models import CitationInput, MetadataCheckResult, PaperRecord
 
@@ -73,11 +72,7 @@ def _titles_match(provided: str, fetched: str) -> bool:
     if _numbers(provided) != _numbers(fetched):
         return False
 
-    normalized_provided = _normalize_text(provided)
-    normalized_fetched = _normalize_text(fetched)
-    if normalized_provided == normalized_fetched:
-        return True
-    return SequenceMatcher(None, normalized_provided, normalized_fetched).ratio() >= 0.88
+    return _title_tokens(provided) == _title_tokens(fetched)
 
 
 def _author_matches(provided: str, fetched: str | None) -> bool:
@@ -92,12 +87,18 @@ def _normalize_author(value: str) -> str:
     return parts[-1] if parts else ""
 
 
-def _normalize_text(value: str) -> str:
-    return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9]+", " ", value.lower())).strip()
-
-
 def _numbers(value: str) -> list[str]:
     return [
         number.replace(",", "")
         for number in re.findall(r"\d+(?:,\d{3})*(?:\.\d+)?", value)
     ]
+
+
+def _title_tokens(value: str) -> list[str]:
+    return [_singularize(token) for token in re.findall(r"[a-z0-9]+", value.lower())]
+
+
+def _singularize(token: str) -> str:
+    if token.endswith("s") and len(token) > 3:
+        return token[:-1]
+    return token

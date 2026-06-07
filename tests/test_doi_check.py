@@ -91,6 +91,44 @@ class DoiCheckTests(unittest.TestCase):
         self.assertEqual(result.verdict, "REJECT")
         self.assertIn("title", result.mismatches)
 
+    def test_rejects_high_similarity_title_when_meaningful_tokens_differ(self):
+        cases = (
+            (
+                "Electroactive polymer actuators for in vivo applications",
+                "Electroactive polymer actuators for in vitro applications",
+            ),
+            (
+                "Hydrogel actuator lifetime after annealing",
+                "Hydrogel actuator lifetime before annealing",
+            ),
+            (
+                "Review of dielectric elastomer actuators",
+                "Design of dielectric elastomer actuators",
+            ),
+        )
+
+        for provided_title, fetched_title in cases:
+            with self.subTest(provided_title=provided_title):
+                provided = CitationInput(
+                    doi="10.1000/near-miss",
+                    title=provided_title,
+                    first_author="Lee",
+                    year=2020,
+                )
+                fetched = PaperRecord(
+                    doi="10.1000/near-miss",
+                    title=fetched_title,
+                    authors=["Lee"],
+                    year=2020,
+                    abstract=None,
+                    source="fixture",
+                )
+
+                result = verify_doi_metadata(provided, fetched)
+
+                self.assertEqual(result.verdict, "REJECT")
+                self.assertIn("title", result.mismatches)
+
     def test_warns_when_only_year_differs(self):
         provided = CitationInput(
             doi="10.1000/example",

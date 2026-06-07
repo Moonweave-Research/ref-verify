@@ -526,6 +526,94 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "PARTIAL")
         self.assertEqual(payload["verdict"], "WARN")
 
+    def test_check_claim_exits_nonzero_for_attributed_percentage_frame(self):
+        record = PaperRecord(
+            doi="10.1000/attributed-frame",
+            title="Attributed frame actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="The authors found actuation strain exceeded 117%.",
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/attributed-frame",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["status"], "PARTIAL")
+        self.assertEqual(payload["verdict"], "WARN")
+
+    def test_check_claim_exits_nonzero_for_projected_percentage_frame(self):
+        record = PaperRecord(
+            doi="10.1000/projected-frame",
+            title="Projected frame actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="Actuation strain was projected to exceed 117%.",
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/projected-frame",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["status"], "PARTIAL")
+        self.assertEqual(payload["verdict"], "WARN")
+
+    def test_verify_doi_exits_nonzero_for_high_similarity_wrong_title(self):
+        record = PaperRecord(
+            doi="10.1000/near-miss-title",
+            title="Electroactive polymer actuators for in vitro applications",
+            authors=["Lee"],
+            year=2020,
+            abstract=None,
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "verify-doi",
+                    "10.1000/near-miss-title",
+                    "--title",
+                    "Electroactive polymer actuators for in vivo applications",
+                    "--first-author",
+                    "Lee",
+                    "--year",
+                    "2020",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["verdict"], "REJECT")
+        self.assertIn("title", payload["mismatches"])
+
     def test_check_claim_exits_nonzero_for_hedged_frame(self):
         record = PaperRecord(
             doi="10.1000/hedged-frame",
