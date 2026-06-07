@@ -176,7 +176,7 @@ def check_claim_support(record: PaperRecord, claim: str) -> ClaimSupportResult:
     evidence_sentence = evidence_sentences[0] if evidence_sentences else record.abstract.strip()
 
     if threshold is not None:
-        for sentence in evidence_sentences:
+        for sentence_index, sentence in enumerate(evidence_sentences):
             supported = _sentence_supports_percentage_claim(
                 sentence,
                 threshold,
@@ -184,6 +184,14 @@ def check_claim_support(record: PaperRecord, claim: str) -> ClaimSupportResult:
                 claim,
             )
             if supported:
+                if _has_cross_sentence_contradictory_percentage_context(
+                    evidence_sentences,
+                    sentence_index,
+                    threshold,
+                    comparator,
+                    claim,
+                ):
+                    continue
                 return ClaimSupportResult(
                     status="SUPPORTED",
                     verdict="ACCEPT",
@@ -386,6 +394,50 @@ def _has_contradictory_percentage_context(
     return False
 
 
+def _has_cross_sentence_contradictory_percentage_context(
+    sentences: list[str],
+    supporting_sentence_index: int,
+    threshold: float,
+    claim_comparator: str,
+    claim: str,
+) -> bool:
+    for sentence_index, sentence in enumerate(sentences):
+        if sentence_index == supporting_sentence_index:
+            continue
+        if _has_unsupported_claim_frame(sentence):
+            continue
+        contexts = _percentage_contexts(sentence)
+        for value, context, percentage_start, percentage_end in contexts:
+            if _mentions_prestrain_context(context):
+                continue
+            if _has_unsupported_claim_frame(context):
+                continue
+            if _has_percentage_scope_prefix(sentence, percentage_start):
+                continue
+            if _has_percentage_scope_suffix(sentence, percentage_end):
+                continue
+            if _has_approximate_percentage_context(
+                sentence,
+                percentage_start,
+                percentage_end,
+            ):
+                continue
+            if not _has_percentage_subject_context(context, sentence, claim):
+                continue
+            evidence_comparator = _evidence_percentage_comparator(
+                context,
+                sentence[percentage_end:],
+            )
+            if _evidence_contradicts_claim(
+                value,
+                evidence_comparator,
+                threshold,
+                claim_comparator,
+            ):
+                return True
+    return False
+
+
 def _has_percentage_subject_context(context: str, sentence: str, claim: str) -> bool:
     if _has_actuation_strain_context(context, claim):
         return True
@@ -418,12 +470,14 @@ def _evidence_contradicts_claim(
             (evidence_comparator == "exact" and value >= threshold)
             or (evidence_comparator == "gt" and value >= threshold)
             or (evidence_comparator == "gte" and value >= threshold)
+            or (evidence_comparator == "up_to" and value >= threshold)
         )
     if claim_comparator == "lte":
         return (
             (evidence_comparator == "exact" and value > threshold)
             or (evidence_comparator == "gt" and value >= threshold)
             or (evidence_comparator == "gte" and value > threshold)
+            or (evidence_comparator == "up_to" and value > threshold)
         )
     if claim_comparator == "gt":
         return (

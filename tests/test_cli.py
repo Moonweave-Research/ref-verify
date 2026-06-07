@@ -217,6 +217,37 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "PARTIAL")
         self.assertEqual(payload["verdict"], "WARN")
 
+    def test_check_claim_exits_nonzero_for_cross_sentence_contradiction(self):
+        record = PaperRecord(
+            doi="10.1000/cross-sentence-conflict",
+            title="Cross-sentence strain conflict",
+            authors=["Lee"],
+            year=2020,
+            abstract=(
+                "Actuation strain remained below 50%. "
+                "Actuated strains up to 60% were demonstrated later."
+            ),
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/cross-sentence-conflict",
+                    "--claim",
+                    "actuation strain below 50%",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["status"], "PARTIAL")
+        self.assertEqual(payload["verdict"], "WARN")
+
     def test_check_claim_exits_nonzero_for_negated_percentage_evidence(self):
         record = PaperRecord(
             doi="10.1000/negated",

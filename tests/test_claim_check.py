@@ -360,6 +360,25 @@ class ClaimCheckTests(unittest.TestCase):
                 self.assertEqual(result.verdict, "WARN")
                 self.assertIn("does not explicitly support", result.reason)
 
+    def test_percentage_claim_rejects_contradictory_context_across_sentences(self):
+        record = PaperRecord(
+            doi="10.1000/cross-sentence-conflict",
+            title="Cross-sentence strain conflict",
+            authors=["Lee"],
+            year=2020,
+            abstract=(
+                "Actuation strain remained below 50%. "
+                "Actuated strains up to 60% were demonstrated later."
+            ),
+            source="fixture",
+        )
+
+        result = check_claim_support(record, "actuation strain below 50%")
+
+        self.assertEqual(result.status, "PARTIAL")
+        self.assertEqual(result.verdict, "WARN")
+        self.assertIn("does not explicitly support", result.reason)
+
     def test_percentage_claim_rejects_scope_qualified_context(self):
         cases = (
             ("Before treatment, actuation strain exceeded 117%.", "actuation strain above 100%"),
