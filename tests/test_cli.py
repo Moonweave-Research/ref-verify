@@ -585,6 +585,34 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "PARTIAL")
         self.assertEqual(payload["verdict"], "WARN")
 
+    def test_check_claim_exits_nonzero_for_punctuation_scoped_percentage(self):
+        record = PaperRecord(
+            doi="10.1000/punctuation-scope",
+            title="Punctuation scope actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="Actuation strain exceeded 117%, at 5 V.",
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/punctuation-scope",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["status"], "PARTIAL")
+        self.assertEqual(payload["verdict"], "WARN")
+
     def test_check_claim_exits_nonzero_for_approximate_percentage(self):
         record = PaperRecord(
             doi="10.1000/approximate-percentage",
@@ -601,6 +629,62 @@ class CliTests(unittest.TestCase):
                 [
                     "check-claim",
                     "10.1000/approximate-percentage",
+                    "--claim",
+                    "actuation strain 117%",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["status"], "PARTIAL")
+        self.assertEqual(payload["verdict"], "WARN")
+
+    def test_check_claim_exits_nonzero_for_symbolic_approximate_percentage(self):
+        record = PaperRecord(
+            doi="10.1000/symbolic-approximate",
+            title="Symbolic approximate actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="Actuation strain exceeded ≈117%.",
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/symbolic-approximate",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["status"], "PARTIAL")
+        self.assertEqual(payload["verdict"], "WARN")
+
+    def test_check_claim_exits_nonzero_for_punctuation_bounded_percentage(self):
+        record = PaperRecord(
+            doi="10.1000/punctuation-bound",
+            title="Punctuation bound actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="Actuation strain was 117%, or more.",
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/punctuation-bound",
                     "--claim",
                     "actuation strain 117%",
                     "--json",

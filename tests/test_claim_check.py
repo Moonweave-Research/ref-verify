@@ -163,6 +163,9 @@ class ClaimCheckTests(unittest.TestCase):
             "Actuated strains up to 117% were demonstrated.",
             "Actuation strain was 117% or more.",
             "Actuation strain was 117% or less.",
+            "Actuation strain was 117%, or more.",
+            "Actuation strain was 117%; or more.",
+            "Actuation strain was 117%: or less.",
         )
 
         for abstract in cases:
@@ -376,6 +379,13 @@ class ClaimCheckTests(unittest.TestCase):
                 "Actuation strain exceeded 117% from the second cycle onward.",
                 "actuation strain above 100%",
             ),
+            ("Actuation strain exceeded 117%, in saline solution.", "actuation strain above 100%"),
+            ("Actuation strain exceeded 117%; before treatment.", "actuation strain above 100%"),
+            ("Actuation strain exceeded 117%: at 5 V.", "actuation strain above 100%"),
+            (
+                "Actuation strain exceeded 117%, for acrylic elastomers.",
+                "actuation strain above 100%",
+            ),
         )
 
         for abstract, claim in cases:
@@ -444,6 +454,12 @@ class ClaimCheckTests(unittest.TestCase):
             ("Actuation strain was roughly 117%.", "actuation strain 117%"),
             ("Actuation strain was nearly 117%.", "actuation strain 117%"),
             ("Actuation strain exceeded approximately 117%.", "actuation strain above 100%"),
+            ("Actuation strain was 117%, approximately.", "actuation strain 117%"),
+            ("Actuation strain was 117%; roughly.", "actuation strain 117%"),
+            ("Actuation strain was 117%: about.", "actuation strain 117%"),
+            ("Actuation strain exceeded ~117%.", "actuation strain above 100%"),
+            ("Actuation strain exceeded ∼117%.", "actuation strain above 100%"),
+            ("Actuation strain exceeded ≈117%.", "actuation strain above 100%"),
         )
 
         for abstract, claim in cases:

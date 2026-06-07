@@ -81,10 +81,13 @@ _PERCENTAGE_APPROXIMATION_MODIFIERS = {
     "approx",
     "approximately",
     "around",
+    "ca",
     "circa",
     "nearly",
     "roughly",
 }
+
+_PERCENTAGE_APPROXIMATION_SYMBOLS = ("~", "∼", "≈")
 
 _UNRELATED_PERCENTAGE_SUBJECT_STEMS = {
     "breakdown",
@@ -260,20 +263,27 @@ def _sentence_supports_percentage_claim(
     if _has_sentence_scope_prefix(sentence):
         return False
     contexts = _percentage_contexts(sentence)
-    for index, (value, context, percentage_start) in enumerate(contexts):
+    for index, (value, context, percentage_start, percentage_end) in enumerate(contexts):
         if _mentions_prestrain_context(context):
             continue
         if _has_unsupported_claim_frame(context):
             continue
         if _has_percentage_scope_prefix(sentence, percentage_start):
             continue
-        if _has_percentage_scope_suffix(context):
+        if _has_percentage_scope_suffix(sentence, percentage_end):
             continue
-        if _has_approximate_percentage_context(context):
+        if _has_approximate_percentage_context(
+            sentence,
+            percentage_start,
+            percentage_end,
+        ):
             continue
         if not _has_actuation_strain_context(context, claim):
             continue
-        evidence_comparator = _evidence_percentage_comparator(context)
+        evidence_comparator = _evidence_percentage_comparator(
+            context,
+            sentence[percentage_end:],
+        )
         if _evidence_entails_claim(value, evidence_comparator, threshold, comparator):
             if _has_contradictory_percentage_context(
                 contexts,
@@ -326,14 +336,14 @@ def _compare_percentage(value: float, threshold: float, comparator: str) -> bool
 
 
 def _has_contradictory_percentage_context(
-    contexts: list[tuple[float, str, int]],
+    contexts: list[tuple[float, str, int, int]],
     supporting_index: int,
     threshold: float,
     claim_comparator: str,
     claim: str,
     sentence: str,
 ) -> bool:
-    for index, (value, context, _) in enumerate(contexts):
+    for index, (value, context, _, percentage_end) in enumerate(contexts):
         if index == supporting_index:
             continue
         if _mentions_prestrain_context(context):
@@ -342,7 +352,10 @@ def _has_contradictory_percentage_context(
             continue
         if not _has_percentage_subject_context(context, sentence, claim):
             continue
-        evidence_comparator = _evidence_percentage_comparator(context)
+        evidence_comparator = _evidence_percentage_comparator(
+            context,
+            sentence[percentage_end:],
+        )
         if _evidence_contradicts_claim(
             value,
             evidence_comparator,
@@ -435,32 +448,39 @@ def _sentence_supports_text_claim(sentence: str, claim: str) -> bool:
 
 
 def _all_percentage_evidence_is_prestrain(value: str) -> bool:
-    contexts = [context for _, context, _ in _percentage_contexts(value)]
+    contexts = [context for _, context, _, _ in _percentage_contexts(value)]
     return bool(contexts) and all(_mentions_prestrain_context(context) for context in contexts)
 
 
-def _percentage_contexts(value: str) -> list[tuple[float, str, int]]:
-    contexts: list[tuple[float, str, int]] = []
+def _percentage_contexts(value: str) -> list[tuple[float, str, int, int]]:
+    contexts: list[tuple[float, str, int, int]] = []
     for match in _PERCENTAGE_PATTERN.finditer(value):
         start, end = _clause_bounds(value, match.start(), match.end())
-        contexts.append((_parse_percentage_value(match.group(1)), value[start:end], match.start()))
+        contexts.append(
+            (
+                _parse_percentage_value(match.group(1)),
+                value[start:end],
+                match.start(),
+                match.end(),
+            )
+        )
     return contexts
 
 
-def _evidence_percentage_comparator(context: str) -> str:
+def _evidence_percentage_comparator(context: str, trailing_text: str = "") -> str:
     percentage = _PERCENTAGE_PATTERN.search(context)
     if not percentage:
         return "exact"
 
     prefix = context[: percentage.start()].lower()
-    suffix = context[percentage.end() :].lower()
+    suffix = f"{context[percentage.end() :]} {trailing_text}".lower()
     if re.search(r"\b(at least|not less than)\s*$", prefix):
         return "gte"
     if re.search(r"\b(at most|no more than)\s*$", prefix):
         return "lte"
-    if re.search(r"^\s*(?:or\s+)?(?:more|greater|higher)\b", suffix):
+    if re.search(r"^\s*[,;:]?\s*(?:or\s+)?(?:more|greater|higher)\b", suffix):
         return "gte"
-    if re.search(r"^\s*(?:or\s+)?(?:less|fewer|lower)\b", suffix):
+    if re.search(r"^\s*[,;:]?\s*(?:or\s+)?(?:less|fewer|lower)\b", suffix):
         return "lte"
     if re.search(r"\bup to\s*$", prefix):
         return "up_to"
@@ -479,11 +499,8 @@ def _has_sentence_scope_prefix(value: str) -> bool:
     return _has_scope_qualifier_tokens(tokens[:2])
 
 
-def _has_percentage_scope_suffix(context: str) -> bool:
-    percentage = _PERCENTAGE_PATTERN.search(context)
-    if not percentage:
-        return False
-    suffix_tokens = _phrase_tokens(context[percentage.end() :])
+def _has_percentage_scope_suffix(sentence: str, percentage_end: int) -> bool:
+    suffix_tokens = _phrase_tokens(sentence[percentage_end:])
     return _has_scope_qualifier_tokens(suffix_tokens)
 
 
@@ -492,13 +509,17 @@ def _has_percentage_scope_prefix(sentence: str, percentage_start: int) -> bool:
     return _has_scope_qualifier_tokens(prefix_tokens)
 
 
-def _has_approximate_percentage_context(context: str) -> bool:
-    percentage = _PERCENTAGE_PATTERN.search(context)
-    if not percentage:
-        return False
-    prefix_tokens = _phrase_tokens(context[: percentage.start()])
-    suffix_tokens = _phrase_tokens(context[percentage.end() :])
-    nearby_tokens = prefix_tokens[-3:] + suffix_tokens[:2]
+def _has_approximate_percentage_context(
+    sentence: str,
+    percentage_start: int,
+    percentage_end: int,
+) -> bool:
+    prefix = sentence[:percentage_start]
+    if prefix.rstrip().endswith(_PERCENTAGE_APPROXIMATION_SYMBOLS):
+        return True
+    prefix_tokens = _phrase_tokens(prefix)
+    suffix_tokens = _phrase_tokens(sentence[percentage_end:])
+    nearby_tokens = prefix_tokens[-3:] + suffix_tokens[:3]
     return any(token in _PERCENTAGE_APPROXIMATION_MODIFIERS for token in nearby_tokens)
 
 
