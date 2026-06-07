@@ -11,6 +11,15 @@ GITHUB_KOREAN_README_URL = "https://github.com/Moonweave-Research/ref-verify/blo
 
 
 class SkillDocsTests(unittest.TestCase):
+    def assertInOrder(self, text, phrases):
+        last_index = -1
+        for phrase in phrases:
+            with self.subTest(phrase=phrase):
+                index = text.find(phrase)
+                self.assertNotEqual(index, -1, f"{phrase!r} not found")
+                self.assertGreater(index, last_index, f"{phrase!r} is out of order")
+                last_index = index
+
     def test_skill_defines_cli_first_fallback_workflow(self):
         skill = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
 
@@ -72,6 +81,60 @@ class SkillDocsTests(unittest.TestCase):
         self.assertIn(GITHUB_KOREAN_README_URL, readme)
         self.assertNotIn("[English](README.md)", readme)
         self.assertNotIn("[한국어](README.ko.md)", readme)
+
+    def test_readmes_prioritize_user_workflow_before_architecture_details(self):
+        readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+        readme_ko = (REPO_ROOT / "README.ko.md").read_text(encoding="utf-8")
+
+        self.assertInOrder(
+            readme,
+            (
+                "## Install the skill",
+                "## Use it",
+                "## Optional CLI engine",
+                "## What it catches",
+                "## Modes",
+                "## Examples",
+            ),
+        )
+        self.assertInOrder(
+            readme_ko,
+            (
+                "## 스킬 설치",
+                "## 사용 방법",
+                "## 선택적 CLI 엔진",
+                "## 잡아내는 문제",
+                "## 모드",
+                "## 예시",
+            ),
+        )
+
+    def test_readmes_avoid_cli_scope_contradictions_and_internal_first_language(self):
+        readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+        readme_ko = (REPO_ROOT / "README.ko.md").read_text(encoding="utf-8")
+
+        self.assertIn("No server setup is required", readme)
+        self.assertIn("서버를 시작하거나 MCP를 설정할 필요가 없습니다", readme_ko)
+        self.assertIn("CrossRef metadata check", readme)
+        self.assertIn("CrossRef 메타데이터 확인", readme_ko)
+        self.assertIn("DOI landing-page checks still use the skill protocol", readme)
+        self.assertIn("DOI landing page 확인은 스킬 프로토콜을 따릅니다", readme_ko)
+        self.assertNotIn("Hits CrossRef, confirms title + author match, verifies DOI resolves", readme)
+        self.assertNotIn("현재 구현은 의도적으로", readme_ko)
+        self.assertNotIn("논문이 실제로 말하지 않은 내용을 인용하지 않게 막습니다", readme_ko)
+
+    def test_korean_readme_localizes_user_facing_examples(self):
+        readme_ko = (REPO_ROOT / "README.ko.md").read_text(encoding="utf-8")
+        examples = readme_ko.split("## 예시", 1)[1]
+
+        self.assertIn("사용자:", examples)
+        self.assertIn("내용: 뒷받침됨", examples)
+        self.assertIn("출처:", examples)
+        self.assertIn("Near-miss 인용", examples)
+        self.assertNotIn("User:", examples)
+        self.assertNotIn("CONTENT:", examples)
+        self.assertNotIn("[Source:", examples)
+        self.assertNotIn("**Near-miss citation**", examples)
 
     def test_source_checkout_module_subcommands_are_runnable(self):
         env = os.environ.copy()
