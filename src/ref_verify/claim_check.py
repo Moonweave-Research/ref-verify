@@ -55,6 +55,10 @@ _UNSUPPORTED_CLAIM_FRAME_PATTERNS = (
     r"\bwhether\b",
     r"\bif\b",
     r"\bnot true that\b",
+    r"\bfalse that\b",
+    r"\b(?:did|do|does|is|are|was|were|has|have|had) not\b",
+    r"\b(?:didn t|don t|doesn t|isn t|aren t|wasn t|weren t)\b",
+    r"\bnever\b",
     r"\bachievable\b",
     r"\bpossible\b",
 )
@@ -306,7 +310,9 @@ def _has_actuation_strain_context(sentence: str, claim: str) -> bool:
     if "strain" not in terms:
         return False
     if "actuat" in claim_terms:
-        return "actuat" in terms
+        if "actuat" not in terms:
+            return False
+        return not bool(terms & _STRAIN_QUALIFIER_STEMS)
     claim_qualifiers = claim_terms & _STRAIN_QUALIFIER_STEMS
     if claim_qualifiers and not claim_qualifiers <= terms:
         return False

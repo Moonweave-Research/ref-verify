@@ -219,6 +219,22 @@ class ClaimCheckTests(unittest.TestCase):
         self.assertEqual(result.verdict, "WARN")
         self.assertIn("does not explicitly support", result.reason)
 
+    def test_actuation_strain_claim_rejects_tensile_strain_during_actuation(self):
+        record = PaperRecord(
+            doi="10.1000/tensile-during-actuation",
+            title="Tensile strain during actuation",
+            authors=["Lee"],
+            year=2020,
+            abstract="The film tolerated 200% tensile strain during actuation.",
+            source="fixture",
+        )
+
+        result = check_claim_support(record, "actuation strain above 100%")
+
+        self.assertEqual(result.status, "PARTIAL")
+        self.assertEqual(result.verdict, "WARN")
+        self.assertIn("does not explicitly support", result.reason)
+
     def test_upper_bound_evidence_does_not_support_lower_bound_claim(self):
         cases = (
             (
@@ -256,6 +272,7 @@ class ClaimCheckTests(unittest.TestCase):
         cases = (
             "We investigated whether actuation strain above 100% was achievable.",
             "It is not true that actuation strain exceeded 117% in this material.",
+            "Actuation strain did not exceed 117% in any sample.",
         )
 
         for abstract in cases:
@@ -392,20 +409,27 @@ class ClaimCheckTests(unittest.TestCase):
         self.assertIn("does not explicitly support", result.reason)
 
     def test_non_percentage_claim_negation_is_not_supported_by_same_words(self):
-        record = PaperRecord(
-            doi="10.1000/negation",
-            title="Device lifetime negation",
-            authors=["Lee"],
-            year=2020,
-            abstract="The device lifetime was not 5000 cycles.",
-            source="fixture",
+        cases = (
+            "The device lifetime was not 5000 cycles.",
+            "It is false that the device lifetime was 5000 cycles.",
         )
 
-        result = check_claim_support(record, "the device lifetime was 5000 cycles")
+        for abstract in cases:
+            with self.subTest(abstract=abstract):
+                record = PaperRecord(
+                    doi="10.1000/negation",
+                    title="Device lifetime negation",
+                    authors=["Lee"],
+                    year=2020,
+                    abstract=abstract,
+                    source="fixture",
+                )
 
-        self.assertEqual(result.status, "PARTIAL")
-        self.assertEqual(result.verdict, "WARN")
-        self.assertIn("does not explicitly support", result.reason)
+                result = check_claim_support(record, "the device lifetime was 5000 cycles")
+
+                self.assertEqual(result.status, "PARTIAL")
+                self.assertEqual(result.verdict, "WARN")
+                self.assertIn("does not explicitly support", result.reason)
 
     def test_unverifiable_without_abstract(self):
         record = PaperRecord(
