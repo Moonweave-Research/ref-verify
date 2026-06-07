@@ -1,6 +1,8 @@
 import unittest
 
 from ref_verify.crossref import parse_crossref_work
+from ref_verify.doi_check import verify_doi_metadata
+from ref_verify.models import CitationInput
 
 
 class CrossrefTests(unittest.TestCase):
@@ -38,6 +40,39 @@ class CrossrefTests(unittest.TestCase):
         record = parse_crossref_work(message)
 
         self.assertIsNone(record.year)
+
+    def test_preserves_group_author_name(self):
+        message = {
+            "DOI": "10.1000/group-author",
+            "title": ["Consensus statement"],
+            "author": [{"name": "WHO Working Group"}],
+            "issued": {"date-parts": [[2024]]},
+        }
+
+        record = parse_crossref_work(message)
+
+        self.assertEqual(record.authors, ["WHO Working Group"])
+
+    def test_group_author_record_verifies_metadata(self):
+        message = {
+            "DOI": "10.1000/group-author",
+            "title": ["Consensus statement"],
+            "author": [{"name": "WHO Working Group"}],
+            "issued": {"date-parts": [[2024]]},
+        }
+
+        record = parse_crossref_work(message)
+        result = verify_doi_metadata(
+            CitationInput(
+                doi="10.1000/group-author",
+                title="Consensus statement",
+                first_author="WHO Working Group",
+                year=2024,
+            ),
+            record,
+        )
+
+        self.assertEqual(result.verdict, "PASS")
 
 
 if __name__ == "__main__":

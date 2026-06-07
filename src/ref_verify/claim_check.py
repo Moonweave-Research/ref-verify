@@ -164,7 +164,7 @@ _UNSUPPORTED_CLAIM_FRAME_PATTERNS = (
     r"\bnone "
     r"(?:show|shows|showed|had|has|have|observed|found|reported|reached|exceeded|met|demonstrated)\b",
     r"\b(?:previous|prior|earlier) (?:work|study|studies|research)\b",
-    r"\b(?:may|might|could|can|would|should)\b",
+    r"\b(?:may|might|would|should)\b",
     r"\b(?:appear|appears|appeared|appearing) to\b",
     r"\b(?:seem|seems|seemed|seeming) to\b",
     r"\b(?:the )?(?:paper|article|study|work) "

@@ -36,9 +36,9 @@ def parse_crossref_work(message: dict[str, Any]) -> PaperRecord:
     doi = str(message.get("DOI") or "")
     title = _first_string(message.get("title")) or "[title missing]"
     authors = [
-        str(author.get("family") or "").strip()
+        author_name
         for author in message.get("author", [])
-        if str(author.get("family") or "").strip()
+        if (author_name := _crossref_author_name(author))
     ]
     year = _published_year(message)
     journal = _first_string(message.get("container-title"))
@@ -63,6 +63,15 @@ def _first_string(value: Any) -> str | None:
     if isinstance(value, str) and value.strip():
         return value.strip()
     return None
+
+
+def _crossref_author_name(author: Any) -> str:
+    if not isinstance(author, dict):
+        return ""
+    family = str(author.get("family") or "").strip()
+    if family:
+        return family
+    return str(author.get("name") or "").strip()
 
 
 def _published_year(message: dict[str, Any]) -> int | None:

@@ -163,6 +163,34 @@ class ClaimCheckTests(unittest.TestCase):
         self.assertEqual(result.status, "SUPPORTED")
         self.assertEqual(result.verdict, "ACCEPT")
 
+    def test_supported_when_result_modal_reports_quantitative_claim(self):
+        cases = (
+            (
+                "Silicone elastomers can achieve actuation strains of 117%.",
+                "actuation strain above 100%",
+            ),
+            (
+                "The actuator could generate actuation strain of 117%.",
+                "actuation strain above 100%",
+            ),
+        )
+
+        for abstract, claim in cases:
+            with self.subTest(abstract=abstract):
+                record = PaperRecord(
+                    doi="10.1000/modal-result",
+                    title="Modal result actuator",
+                    authors=["Lee"],
+                    year=2020,
+                    abstract=abstract,
+                    source="fixture",
+                )
+
+                result = check_claim_support(record, claim)
+
+                self.assertEqual(result.status, "SUPPORTED")
+                self.assertEqual(result.verdict, "ACCEPT")
+
     def test_exact_percentage_claim_accepts_matching_value_with_different_material_values(self):
         record = PaperRecord(
             doi="10.1000/multimaterial",
