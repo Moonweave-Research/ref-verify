@@ -143,9 +143,31 @@ def _sentence_supports_percentage_claim(
             continue
         if not _has_actuation_strain_context(context, claim):
             continue
-        if _compare_percentage(value, threshold, comparator):
+        evidence_comparator = _evidence_percentage_comparator(context)
+        if _evidence_entails_claim(value, evidence_comparator, threshold, comparator):
             return True
     return False
+
+
+def _evidence_entails_claim(
+    value: float,
+    evidence_comparator: str,
+    threshold: float,
+    claim_comparator: str,
+) -> bool:
+    if evidence_comparator == "lt":
+        return claim_comparator in {"lt", "lte"} and value <= threshold
+    if evidence_comparator == "lte":
+        if claim_comparator == "lt":
+            return value < threshold
+        return claim_comparator == "lte" and value <= threshold
+    if evidence_comparator == "gt":
+        return claim_comparator in {"gt", "gte"} and value >= threshold
+    if evidence_comparator == "gte":
+        if claim_comparator == "gt":
+            return value > threshold
+        return claim_comparator == "gte" and value >= threshold
+    return _compare_percentage(value, threshold, claim_comparator)
 
 
 def _compare_percentage(value: float, threshold: float, comparator: str) -> bool:
@@ -182,6 +204,26 @@ def _percentage_contexts(value: str) -> list[tuple[float, str]]:
         start, end = _clause_bounds(value, match.start(), match.end())
         contexts.append((float(match.group(1)), value[start:end]))
     return contexts
+
+
+def _evidence_percentage_comparator(context: str) -> str:
+    percentage = re.search(r"\d+(?:\.\d+)?\s*%", context)
+    if not percentage:
+        return "exact"
+
+    prefix = context[: percentage.start()].lower()
+    if re.search(r"\b(at least|not less than)\s*$", prefix):
+        return "gte"
+    if re.search(r"\b(at most|no more than)\s*$", prefix):
+        return "lte"
+    if re.search(r"\b(below|under|less than)\s*$", prefix):
+        return "lt"
+    if re.search(
+        r"\b(above|over|greater than|more than|exceeded|exceeds|exceeding)\s*$",
+        prefix,
+    ):
+        return "gt"
+    return "exact"
 
 
 def _clause_bounds(value: str, start: int, end: int) -> tuple[int, int]:

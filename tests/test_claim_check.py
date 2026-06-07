@@ -151,6 +151,39 @@ class ClaimCheckTests(unittest.TestCase):
         self.assertEqual(result.verdict, "WARN")
         self.assertIn("does not explicitly support", result.reason)
 
+    def test_upper_bound_evidence_does_not_support_lower_bound_claim(self):
+        cases = (
+            (
+                "Actuated strain remained below 50% throughout testing.",
+                "actuation strain above 40%",
+            ),
+            (
+                "Actuated strain remained under 50% throughout testing.",
+                "actuation strain at least 45%",
+            ),
+            (
+                "Actuated strain reached at most 50% under the tested voltage.",
+                "actuation strain above 49%",
+            ),
+        )
+
+        for abstract, claim in cases:
+            with self.subTest(claim=claim):
+                record = PaperRecord(
+                    doi="10.1000/upperbound",
+                    title="Upper bound actuator",
+                    authors=["Lee"],
+                    year=2020,
+                    abstract=abstract,
+                    source="fixture",
+                )
+
+                result = check_claim_support(record, claim)
+
+                self.assertEqual(result.status, "PARTIAL")
+                self.assertEqual(result.verdict, "WARN")
+                self.assertIn("does not explicitly support", result.reason)
+
     def test_supported_when_non_percentage_claim_is_stated_in_abstract(self):
         record = PaperRecord(
             doi="10.1000/lifetime",
