@@ -105,6 +105,34 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["verdict"], "WARN")
         self.assertIn("year", payload["mismatches"])
 
+    def test_verify_doi_exits_nonzero_when_only_year_is_provided(self):
+        record = PaperRecord(
+            doi="10.1000/year-only",
+            title="Completely Different Paper",
+            authors=["Wrong"],
+            year=2000,
+            abstract=None,
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "verify-doi",
+                    "10.1000/year-only",
+                    "--year",
+                    "2000",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["verdict"], "WARN")
+        self.assertIn("metadata", payload["mismatches"])
+
     def test_verify_doi_exits_nonzero_when_crossref_only_has_created_year(self):
         record = parse_crossref_work(
             {

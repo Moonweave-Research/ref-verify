@@ -52,6 +52,7 @@ _TEXT_CLAIM_COMPARATIVE_SUFFIXES = {
 }
 
 _UNSUPPORTED_CLAIM_FRAME_PATTERNS = (
+    r"\baccording to\b",
     r"\bwhether\b",
     r"\bif\b",
     r"\bnot true that\b",
@@ -59,6 +60,8 @@ _UNSUPPORTED_CLAIM_FRAME_PATTERNS = (
     r"\b(?:did|do|does|is|are|was|were|has|have|had) not\b",
     r"\b(?:didn t|don t|doesn t|isn t|aren t|wasn t|weren t)\b",
     r"\bnever\b",
+    r"\b(?:previous|prior|earlier) (?:work|study|studies|research)\b",
+    r"\b(?:reported|claimed|suggested)\b",
     r"\bachievable\b",
     r"\bpossible\b",
 )

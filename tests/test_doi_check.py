@@ -91,6 +91,25 @@ class DoiCheckTests(unittest.TestCase):
         self.assertEqual(result.verdict, "WARN")
         self.assertEqual(result.mismatches, ["year"])
 
+    def test_warns_when_only_year_is_provided_even_if_it_matches(self):
+        provided = CitationInput(
+            doi="10.1000/year-only",
+            year=2000,
+        )
+        fetched = PaperRecord(
+            doi="10.1000/year-only",
+            title="Completely Different Paper",
+            authors=["Wrong"],
+            year=2000,
+            abstract=None,
+            source="fixture",
+        )
+
+        result = verify_doi_metadata(provided, fetched)
+
+        self.assertEqual(result.verdict, "WARN")
+        self.assertIn("metadata", result.mismatches)
+
     def test_warns_when_provided_year_is_missing_from_fetched_record(self):
         provided = CitationInput(
             doi="10.1000/missing-year",
@@ -108,7 +127,8 @@ class DoiCheckTests(unittest.TestCase):
         result = verify_doi_metadata(provided, fetched)
 
         self.assertEqual(result.verdict, "WARN")
-        self.assertEqual(result.mismatches, ["year"])
+        self.assertIn("metadata", result.mismatches)
+        self.assertIn("year", result.mismatches)
 
 
 if __name__ == "__main__":

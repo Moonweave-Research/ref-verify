@@ -273,6 +273,8 @@ class ClaimCheckTests(unittest.TestCase):
             "We investigated whether actuation strain above 100% was achievable.",
             "It is not true that actuation strain exceeded 117% in this material.",
             "Actuation strain did not exceed 117% in any sample.",
+            "Previous work reported actuation strain above 100% in acrylic films.",
+            "According to prior work, actuation strain above 100% was observed.",
         )
 
         for abstract in cases:
@@ -353,6 +355,8 @@ class ClaimCheckTests(unittest.TestCase):
     def test_non_percentage_claim_rejects_reporting_frame(self):
         cases = (
             "We tested whether the device lifetime was 5000 cycles.",
+            "Previous work reported the device lifetime was 5000 cycles.",
+            "According to Lee, the device lifetime was 5000 cycles.",
             (
                 "We investigated whether, under standard conditions and after "
                 "annealing, the device lifetime was 5000 cycles."
