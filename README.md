@@ -6,7 +6,7 @@
 
 # ref-verify
 
-[English](README.md) | [한국어](README.ko.md)
+[English](https://github.com/Moonweave-Research/ref-verify/blob/main/README.md) | [한국어](https://github.com/Moonweave-Research/ref-verify/blob/main/README.ko.md)
 
 **Stop citing papers that don't say what you think they say.**
 

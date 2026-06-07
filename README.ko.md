@@ -6,7 +6,7 @@
 
 # ref-verify
 
-[한국어](README.ko.md) | [English](README.md)
+[한국어](https://github.com/Moonweave-Research/ref-verify/blob/main/README.ko.md) | [English](https://github.com/Moonweave-Research/ref-verify/blob/main/README.md)
 
 **논문이 실제로 말하지 않은 내용을 인용하지 않게 막습니다.**
 
