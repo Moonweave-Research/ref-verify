@@ -10,13 +10,32 @@
 
 You asked your AI agent to find papers. The DOIs look plausible. The author names sound right. The quotes feel accurate. But some of them are wrong — and you won't find out until a reviewer does.
 
-As an agent skill and manual workflow, `ref-verify` forces live verification against CrossRef, Semantic Scholar, and PubMed before anything lands in your draft. Every citation gets checked. Every content claim gets traced to a fetched abstract, not recalled from memory.
+`ref-verify` is an agent skill for citation verification. It gives Claude Code,
+Cursor, Codex, and other skill-aware agents a repeatable workflow for checking
+references before they land in a draft.
 
-The optional Python CLI below is the first executable slice of that workflow. It currently covers CrossRef-backed DOI metadata checks and CrossRef-abstract claim checks; the broader 5-layer source, DOI landing-page, and retraction checks still live in the skill protocol.
+The current implementation is intentionally **skill/plugin-level**, not MCP. The
+skill can optionally call the bundled Python CLI as a terminal execution engine
+for DOI-backed checks. Anything the CLI cannot prove falls back to the manual
+5-layer protocol in `SKILL.md`.
+
+Current CLI coverage:
+
+- CrossRef-backed DOI metadata checks: `ref-verify verify-doi`
+- CrossRef-abstract claim checks: `ref-verify check-claim`
+- JSON output for agent-readable routing
+- Non-zero exit codes for `WARN`, `REJECT`, and `UNVERIFIABLE` results
+
+Still handled by the skill protocol:
+
+- Semantic Scholar, Unpaywall, arXiv, and PubMed fallback checks
+- DOI landing-page confirmation
+- Two-source existence checks
+- Retraction checks
 
 ---
 
-## Install
+## What you install
 
 ```bash
 # requires npx (comes with Node.js)
@@ -24,6 +43,19 @@ npx skills add Moonweave-Research/ref-verify -g
 ```
 
 Works with **Claude Code, Cursor, Codex**, and any agent that supports the `npx skills` ecosystem.
+
+After installation, use it like a normal agent skill: ask the agent to verify,
+audit, or find citations. You do not start a server and you do not configure MCP
+for this workflow.
+
+Example prompts:
+
+```text
+verify these citations before I submit: [DOI list]
+does this paper actually support the claim "actuation strain above 100%"?
+find 3 papers supporting the claim that X, and verify each citation
+check doi 10.1126/science.287.5454.836 against this title and year
+```
 
 ### Optional executable engine
 

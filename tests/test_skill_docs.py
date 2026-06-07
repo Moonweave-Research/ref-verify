@@ -35,8 +35,12 @@ class SkillDocsTests(unittest.TestCase):
     def test_readme_positions_cli_as_skill_execution_engine_not_mcp(self):
         readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
 
+        self.assertIn("agent skill for citation verification", readme)
+        self.assertIn("skill/plugin-level", readme)
         self.assertIn("skill-level execution engine", readme)
         self.assertIn("No MCP server is required for this workflow", readme)
+        self.assertIn("You do not start a server and you do not configure MCP", readme)
+        self.assertIn("Still handled by the skill protocol", readme)
         self.assertIn("ref-verify --help", readme)
         self.assertIn("python3 -m ref_verify.cli verify-doi", readme)
         self.assertIn("python3 -m ref_verify.cli check-claim", readme)
