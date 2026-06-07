@@ -11,3 +11,12 @@
 *.pfx
 *.keystore
 credentials.json
+
+# Python package/test artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+dist/
+build/

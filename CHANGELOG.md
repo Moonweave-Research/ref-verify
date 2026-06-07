@@ -7,6 +7,21 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.1.0] — 2026-06-07
+
+### Added
+
+- Python package scaffold with zero runtime dependencies.
+- `ref-verify verify-doi` CLI for CrossRef-backed DOI metadata checks.
+- `ref-verify check-claim` CLI for abstract-grounded claim support checks.
+- Machine-readable JSON output for downstream manuscript preflight, MCP, and Zotero integrations.
+- Offline unit tests for DOI metadata comparison, CrossRef parsing, claim support verdicts, and CLI output.
+
+### Changed
+
+- Documented the executable engine path alongside the existing agent skill workflow.
+- Updated the skill instructions to prefer the CLI when it is installed, while keeping the manual verification protocol as fallback.
+
 ## [1.0.0] — 2026-06-01
 
 ### Added

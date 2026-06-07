@@ -36,6 +36,36 @@ The expensive part is Full Audit (5-layer, abstract fetch). Quick Screen costs ~
 
 ---
 
+## Executable Engine
+
+If the `ref-verify` CLI is installed, prefer it for DOI-backed checks before doing manual verification in chat. The CLI gives stable JSON that can be reused by manuscript preflight, MCP tools, and Zotero workflows.
+
+Current CLI scope is CrossRef-backed. If `check-claim` returns `UNVERIFIABLE` because CrossRef has no abstract, continue the manual fallback chain below instead of treating the claim as rejected or supported.
+
+CrossRef metadata screen:
+
+```bash
+ref-verify verify-doi <doi> \
+  --title "<provided title>" \
+  --first-author <provided-first-author-last-name> \
+  --year <provided-year> \
+  --json
+```
+
+`verify-doi` exits `0` only for `PASS`; `WARN` and `REJECT` return non-zero. Supplying only a DOI checks that CrossRef resolves but is not enough to pass metadata verification.
+
+Single claim check against a DOI abstract:
+
+```bash
+ref-verify check-claim <doi> --claim "<specific factual claim>" --json
+```
+
+If the CLI is unavailable, follow the manual protocol below. Do not pretend the CLI ran.
+
+The CLI does not replace Layer 4 DOI landing-page resolution, two-source existence checks, or retraction checks. Continue the manual protocol for those layers when the selected mode requires them.
+
+---
+
 ### Quick Screen — metadata + DOI sanity check
 
 Use when the user provides a DOI or full citation and wants a sanity check.

@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ref-verify"
+version = "1.1.0"
+description = "Executable DOI and claim verification helpers for academic citations"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+  {name = "Moonweave Research"}
+]
+dependencies = []
+
+[project.scripts]
+ref-verify = "ref_verify.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
