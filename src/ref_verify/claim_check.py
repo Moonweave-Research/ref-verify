@@ -42,6 +42,13 @@ _STRAIN_QUALIFIER_STEMS = {
     "torsional",
 }
 
+_NON_OUTPUT_STRAIN_FOLLOWER_STEMS = {
+    "energy",
+    "localisation",
+    "localization",
+    "rate",
+}
+
 _TEXT_CLAIM_COMPARATIVE_SUFFIXES = {
     "additional",
     "decreased",
@@ -667,11 +674,23 @@ def _has_actuation_strain_context(sentence: str, claim: str) -> bool:
     if "actuat" in claim_terms:
         if "actuat" not in terms:
             return False
+        if _has_non_output_strain_compound(sentence):
+            return False
         return not bool(terms & _STRAIN_QUALIFIER_STEMS)
     claim_qualifiers = claim_terms & _STRAIN_QUALIFIER_STEMS
     if claim_qualifiers and not claim_qualifiers <= terms:
         return False
     return True
+
+
+def _has_non_output_strain_compound(value: str) -> bool:
+    tokens = [_stem(token) for token in _tokens(value)]
+    return any(
+        token == "strain"
+        and index + 1 < len(tokens)
+        and tokens[index + 1] in _NON_OUTPUT_STRAIN_FOLLOWER_STEMS
+        for index, token in enumerate(tokens)
+    )
 
 
 def _term_overlap(left: str, right: str) -> int:

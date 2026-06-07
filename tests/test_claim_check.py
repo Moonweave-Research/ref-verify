@@ -337,6 +337,30 @@ class ClaimCheckTests(unittest.TestCase):
         self.assertEqual(result.verdict, "WARN")
         self.assertIn("does not explicitly support", result.reason)
 
+    def test_actuation_related_strain_compounds_do_not_support_actuation_strain_claim(self):
+        cases = (
+            "Actuation caused strain energy to increase by 117%.",
+            "Actuation caused strain rate to increase by 117%.",
+            "Actuation caused strain localization to increase by 117%.",
+        )
+
+        for abstract in cases:
+            with self.subTest(abstract=abstract):
+                record = PaperRecord(
+                    doi="10.1000/strain-compound",
+                    title="Strain compound actuator",
+                    authors=["Lee"],
+                    year=2020,
+                    abstract=abstract,
+                    source="fixture",
+                )
+
+                result = check_claim_support(record, "actuation strain above 100%")
+
+                self.assertEqual(result.status, "PARTIAL")
+                self.assertEqual(result.verdict, "WARN")
+                self.assertIn("does not explicitly support", result.reason)
+
     def test_actuation_strain_claim_rejects_tensile_strain_during_actuation(self):
         record = PaperRecord(
             doi="10.1000/tensile-during-actuation",

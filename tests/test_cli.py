@@ -1229,6 +1229,34 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "PARTIAL")
         self.assertEqual(payload["verdict"], "WARN")
 
+    def test_check_claim_exits_nonzero_for_strain_energy_percentage(self):
+        record = PaperRecord(
+            doi="10.1000/strain-energy",
+            title="Strain energy actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="Actuation caused strain energy to increase by 117%.",
+            source="fixture",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/strain-energy",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(record),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["status"], "PARTIAL")
+        self.assertEqual(payload["verdict"], "WARN")
+
     def test_check_claim_exits_nonzero_when_claim_is_unverifiable(self):
         record = PaperRecord(
             doi="10.1000/noabstract",
