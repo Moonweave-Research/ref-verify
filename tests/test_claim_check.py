@@ -184,6 +184,10 @@ class ClaimCheckTests(unittest.TestCase):
                 "Actuated strain reached 42% and the film tolerated 200% "
                 "tensile strain before failure."
             ),
+            (
+                "Actuation strain reached 42%, voltage efficiency improved by "
+                "200% under the same protocol."
+            ),
         )
 
         for abstract in abstracts:
@@ -273,6 +277,9 @@ class ClaimCheckTests(unittest.TestCase):
             "We investigated whether actuation strain above 100% was achievable.",
             "It is not true that actuation strain exceeded 117% in this material.",
             "Actuation strain did not exceed 117% in any sample.",
+            "Actuation strain exceeded 117% in no sample.",
+            "No sample showed actuation strain above 100%.",
+            "None of the samples showed actuation strain above 100%.",
             "Previous work reported actuation strain above 100% in acrylic films.",
             "According to prior work, actuation strain above 100% was observed.",
         )
@@ -416,6 +423,9 @@ class ClaimCheckTests(unittest.TestCase):
         cases = (
             "The device lifetime was not 5000 cycles.",
             "It is false that the device lifetime was 5000 cycles.",
+            "The device lifetime was 5000 cycles in no sample.",
+            "No sample had a device lifetime of 5000 cycles.",
+            "None of the samples had a device lifetime of 5000 cycles.",
         )
 
         for abstract in cases:

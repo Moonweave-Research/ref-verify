@@ -60,6 +60,8 @@ _UNSUPPORTED_CLAIM_FRAME_PATTERNS = (
     r"\b(?:did|do|does|is|are|was|were|has|have|had) not\b",
     r"\b(?:didn t|don t|doesn t|isn t|aren t|wasn t|weren t)\b",
     r"\bnever\b",
+    r"\bno (?:sample|samples|specimen|specimens|device|devices|case|cases)\b",
+    r"\bnone of (?:the )?(?:sample|samples|specimen|specimens|device|devices|case|cases)\b",
     r"\b(?:previous|prior|earlier) (?:work|study|studies|research)\b",
     r"\b(?:reported|claimed|suggested)\b",
     r"\bachievable\b",
@@ -186,6 +188,8 @@ def _sentence_supports_percentage_claim(
     comparator: str,
     claim: str,
 ) -> bool:
+    if _has_unsupported_claim_frame(sentence):
+        return False
     for value, context in _percentage_contexts(sentence):
         if _mentions_prestrain_context(context):
             continue
@@ -292,7 +296,7 @@ def _evidence_percentage_comparator(context: str) -> str:
 
 
 def _clause_bounds(value: str, start: int, end: int) -> tuple[int, int]:
-    boundary = r"(?:[.;:]\s+|,?\s+\b(?:and|but|while|whereas|although)\b\s+)"
+    boundary = r"(?:[.;:]\s+|,\s+|,?\s+\b(?:and|but|while|whereas|although)\b\s+)"
     context_start = 0
     for match in re.finditer(boundary, value[:start]):
         context_start = match.end()

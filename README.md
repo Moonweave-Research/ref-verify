@@ -37,6 +37,13 @@ cd ref-verify
 python3 -m pip install -e .
 ```
 
+For local development before installation, run the test suite with the source
+tree on `PYTHONPATH`:
+
+```bash
+PYTHONPATH=src python3 -m unittest discover -s tests -v
+```
+
 Then run focused checks directly:
 
 ```bash
