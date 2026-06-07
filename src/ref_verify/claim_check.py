@@ -111,14 +111,16 @@ def _claim_percentage_threshold(claim: str) -> float | None:
 
 def _claim_percentage_comparator(claim: str) -> str:
     normalized = claim.lower()
-    if "<=" in normalized:
-        return "lte"
     if ">=" in normalized:
         return "gte"
-    if re.search(r"\b(below|under|less than|at most|no more than)\b", normalized):
+    if "<=" in normalized:
         return "lte"
     if re.search(r"\b(at least|not less than)\b", normalized):
         return "gte"
+    if re.search(r"\b(at most|no more than)\b", normalized):
+        return "lte"
+    if re.search(r"\b(below|under|less than)\b", normalized):
+        return "lt"
     return "gt"
 
 
@@ -136,11 +138,10 @@ def _sentence_supports_percentage_claim(
     comparator: str,
     claim: str,
 ) -> bool:
-    if not _has_actuation_strain_context(sentence, claim):
-        return False
-
     for value, context in _percentage_contexts(sentence):
         if _mentions_prestrain_context(context):
+            continue
+        if not _has_actuation_strain_context(context, claim):
             continue
         if _compare_percentage(value, threshold, comparator):
             return True
@@ -148,6 +149,8 @@ def _sentence_supports_percentage_claim(
 
 
 def _compare_percentage(value: float, threshold: float, comparator: str) -> bool:
+    if comparator == "lt":
+        return value < threshold
     if comparator == "lte":
         return value <= threshold
     if comparator == "gte":
@@ -176,10 +179,20 @@ def _all_percentage_evidence_is_prestrain(value: str) -> bool:
 def _percentage_contexts(value: str) -> list[tuple[float, str]]:
     contexts: list[tuple[float, str]] = []
     for match in re.finditer(r"(\d+(?:\.\d+)?)\s*%", value):
-        start = max(0, match.start() - 40)
-        end = min(len(value), match.end() + 40)
+        start, end = _clause_bounds(value, match.start(), match.end())
         contexts.append((float(match.group(1)), value[start:end]))
     return contexts
+
+
+def _clause_bounds(value: str, start: int, end: int) -> tuple[int, int]:
+    boundary = r"(?:[.;:]\s+|,\s+(?:and|but|while|whereas|although)\b)"
+    context_start = 0
+    for match in re.finditer(boundary, value[:start]):
+        context_start = match.end()
+
+    next_boundary = re.search(boundary, value[end:])
+    context_end = end + next_boundary.start() if next_boundary else len(value)
+    return context_start, context_end
 
 
 def _mentions_prestrain_context(value: str) -> bool:
@@ -190,8 +203,11 @@ def _mentions_prestrain_context(value: str) -> bool:
 def _has_actuation_strain_context(sentence: str, claim: str) -> bool:
     terms = {_stem(token) for token in _tokens(sentence)}
     claim_terms = {_stem(token) for token in _tokens(claim)}
-    has_actuation = "actuat" in terms or "actuat" in claim_terms
-    return has_actuation and "strain" in terms
+    if "strain" not in terms:
+        return False
+    if "actuat" in claim_terms:
+        return "actuat" in terms
+    return True
 
 
 def _term_overlap(left: str, right: str) -> int:

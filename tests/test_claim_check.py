@@ -98,6 +98,24 @@ class ClaimCheckTests(unittest.TestCase):
         self.assertEqual(result.verdict, "WARN")
         self.assertIn("does not explicitly support", result.reason)
 
+    def test_strict_lower_bound_claim_is_not_supported_by_exact_threshold(self):
+        record = PaperRecord(
+            doi="10.1000/exactstrain",
+            title="Boundary strain actuator",
+            authors=["Lee"],
+            year=2020,
+            abstract="Actuated strain reached 50% under the tested voltage.",
+            source="fixture",
+        )
+
+        for phrase in ("below 50%", "under 50%", "less than 50%"):
+            with self.subTest(phrase=phrase):
+                result = check_claim_support(record, f"actuation strain {phrase}")
+
+                self.assertEqual(result.status, "PARTIAL")
+                self.assertEqual(result.verdict, "WARN")
+                self.assertIn("does not explicitly support", result.reason)
+
     def test_at_most_claim_is_supported_by_lower_abstract_percentage(self):
         record = PaperRecord(
             doi="10.1000/lowstrain",
@@ -113,6 +131,25 @@ class ClaimCheckTests(unittest.TestCase):
         self.assertEqual(result.status, "SUPPORTED")
         self.assertEqual(result.verdict, "ACCEPT")
         self.assertIn("42%", result.evidence)
+
+    def test_unrelated_strain_percentage_in_same_sentence_does_not_support_claim(self):
+        record = PaperRecord(
+            doi="10.1000/mixedstrain",
+            title="Mixed strain contexts",
+            authors=["Lee"],
+            year=2020,
+            abstract=(
+                "Actuated strain reached 42%, and the film tolerated 200% "
+                "tensile strain before failure."
+            ),
+            source="fixture",
+        )
+
+        result = check_claim_support(record, "actuation strain above 100%")
+
+        self.assertEqual(result.status, "PARTIAL")
+        self.assertEqual(result.verdict, "WARN")
+        self.assertIn("does not explicitly support", result.reason)
 
     def test_supported_when_non_percentage_claim_is_stated_in_abstract(self):
         record = PaperRecord(

@@ -10,7 +10,9 @@
 
 You asked your AI agent to find papers. The DOIs look plausible. The author names sound right. The quotes feel accurate. But some of them are wrong — and you won't find out until a reviewer does.
 
-`ref-verify` forces live verification against CrossRef, Semantic Scholar, and PubMed before anything lands in your draft. Every citation gets checked. Every content claim gets traced to a fetched abstract, not recalled from memory.
+As an agent skill and manual workflow, `ref-verify` forces live verification against CrossRef, Semantic Scholar, and PubMed before anything lands in your draft. Every citation gets checked. Every content claim gets traced to a fetched abstract, not recalled from memory.
+
+The optional Python CLI below is the first executable slice of that workflow. It currently covers CrossRef-backed DOI metadata checks and CrossRef-abstract claim checks; the broader 5-layer source, DOI landing-page, and retraction checks still live in the skill protocol.
 
 ---
 
@@ -52,6 +54,8 @@ ref-verify check-claim 10.1126/science.287.5454.836 \
 ---
 
 ## What gets caught
+
+The full skill/manual workflow catches:
 
 | Problem | What happens without ref-verify |
 |---|---|
