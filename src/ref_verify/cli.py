@@ -7,7 +7,7 @@ from typing import Sequence
 
 from ref_verify.claim_check import check_claim_support
 from ref_verify.crossref import CrossrefClient
-from ref_verify.doi_check import doi_matches, verify_doi_metadata
+from ref_verify.doi_check import doi_matches, normalize_doi, verify_doi_metadata
 from ref_verify.models import CitationInput, ClaimSupportResult
 
 
@@ -56,7 +56,8 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def _verify_doi(args: argparse.Namespace, client: CrossrefClient) -> int:
-    fetched = client.fetch_work(args.doi)
+    lookup_doi = normalize_doi(args.doi)
+    fetched = client.fetch_work(lookup_doi)
     provided = CitationInput(
         doi=args.doi,
         title=args.title,
@@ -69,7 +70,8 @@ def _verify_doi(args: argparse.Namespace, client: CrossrefClient) -> int:
 
 
 def _check_claim(args: argparse.Namespace, client: CrossrefClient) -> int:
-    fetched = client.fetch_work(args.doi)
+    lookup_doi = normalize_doi(args.doi)
+    fetched = client.fetch_work(lookup_doi)
     if not doi_matches(args.doi, fetched.doi):
         result = ClaimSupportResult(
             status="UNVERIFIABLE",

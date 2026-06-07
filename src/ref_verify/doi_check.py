@@ -58,10 +58,10 @@ def _has_comparison_metadata(provided: CitationInput) -> bool:
 
 
 def doi_matches(provided: str, fetched: str) -> bool:
-    return _normalize_doi(provided) == _normalize_doi(fetched)
+    return normalize_doi(provided) == normalize_doi(fetched)
 
 
-def _normalize_doi(value: str) -> str:
+def normalize_doi(value: str) -> str:
     normalized = value.strip().lower()
     normalized = re.sub(r"^https?://(?:dx\.)?doi\.org/", "", normalized)
     normalized = re.sub(r"^doi:\s*", "", normalized)

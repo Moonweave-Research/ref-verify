@@ -8,6 +8,7 @@ from urllib.parse import quote
 from urllib.request import Request, urlopen
 
 from ref_verify import __version__
+from ref_verify.doi_check import normalize_doi
 from ref_verify.models import PaperRecord
 
 
@@ -16,7 +17,7 @@ class CrossrefClient:
         self.timeout = timeout
 
     def fetch_work(self, doi: str) -> PaperRecord:
-        encoded_doi = quote(doi, safe="")
+        encoded_doi = quote(normalize_doi(doi), safe="")
         request = Request(
             f"https://api.crossref.org/works/{encoded_doi}",
             headers={
