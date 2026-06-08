@@ -24,6 +24,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Allowed physical measurement conditions such as `1.7 eV in the temperature range` and `5 S/m at 1 kHz` without relaxing count-claim scope guards.
 - Separated Semantic Scholar `429` rate limits into `SOURCE_RATE_LIMITED` and retried once before marking the source unavailable.
 - Clarified that `npx skills add` installs the agent skill but does not pip-install the Python CLI.
+- Fixed comma-clause splitting so current-study result sentences can bind a number to a subject across descriptive commas when no same-unit competing value is present.
 
 ## [1.1.2] — 2026-06-08
 

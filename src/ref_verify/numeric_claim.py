@@ -329,7 +329,12 @@ def _split_numeric_comma_clauses(value: str) -> list[str]:
         return [value.strip()]
     if parts[0].lower().split()[:1] in (["after"], ["before"], ["under"], ["in"]):
         return [value.strip()]
-    if sum(1 for part in parts if _MEASUREMENT_PATTERN.search(part)) >= 2:
+    units = [
+        _normalize_unit(match.group("unit"))
+        for part in parts
+        for match in _MEASUREMENT_PATTERN.finditer(part)
+    ]
+    if len(units) != len(set(units)):
         return parts
     return [value.strip()]
 
@@ -469,8 +474,21 @@ def _has_unsupported_frame(value: str) -> bool:
         ]
         if _has_disqualifying_suffix(match.group("unit"), suffix_tokens):
             return True
+    if _starts_with_current_study_intro(value):
+        return False
     prefix_tokens = re.findall(r"[a-zA-Z]+", value.lower())[:2]
     return any(token in {"after", "before", "under", "in"} for token in prefix_tokens)
+
+
+def _starts_with_current_study_intro(value: str) -> bool:
+    normalized = " ".join(re.findall(r"[a-zA-Z]+", value.lower()))
+    return bool(
+        re.match(
+            r"^(?:hence|therefore|accordingly)?\s*in "
+            r"(?:(?:the|this|our)\s+)?(?:present\s+)?(?:study|work)\b",
+            normalized,
+        )
+    )
 
 
 def _has_disqualifying_suffix(unit: str, suffix_tokens: list[str]) -> bool:

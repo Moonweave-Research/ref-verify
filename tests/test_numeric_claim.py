@@ -33,6 +33,28 @@ class NumericClaimTests(unittest.TestCase):
         self.assertEqual(result.status, "SUPPORTED")
         self.assertIn("3.2 V", result.evidence)
 
+    def test_accepts_present_study_intro_with_subject_after_commas(self):
+        result = check_numeric_claim_support(
+            (
+                "Hence, in the present study, we synthesized a 200 g scale of "
+                "amorphous, hydrophobic as well as translucent, hyperbranched "
+                "polymeric sulfur networks that provide high thermal resistance "
+                "(>220 °C)."
+            ),
+            "The polymeric sulfur networks were synthesized on a 200 g scale.",
+        )
+
+        self.assertEqual(result.status, "SUPPORTED")
+        self.assertIn("200 g", result.evidence)
+
+    def test_rejects_wrong_subject_when_same_unit_repeats_across_commas(self):
+        result = check_numeric_claim_support(
+            "Device A survived 5000 cycles, Device B survived 1000 cycles.",
+            "Device B survived 5000 cycles.",
+        )
+
+        self.assertEqual(result.status, "PARTIAL")
+
     def test_accepts_temperature_claim(self):
         result = check_numeric_claim_support(
             "Samples were maintained at 37 °C.",
