@@ -8,7 +8,12 @@ from typing import Any, Literal
 
 BatchFormat = Literal["jsonl", "csv"]
 _VALID_SOURCES = {"auto", "crossref", "semantic-scholar", "pubmed"}
-_FAILED_ERROR_CODES = {"ROW_CHECK_ERROR", "SOURCE_API_ERROR", "SOURCE_TIMEOUT"}
+_FAILED_ERROR_CODES = {
+    "ROW_CHECK_ERROR",
+    "SOURCE_API_ERROR",
+    "SOURCE_TIMEOUT",
+    "SOURCE_UNSUPPORTED",
+}
 
 
 class BatchInputError(ValueError):
@@ -171,17 +176,23 @@ def _parse_jsonl(path: Path) -> list[ClaimInputRow]:
 
 def _parse_csv(path: Path) -> list[ClaimInputRow]:
     rows: list[ClaimInputRow] = []
-    with path.open("r", encoding="utf-8", newline="") as handle:
-        reader = csv.DictReader(handle)
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle, skipinitialspace=True)
         if reader.fieldnames is None:
             raise BatchInputError("CSV input is missing a header row")
-        fieldnames = {field.strip() for field in reader.fieldnames if field}
+        fieldnames = {_normalize_csv_fieldname(field) for field in reader.fieldnames if field}
         missing = {"doi", "claim"} - fieldnames
         if missing:
             missing_fields = ", ".join(sorted(missing))
             raise BatchInputError(f"CSV header must include doi and claim fields; missing: {missing_fields}")
         for row_number, raw in enumerate(reader, start=2):
-            rows.append(_row_from_mapping(raw, line_number=row_number, row_label="line"))
+            rows.append(
+                _row_from_mapping(
+                    _normalize_csv_row(raw),
+                    line_number=row_number,
+                    row_label="line",
+                )
+            )
     return rows
 
 
@@ -216,3 +227,11 @@ def _optional_string(raw: dict[str, Any], field: str) -> str | None:
         return str(value)
     stripped = value.strip()
     return stripped or None
+
+
+def _normalize_csv_fieldname(field: str) -> str:
+    return field.lstrip("\ufeff").strip()
+
+
+def _normalize_csv_row(raw: dict[str, Any]) -> dict[str, Any]:
+    return {_normalize_csv_fieldname(key): value for key, value in raw.items() if key is not None}

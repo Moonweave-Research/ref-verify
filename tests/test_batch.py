@@ -89,6 +89,35 @@ class BatchParserTests(unittest.TestCase):
         self.assertEqual(rows[0].doi, "10.1000/a")
         self.assertEqual(rows[0].source, "crossref")
 
+    def test_parse_csv_rows_with_spaced_headers(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "claims.csv"
+            path.write_text(
+                "doi, claim, source\n"
+                "10.1000/a,This paper reports 95% accuracy.,crossref\n",
+                encoding="utf-8",
+            )
+
+            rows = parse_claim_file(path, None)
+
+        self.assertEqual(rows[0].doi, "10.1000/a")
+        self.assertEqual(rows[0].claim, "This paper reports 95% accuracy.")
+        self.assertEqual(rows[0].source, "crossref")
+
+    def test_parse_csv_rows_with_utf8_bom(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "claims.csv"
+            path.write_text(
+                "\ufeffdoi,claim\n"
+                "10.1000/a,This paper reports 95% accuracy.\n",
+                encoding="utf-8",
+            )
+
+            rows = parse_claim_file(path, None)
+
+        self.assertEqual(rows[0].doi, "10.1000/a")
+        self.assertEqual(rows[0].claim, "This paper reports 95% accuracy.")
+
     def test_csv_without_required_headers_is_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "claims.csv"
@@ -175,9 +204,17 @@ class BatchParserTests(unittest.TestCase):
                     "error_code": "ROW_CHECK_ERROR",
                 },
             ),
+            BatchRowResult(
+                row=ClaimInputRow(3, "c", "10.1000/c", "claim c", "auto", None),
+                payload={
+                    "verdict": "WARN",
+                    "status": "UNVERIFIABLE",
+                    "error_code": "SOURCE_UNSUPPORTED",
+                },
+            ),
         ]
 
         summary = summarize_results(results)
 
-        self.assertEqual(summary.failed, 2)
-        self.assertEqual(summary.unverifiable, 2)
+        self.assertEqual(summary.failed, 3)
+        self.assertEqual(summary.unverifiable, 3)
