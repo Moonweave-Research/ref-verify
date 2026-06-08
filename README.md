@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src=".github/assets/ref-verify-mark-512.png" alt="ref-verify mark" width="96">
+<img src="https://raw.githubusercontent.com/Moonweave-Research/ref-verify/main/.github/assets/ref-verify-mark-512.png" alt="ref-verify mark" width="96">
 
 </div>
 
@@ -174,6 +174,16 @@ ref-verify check-claim <doi> --claim "<specific claim>" --json
 `UNVERIFIABLE` return a non-zero exit code. JSON output includes
 `abstract_source`, `source_attempts`, and `error_code` so agents can distinguish
 missing abstracts, source failures, DOI mismatches, and ambiguous evidence.
+
+Current `check-claim` error codes:
+
+- `CLAIM_SUPPORTED`: explicit abstract support found.
+- `CLAIM_NOT_EXPLICIT`: an abstract was available, but the claim was not explicitly supported.
+- `CLAIM_AMBIGUOUS`: numeric evidence or context exists, but binding is ambiguous.
+- `NO_ABSTRACT`: attempted DOI-bound sources did not provide abstract text.
+- `DOI_NOT_FOUND`: selected source did not find a DOI-bound record.
+- `DOI_MISMATCH`: the primary or explicitly selected DOI-bound record did not match the requested DOI.
+- `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_UNSUPPORTED`: source lookup failed or could not be used.
 
 > Core rule: every content statement about a paper must come from a live-fetched
 > abstract. If the abstract is inaccessible after fallback checks, say

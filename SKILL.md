@@ -63,8 +63,10 @@ the CLI ran, and do not invent a result from memory.
 ### CLI-first workflow
 
 Use the CLI first when the user provides a DOI or asks whether a DOI-backed
-abstract supports a specific factual claim. Current CLI scope is CrossRef-backed
-DOI metadata and CrossRef-abstract claim checks.
+abstract supports a specific factual claim. Current CLI scope is CrossRef
+metadata verification plus DOI-bound abstract claim checks. Claim checks use
+CrossRef first, then DOI-bound Semantic Scholar and PubMed fallback when
+CrossRef has no abstract.
 
 CrossRef metadata screen:
 
@@ -111,15 +113,36 @@ Source-checkout fallback:
 PYTHONPATH=src python3 -m ref_verify.cli check-claim <doi> --claim "<specific factual claim>" --json
 ```
 
+By default, `check-claim` uses CrossRef first. If CrossRef has no abstract, it
+tries DOI-bound Semantic Scholar and PubMed fallback sources. Use
+`--source crossref`, `--source semantic-scholar`, or `--source pubmed` for
+source-specific debugging. Explicit non-CrossRef source selection bypasses
+CrossRef, so it can isolate a Semantic Scholar or PubMed failure.
+
 Route the result:
 
 - `ACCEPT`: quote the CLI evidence and continue any required manual DOI
   resolution, second-source existence, and retraction layers.
-- `WARN` or `PARTIAL`: report what the CrossRef abstract did and did not
-  support, then continue manual fallback when more sources are required.
-- `UNVERIFIABLE`: CrossRef did not expose enough abstract evidence. Continue the
-  manual fallback chain below instead of treating the claim as rejected or
-  supported.
+- `WARN` or `PARTIAL`: report what the selected abstract source did and did not
+  support, then continue manual fallback when more layers are required.
+- `UNVERIFIABLE`: no trusted DOI-bound abstract evidence was available from the
+  attempted CLI sources. Continue the manual fallback chain below instead of
+  treating the claim as rejected or supported.
+
+For JSON output, use `abstract_source`, `source_attempts`, and `error_code` to
+decide the next step:
+
+- `CLAIM_SUPPORTED`: explicit abstract support found.
+- `CLAIM_NOT_EXPLICIT`: an abstract was available, but the claim was not
+  explicitly supported.
+- `CLAIM_AMBIGUOUS`: numeric evidence or context exists, but binding is
+  ambiguous.
+- `NO_ABSTRACT`: attempted DOI-bound sources did not provide abstract text.
+- `DOI_NOT_FOUND`: selected source did not find a DOI-bound record.
+- `DOI_MISMATCH`: the primary or explicitly selected DOI-bound record did not
+  match the requested DOI.
+- `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_UNSUPPORTED`: source lookup
+  failed, timed out, or could not be used.
 
 The CLI does not replace Layer 4 DOI landing-page resolution, two-source
 existence checks, or retraction checks. Continue the manual protocol for those
@@ -218,7 +241,7 @@ EXISTENCE:  ✓ Confirmed (sources) | ⚠ Single-source | ✗ Not found
 METADATA:   ✓ Consistent | ⚠ Discrepancy: [field: value-A vs value-B]
 CONTENT:    ✓ Supported — "[verbatim abstract excerpt]"
             ⚠ Partial — abstract says: "[what it actually says]"
-            ✗ Contradicted | — Unverifiable (tried CrossRef/S2/Unpaywall/arXiv)
+            ✗ Contradicted | — Unverifiable (tried CrossRef/S2/Unpaywall/arXiv/PubMed)
 RETRACTION: ✓ None found | ✗ Retracted
 
 VERDICT: ACCEPT | WARN | REJECT

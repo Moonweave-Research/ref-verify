@@ -8,6 +8,21 @@ import unittest
 REPO_ROOT = Path(__file__).resolve().parents[1]
 GITHUB_README_URL = "https://github.com/Moonweave-Research/ref-verify/blob/main/README.md"
 GITHUB_KOREAN_README_URL = "https://github.com/Moonweave-Research/ref-verify/blob/main/README.ko.md"
+RAW_MARK_URL = (
+    "https://raw.githubusercontent.com/Moonweave-Research/ref-verify/"
+    "main/.github/assets/ref-verify-mark-512.png"
+)
+CHECK_CLAIM_ERROR_CODES = (
+    "CLAIM_SUPPORTED",
+    "CLAIM_NOT_EXPLICIT",
+    "CLAIM_AMBIGUOUS",
+    "NO_ABSTRACT",
+    "DOI_NOT_FOUND",
+    "DOI_MISMATCH",
+    "SOURCE_API_ERROR",
+    "SOURCE_TIMEOUT",
+    "SOURCE_UNSUPPORTED",
+)
 
 
 class SkillDocsTests(unittest.TestCase):
@@ -32,6 +47,11 @@ class SkillDocsTests(unittest.TestCase):
             "CLI-first workflow",
             "verify-doi",
             "check-claim",
+            "DOI-bound abstract claim checks",
+            "Semantic Scholar and PubMed fallback",
+            "abstract_source",
+            "source_attempts",
+            "error_code",
             "PASS",
             "ACCEPT",
             "UNVERIFIABLE",
@@ -43,11 +63,19 @@ class SkillDocsTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, skill)
 
+        self.assertNotIn("CrossRef-abstract claim checks", skill)
+        self.assertNotIn("CrossRef did not expose enough abstract evidence", skill)
+        self.assertIn("CrossRef/S2/Unpaywall/arXiv/PubMed", skill)
+        for code in CHECK_CLAIM_ERROR_CODES:
+            with self.subTest(error_code=code):
+                self.assertIn(code, skill)
+
     def test_readme_positions_cli_as_skill_execution_engine_not_mcp(self):
         readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
 
         self.assertIn(f"[English]({GITHUB_README_URL})", readme)
         self.assertIn(f"[한국어]({GITHUB_KOREAN_README_URL})", readme)
+        self.assertIn(RAW_MARK_URL, readme)
         self.assertIn("agent skill for citation verification", readme)
         self.assertIn("--skill ref-verify", readme)
         self.assertIn("--agent claude-code cursor codex", readme)
@@ -57,6 +85,12 @@ class SkillDocsTests(unittest.TestCase):
         self.assertIn("You do not start a server and you do not configure MCP", readme)
         self.assertIn("DOI-bound abstract claim check", readme)
         self.assertIn("Semantic Scholar and PubMed fallback", readme)
+        self.assertIn("Current `check-claim` error codes", readme)
+        self.assertIn("CLAIM_NOT_EXPLICIT", readme)
+        self.assertIn("SOURCE_TIMEOUT", readme)
+        for code in CHECK_CLAIM_ERROR_CODES:
+            with self.subTest(error_code=code):
+                self.assertIn(code, readme)
         self.assertIn("literal text claims", readme)
         self.assertIn("subject-matched percentage claims", readme)
         self.assertIn("simple unit/count claims", readme)
@@ -71,6 +105,7 @@ class SkillDocsTests(unittest.TestCase):
 
         self.assertIn(f"[한국어]({GITHUB_KOREAN_README_URL})", readme_ko)
         self.assertIn(f"[English]({GITHUB_README_URL})", readme_ko)
+        self.assertIn(RAW_MARK_URL, readme_ko)
         self.assertIn("연구 인용 검증용 에이전트 스킬", readme_ko)
         self.assertIn("--skill ref-verify", readme_ko)
         self.assertIn("--agent claude-code cursor codex", readme_ko)
@@ -80,6 +115,12 @@ class SkillDocsTests(unittest.TestCase):
         self.assertIn("subject가 일치하는 percentage claim", readme_ko)
         self.assertIn("단순 unit/count claim", readme_ko)
         self.assertIn("AUC/AUROC, F1 score", readme_ko)
+        self.assertIn("현재 `check-claim` error code", readme_ko)
+        self.assertIn("CLAIM_NOT_EXPLICIT", readme_ko)
+        self.assertIn("SOURCE_TIMEOUT", readme_ko)
+        for code in CHECK_CLAIM_ERROR_CODES:
+            with self.subTest(error_code=code):
+                self.assertIn(code, readme_ko)
         self.assertIn("ref-verify verify-doi", readme_ko)
         self.assertIn("ref-verify check-claim", readme_ko)
         self.assertIn("README.ko.md", readme_ko)
@@ -88,12 +129,15 @@ class SkillDocsTests(unittest.TestCase):
     def test_packaged_readme_uses_publish_safe_language_links(self):
         pyproject = (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
         readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+        readme_ko = (REPO_ROOT / "README.ko.md").read_text(encoding="utf-8")
 
         self.assertIn('readme = "README.md"', pyproject)
         self.assertIn(GITHUB_README_URL, readme)
         self.assertIn(GITHUB_KOREAN_README_URL, readme)
         self.assertNotIn("[English](README.md)", readme)
         self.assertNotIn("[한국어](README.ko.md)", readme)
+        self.assertNotIn('src=".github/', readme)
+        self.assertNotIn('src=".github/', readme_ko)
 
     def test_readmes_prioritize_user_workflow_before_architecture_details(self):
         readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")

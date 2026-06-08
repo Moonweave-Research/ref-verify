@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src=".github/assets/ref-verify-mark-512.png" alt="ref-verify mark" width="96">
+<img src="https://raw.githubusercontent.com/Moonweave-Research/ref-verify/main/.github/assets/ref-verify-mark-512.png" alt="ref-verify mark" width="96">
 
 </div>
 
@@ -179,6 +179,16 @@ ref-verify check-claim <doi> --claim "<specific claim>" --json
 `PARTIAL`, `UNVERIFIABLE`은 non-zero exit code를 반환합니다. JSON 출력에는
 `abstract_source`, `source_attempts`, `error_code`가 포함되어 abstract 부재,
 소스 실패, DOI 불일치, 애매한 근거를 구분할 수 있습니다.
+
+현재 `check-claim` error code는 다음과 같습니다.
+
+- `CLAIM_SUPPORTED`: abstract 안에 명시적 근거가 있음
+- `CLAIM_NOT_EXPLICIT`: abstract는 있지만 claim을 명시적으로 뒷받침하지 않음
+- `CLAIM_AMBIGUOUS`: 숫자나 맥락은 있으나 subject/숫자 연결이 애매함
+- `NO_ABSTRACT`: 시도한 DOI-bound source에서 abstract text를 얻지 못함
+- `DOI_NOT_FOUND`: 선택한 source에서 DOI-bound record를 찾지 못함
+- `DOI_MISMATCH`: primary 또는 명시적으로 선택한 DOI-bound record가 요청 DOI와 다름
+- `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_UNSUPPORTED`: source lookup 실패 또는 사용 불가
 
 > 핵심 규칙: 논문 내용에 대한 모든 설명은 live-fetched abstract에서
 > 나와야 합니다. fallback 확인 후에도 abstract에 접근할 수 없으면

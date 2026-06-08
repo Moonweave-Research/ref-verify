@@ -1871,6 +1871,7 @@ class CliTests(unittest.TestCase):
                     "--json",
                 ],
                 client=FakeClient(record),
+                abstract_clients=[],
             )
 
         payload = json.loads(output.getvalue())
