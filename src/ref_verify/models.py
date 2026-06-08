@@ -58,3 +58,32 @@ class ClaimSupportResult:
         payload = asdict(self)
         payload["paper"] = self.paper.to_dict()
         return payload
+
+
+@dataclass(frozen=True)
+class AbstractSourceAttempt:
+    source: str
+    status: str
+    reason: str
+    record_id: str | None = None
+    doi: str | None = None
+    elapsed_ms: int | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class AbstractLookupResult:
+    record: PaperRecord
+    abstract_source: str | None
+    attempts: list[AbstractSourceAttempt]
+    error_code: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "record": self.record.to_dict(),
+            "abstract_source": self.abstract_source,
+            "source_attempts": [attempt.to_dict() for attempt in self.attempts],
+            "error_code": self.error_code,
+        }

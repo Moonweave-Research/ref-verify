@@ -61,14 +61,15 @@ This is a skill/plugin-level workflow, not an MCP server. The CLI covers the
 checks that are currently safe to automate directly:
 
 - CrossRef metadata check: `ref-verify verify-doi`
-- CrossRef abstract claim check: `ref-verify check-claim`
+- DOI-bound abstract claim check: `ref-verify check-claim`
   - literal text claims
   - subject-matched percentage claims such as efficiency, response rate, or actuation strain
   - simple unit/count claims such as cycles, patients, voltage, temperature, and concentration
+  - CrossRef first, then DOI-bound Semantic Scholar and PubMed fallback when CrossRef has no abstract
 - JSON output for agent-readable routing
 - Non-zero exit codes for `WARN`, `REJECT`, and `UNVERIFIABLE` results
 
-Statistical metrics such as p-values, AUC/AUROC, F1 score, hazard ratio, odds ratio, and confidence intervals still use the manual skill protocol. DOI landing-page checks still use the skill protocol. Still handled by the skill protocol: Semantic Scholar, Unpaywall, arXiv, PubMed fallback checks, two-source existence checks, and retraction checks remain in `SKILL.md`.
+Statistical metrics such as p-values, AUC/AUROC, F1 score, hazard ratio, odds ratio, and confidence intervals still use the manual skill protocol. DOI landing-page checks still use the skill protocol. Still handled by the skill protocol: Unpaywall, arXiv, two-source existence checks, and retraction checks remain in `SKILL.md`.
 
 Install the CLI from a local checkout:
 
@@ -101,13 +102,15 @@ ref-verify verify-doi 10.1126/science.287.5454.836 \
   --json
 ```
 
-Run a claim check against the CrossRef abstract:
+Run a DOI-bound abstract claim check:
 
 ```bash
 ref-verify check-claim 10.1126/science.287.5454.836 \
   --claim "actuation strain above 100%" \
   --json
 ```
+
+By default, `check-claim` uses CrossRef first. If CrossRef has no abstract, it tries DOI-bound Semantic Scholar and PubMed fallback sources. Use `--source crossref`, `--source semantic-scholar`, or `--source pubmed` for source-specific debugging; explicit non-CrossRef source selection bypasses CrossRef.
 
 Source-checkout equivalents:
 
@@ -161,14 +164,16 @@ skill fetches abstracts through CrossRef, Semantic Scholar, Unpaywall, arXiv,
 and PubMed where needed, then checks whether the paper supports the specific
 claim being cited.
 
-For a single DOI-backed claim, the CLI can run the CrossRef abstract portion:
+For a single DOI-backed claim, the CLI can run the abstract check:
 
 ```bash
 ref-verify check-claim <doi> --claim "<specific claim>" --json
 ```
 
 `check-claim` exits `0` only for `ACCEPT`. `WARN`, `PARTIAL`, and
-`UNVERIFIABLE` return a non-zero exit code.
+`UNVERIFIABLE` return a non-zero exit code. JSON output includes
+`abstract_source`, `source_attempts`, and `error_code` so agents can distinguish
+missing abstracts, source failures, DOI mismatches, and ambiguous evidence.
 
 > Core rule: every content statement about a paper must come from a live-fetched
 > abstract. If the abstract is inaccessible after fallback checks, say

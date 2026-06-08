@@ -226,7 +226,24 @@ Mitigation:
 
 ## Open Decisions
 
-- Should fallback be enabled by default, or gated behind `--fallback-sources` for the first release?
-- Should `--source crossref|semantic-scholar|pubmed` be added for debugging?
-- Should live smoke tests be documented but skipped in CI, or excluded entirely?
-- Should `UNVERIFIABLE` remain `verdict=WARN`, or should the CLI distinguish source absence from weak evidence with a separate verdict later?
+Resolved for the first implementation:
+
+- Fallback is enabled by default for `check-claim`.
+- `--source crossref|semantic-scholar|pubmed` is available for debugging source-specific behavior; explicit non-CrossRef source selection bypasses CrossRef.
+- CI tests use fake clients and parser fixtures only; live smoke tests are excluded from CI.
+- `UNVERIFIABLE` remains `verdict=WARN`; JSON `error_code` distinguishes source absence from weak evidence.
+
+Still open:
+
+- Whether to add a maintainer-only live smoke command later.
+- Whether future versions should introduce a verdict separate from `WARN` for source absence.
+
+## Revision Notes
+
+Implemented decisions:
+
+- Added a CrossRef-first abstract lookup layer with DOI-bound Semantic Scholar and PubMed fallback.
+- Kept `verify-doi` as CrossRef metadata verification only.
+- Added `abstract_source`, `source_attempts`, and `error_code` to `check-claim` JSON output.
+- Added explicit source debugging that can isolate Semantic Scholar or PubMed when CrossRef is unavailable.
+- Added fake-client flow tests and source parser tests without live network dependency.

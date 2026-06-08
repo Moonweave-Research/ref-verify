@@ -3,6 +3,7 @@ import json
 import unittest
 from contextlib import redirect_stdout
 
+from ref_verify.abstract_lookup import AbstractSourceError
 from ref_verify.cli import main
 from ref_verify.crossref import parse_crossref_work
 from ref_verify.models import PaperRecord
@@ -26,6 +27,30 @@ class MismatchedDoiClient:
     def fetch_work(self, doi):
         if doi != self.requested_doi:
             raise AssertionError("unexpected doi")
+        return self.record
+
+
+class FailingClient:
+    def __init__(self, error):
+        self.error = error
+
+    def fetch_work(self, doi):
+        raise self.error
+
+
+class FakeAbstractSourceClient:
+    def __init__(self, source_name, record=None, status="FOUND", reason=None, raises=None):
+        self.source_name = source_name
+        self.record = record
+        self.status = status
+        self.reason = reason
+        self.raises = raises
+        self.calls = []
+
+    def fetch_record(self, doi):
+        self.calls.append(doi)
+        if self.raises:
+            raise self.raises
         return self.record
 
 
@@ -261,6 +286,490 @@ class CliTests(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertEqual(payload["status"], "SUPPORTED")
         self.assertEqual(payload["verdict"], "ACCEPT")
+        self.assertEqual(payload["abstract_source"], "crossref")
+        self.assertEqual(payload["error_code"], "CLAIM_SUPPORTED")
+
+    def test_check_claim_does_not_query_fallback_when_crossref_has_abstract(self):
+        record = PaperRecord(
+            doi="10.1000/example",
+            title="Dielectric elastomer actuators",
+            authors=["Pelrine", "Kornbluh"],
+            year=2000,
+            abstract="Actuated strains up to 117% were demonstrated.",
+            source="fixture",
+        )
+        fallback = FakeAbstractSourceClient(
+            "semantic_scholar",
+            record=PaperRecord(
+                doi="10.1000/example",
+                title="Fallback paper",
+                authors=["Lee"],
+                year=2021,
+                abstract="Actuated strain remained below 20%.",
+                source="semantic_scholar",
+            ),
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/example",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(record),
+                abstract_clients=[fallback],
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(fallback.calls, [])
+        self.assertEqual(payload["abstract_source"], "crossref")
+        self.assertEqual(payload["source_attempts"][0]["status"], "FOUND")
+
+    def test_check_claim_source_option_forces_requested_fallback_source(self):
+        crossref_record = PaperRecord(
+            doi="10.1000/example",
+            title="Dielectric elastomer actuators",
+            authors=["Pelrine", "Kornbluh"],
+            year=2000,
+            abstract="Actuated strain remained below 20%.",
+            source="CrossRef",
+        )
+        semantic_record = PaperRecord(
+            doi="10.1000/example",
+            title="Dielectric elastomer actuators",
+            authors=["Pelrine", "Kornbluh"],
+            year=2000,
+            abstract="Actuated strains up to 117% were demonstrated.",
+            source="Semantic Scholar",
+        )
+        semantic = FakeAbstractSourceClient("semantic_scholar", record=semantic_record)
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/example",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--source",
+                    "semantic-scholar",
+                    "--json",
+                ],
+                client=FakeClient(crossref_record),
+                abstract_clients=[semantic],
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["abstract_source"], "semantic_scholar")
+        self.assertEqual(payload["source_attempts"][0]["source"], "semantic_scholar")
+        self.assertEqual(payload["source_attempts"][0]["status"], "FOUND")
+
+    def test_check_claim_uses_semantic_scholar_fallback_when_crossref_has_no_abstract(self):
+        crossref_record = PaperRecord(
+            doi="10.1000/noabstract",
+            title="Smart material paper",
+            authors=["Kim"],
+            year=2021,
+            abstract=None,
+            source="CrossRef",
+        )
+        semantic_record = PaperRecord(
+            doi="10.1000/noabstract",
+            title="Smart material paper",
+            authors=["Kim"],
+            year=2021,
+            abstract="Actuated strains up to 117% were demonstrated.",
+            source="Semantic Scholar",
+        )
+        semantic = FakeAbstractSourceClient("semantic_scholar", record=semantic_record)
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/noabstract",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(crossref_record),
+                abstract_clients=[semantic],
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["paper"]["source"], "Semantic Scholar")
+        self.assertEqual(payload["abstract_source"], "semantic_scholar")
+        self.assertEqual(payload["source_attempts"][0]["status"], "NO_ABSTRACT")
+        self.assertEqual(payload["source_attempts"][1]["status"], "FOUND")
+
+    def test_check_claim_ignores_mismatched_fallback_and_uses_next_source(self):
+        crossref_record = PaperRecord(
+            doi="10.1000/noabstract",
+            title="Smart material paper",
+            authors=["Kim"],
+            year=2021,
+            abstract=None,
+            source="CrossRef",
+        )
+        mismatched_record = PaperRecord(
+            doi="10.1000/other",
+            title="Other paper",
+            authors=["Lee"],
+            year=2022,
+            abstract="Actuated strains up to 117% were demonstrated.",
+            source="Semantic Scholar",
+        )
+        pubmed_record = PaperRecord(
+            doi="10.1000/noabstract",
+            title="Smart material paper",
+            authors=["Kim"],
+            year=2021,
+            abstract="The actuator survived 5000 cycles.",
+            source="PubMed",
+        )
+        semantic = FakeAbstractSourceClient("semantic_scholar", record=mismatched_record)
+        pubmed = FakeAbstractSourceClient("pubmed", record=pubmed_record)
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/noabstract",
+                    "--claim",
+                    "actuator survived at least 4000 cycles",
+                    "--json",
+                ],
+                client=FakeClient(crossref_record),
+                abstract_clients=[semantic, pubmed],
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["abstract_source"], "pubmed")
+        self.assertEqual(payload["source_attempts"][1]["status"], "DOI_MISMATCH")
+        self.assertEqual(payload["source_attempts"][2]["status"], "FOUND")
+
+    def test_check_claim_continues_after_fallback_api_error(self):
+        crossref_record = PaperRecord(
+            doi="10.1000/noabstract",
+            title="Smart material paper",
+            authors=["Kim"],
+            year=2021,
+            abstract=None,
+            source="CrossRef",
+        )
+        pubmed_record = PaperRecord(
+            doi="10.1000/noabstract",
+            title="Smart material paper",
+            authors=["Kim"],
+            year=2021,
+            abstract="Samples were maintained at 37 °C.",
+            source="PubMed",
+        )
+        semantic = FakeAbstractSourceClient(
+            "semantic_scholar",
+            raises=RuntimeError("upstream unavailable"),
+        )
+        pubmed = FakeAbstractSourceClient("pubmed", record=pubmed_record)
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/noabstract",
+                    "--claim",
+                    "samples were maintained at 37 °C",
+                    "--json",
+                ],
+                client=FakeClient(crossref_record),
+                abstract_clients=[semantic, pubmed],
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["abstract_source"], "pubmed")
+        self.assertEqual(payload["source_attempts"][1]["status"], "API_ERROR")
+        self.assertEqual(payload["source_attempts"][2]["status"], "FOUND")
+
+    def test_check_claim_reports_source_api_error_when_fallbacks_all_fail_by_api(self):
+        crossref_record = PaperRecord(
+            doi="10.1000/noabstract",
+            title="Smart material paper",
+            authors=["Kim"],
+            year=2021,
+            abstract=None,
+            source="CrossRef",
+        )
+        semantic = FakeAbstractSourceClient(
+            "semantic_scholar",
+            raises=RuntimeError("semantic scholar unavailable"),
+        )
+        pubmed = FakeAbstractSourceClient(
+            "pubmed",
+            raises=RuntimeError("pubmed unavailable"),
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/noabstract",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(crossref_record),
+                abstract_clients=[semantic, pubmed],
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["status"], "UNVERIFIABLE")
+        self.assertEqual(payload["error_code"], "SOURCE_API_ERROR")
+        self.assertEqual([attempt["status"] for attempt in payload["source_attempts"]], [
+            "NO_ABSTRACT",
+            "API_ERROR",
+            "API_ERROR",
+        ])
+
+    def test_check_claim_explicit_source_bypasses_crossref_failure(self):
+        semantic_record = PaperRecord(
+            doi="10.1000/example",
+            title="Dielectric elastomer actuators",
+            authors=["Pelrine", "Kornbluh"],
+            year=2000,
+            abstract="Actuated strains up to 117% were demonstrated.",
+            source="Semantic Scholar",
+        )
+        semantic = FakeAbstractSourceClient("semantic_scholar", record=semantic_record)
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/example",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--source",
+                    "semantic-scholar",
+                    "--json",
+                ],
+                client=FailingClient(RuntimeError("crossref unavailable")),
+                abstract_clients=[semantic],
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["abstract_source"], "semantic_scholar")
+        self.assertEqual(payload["source_attempts"][0]["source"], "semantic_scholar")
+        self.assertEqual(payload["source_attempts"][0]["status"], "FOUND")
+
+    def test_check_claim_reports_no_abstract_after_all_sources_fail(self):
+        crossref_record = PaperRecord(
+            doi="10.1000/noabstract",
+            title="Smart material paper",
+            authors=["Kim"],
+            year=2021,
+            abstract=None,
+            source="CrossRef",
+        )
+        semantic = FakeAbstractSourceClient("semantic_scholar", record=None)
+        pubmed = FakeAbstractSourceClient("pubmed", record=None)
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/noabstract",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(crossref_record),
+                abstract_clients=[semantic, pubmed],
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["status"], "UNVERIFIABLE")
+        self.assertEqual(payload["verdict"], "WARN")
+        self.assertEqual(payload["error_code"], "NO_ABSTRACT")
+        self.assertIsNone(payload["abstract_source"])
+        self.assertEqual([attempt["status"] for attempt in payload["source_attempts"]], [
+            "NO_ABSTRACT",
+            "NO_ABSTRACT",
+            "NO_ABSTRACT",
+        ])
+
+    def test_check_claim_does_not_promote_fallback_doi_mismatch_to_final_error(self):
+        crossref_record = PaperRecord(
+            doi="10.1000/noabstract",
+            title="Smart material paper",
+            authors=["Kim"],
+            year=2021,
+            abstract=None,
+            source="CrossRef",
+        )
+        mismatched_record = PaperRecord(
+            doi="10.1000/other",
+            title="Other paper",
+            authors=["Lee"],
+            year=2022,
+            abstract="Actuated strains up to 117% were demonstrated.",
+            source="Semantic Scholar",
+        )
+        semantic = FakeAbstractSourceClient("semantic_scholar", record=mismatched_record)
+        pubmed = FakeAbstractSourceClient("pubmed", record=None)
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/noabstract",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(crossref_record),
+                abstract_clients=[semantic, pubmed],
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["error_code"], "NO_ABSTRACT")
+        self.assertEqual(payload["source_attempts"][1]["status"], "DOI_MISMATCH")
+
+    def test_check_claim_reports_source_timeout_when_fallbacks_time_out(self):
+        crossref_record = PaperRecord(
+            doi="10.1000/noabstract",
+            title="Smart material paper",
+            authors=["Kim"],
+            year=2021,
+            abstract=None,
+            source="CrossRef",
+        )
+        semantic = FakeAbstractSourceClient(
+            "semantic_scholar",
+            raises=TimeoutError("semantic scholar timed out"),
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/noabstract",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(crossref_record),
+                abstract_clients=[semantic],
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["error_code"], "SOURCE_TIMEOUT")
+        self.assertEqual(payload["source_attempts"][1]["status"], "TIMEOUT")
+
+    def test_check_claim_preserves_structured_source_error_status(self):
+        crossref_record = PaperRecord(
+            doi="10.1000/noabstract",
+            title="Smart material paper",
+            authors=["Kim"],
+            year=2021,
+            abstract=None,
+            source="CrossRef",
+        )
+        semantic = FakeAbstractSourceClient(
+            "semantic_scholar",
+            raises=AbstractSourceError("NOT_FOUND", "Semantic Scholar had no paper for the DOI."),
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/noabstract",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(crossref_record),
+                abstract_clients=[semantic],
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["error_code"], "NO_ABSTRACT")
+        self.assertEqual(payload["source_attempts"][1]["status"], "NOT_FOUND")
+
+    def test_check_claim_distinguishes_not_explicit_from_ambiguous_claim_warning(self):
+        not_explicit = PaperRecord(
+            doi="10.1000/not-explicit",
+            title="Unrelated paper",
+            authors=["Kim"],
+            year=2021,
+            abstract="The study discusses polymer synthesis.",
+            source="CrossRef",
+        )
+        ambiguous = PaperRecord(
+            doi="10.1000/ambiguous",
+            title="Prestrain paper",
+            authors=["Kim"],
+            year=2021,
+            abstract="The film was subjected to 500% pre-strain before testing.",
+            source="CrossRef",
+        )
+
+        not_explicit_output = io.StringIO()
+        with redirect_stdout(not_explicit_output):
+            not_explicit_exit = main(
+                [
+                    "check-claim",
+                    "10.1000/not-explicit",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(not_explicit),
+            )
+
+        ambiguous_output = io.StringIO()
+        with redirect_stdout(ambiguous_output):
+            ambiguous_exit = main(
+                [
+                    "check-claim",
+                    "10.1000/ambiguous",
+                    "--claim",
+                    "actuation strain above 100%",
+                    "--json",
+                ],
+                client=FakeClient(ambiguous),
+            )
+
+        not_explicit_payload = json.loads(not_explicit_output.getvalue())
+        ambiguous_payload = json.loads(ambiguous_output.getvalue())
+        self.assertEqual(not_explicit_exit, 2)
+        self.assertEqual(ambiguous_exit, 2)
+        self.assertEqual(not_explicit_payload["error_code"], "CLAIM_NOT_EXPLICIT")
+        self.assertEqual(ambiguous_payload["error_code"], "CLAIM_AMBIGUOUS")
 
     def test_check_claim_normalizes_prefixed_doi_before_fetching(self):
         record = PaperRecord(

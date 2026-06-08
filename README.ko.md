@@ -64,16 +64,16 @@ claim X를 뒷받침하는 논문 3개를 찾고, 각 인용을 검증해줘
 현재 직접 자동화해도 안전한 부분만 담당합니다.
 
 - CrossRef 메타데이터 확인: `ref-verify verify-doi`
-- CrossRef abstract 기반 주장 확인: `ref-verify check-claim`
+- DOI에 묶인 abstract 기반 주장 확인: `ref-verify check-claim`
   - 문장 그대로 드러나는 text claim
   - efficiency, response rate, actuation strain 같은 subject가 일치하는 percentage claim
   - cycles, patients, voltage, temperature, concentration 같은 단순 unit/count claim
+  - CrossRef를 먼저 쓰고, CrossRef에 abstract가 없으면 DOI가 일치하는 Semantic Scholar와 PubMed fallback 사용
 - 에이전트가 읽기 쉬운 JSON 출력
 - `WARN`, `REJECT`, `UNVERIFIABLE` 결과에 대한 non-zero exit code
 
 `p-value`, AUC/AUROC, F1 score, hazard ratio, odds ratio, confidence interval
-같은 통계 지표는 아직 수동 스킬 프로토콜을 따릅니다. DOI landing page 확인은 스킬 프로토콜을 따릅니다. Semantic Scholar,
-Unpaywall, arXiv, PubMed 대체 확인, 두 개 이상의 독립 출처로 존재 확인,
+같은 통계 지표는 아직 수동 스킬 프로토콜을 따릅니다. DOI landing page 확인은 스킬 프로토콜을 따릅니다. Unpaywall, arXiv, 두 개 이상의 독립 출처로 존재 확인,
 철회 여부 확인도 `SKILL.md`에 있는 스킬 프로토콜이 담당합니다.
 
 로컬 체크아웃에서 CLI를 설치합니다.
@@ -106,13 +106,15 @@ ref-verify verify-doi 10.1126/science.287.5454.836 \
   --json
 ```
 
-CrossRef abstract에 대해 특정 주장을 확인합니다.
+DOI에 묶인 abstract에 대해 특정 주장을 확인합니다.
 
 ```bash
 ref-verify check-claim 10.1126/science.287.5454.836 \
   --claim "actuation strain above 100%" \
   --json
 ```
+
+기본값으로 `check-claim`은 CrossRef를 먼저 사용합니다. CrossRef에 abstract가 없으면 DOI가 일치하는 Semantic Scholar와 PubMed fallback을 시도합니다. 특정 소스만 디버깅하려면 `--source crossref`, `--source semantic-scholar`, `--source pubmed`를 사용합니다. 명시적으로 non-CrossRef 소스를 고르면 CrossRef를 거치지 않습니다.
 
 소스 체크아웃에서 바로 실행하는 예시는 다음과 같습니다.
 
@@ -167,15 +169,16 @@ ref-verify verify-doi <doi> --title "<title>" --first-author <last-name> --year 
 통해 abstract를 가져오고, 논문이 인용하려는 특정 주장을 뒷받침하는지
 확인합니다.
 
-단일 DOI 기반 주장에 대해서는 CLI가 CrossRef abstract 확인을 수행할 수
-있습니다.
+단일 DOI 기반 주장에 대해서는 CLI가 abstract 확인을 수행할 수 있습니다.
 
 ```bash
 ref-verify check-claim <doi> --claim "<specific claim>" --json
 ```
 
 `check-claim`은 `ACCEPT`일 때만 exit code `0`을 반환합니다. `WARN`,
-`PARTIAL`, `UNVERIFIABLE`은 non-zero exit code를 반환합니다.
+`PARTIAL`, `UNVERIFIABLE`은 non-zero exit code를 반환합니다. JSON 출력에는
+`abstract_source`, `source_attempts`, `error_code`가 포함되어 abstract 부재,
+소스 실패, DOI 불일치, 애매한 근거를 구분할 수 있습니다.
 
 > 핵심 규칙: 논문 내용에 대한 모든 설명은 live-fetched abstract에서
 > 나와야 합니다. fallback 확인 후에도 abstract에 접근할 수 없으면
