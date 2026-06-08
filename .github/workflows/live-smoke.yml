@@ -34,3 +34,6 @@ jobs:
           ref-verify check-claim 10.1126/science.287.5454.836 \
             --claim "actuation strain above 100%" \
             --json
+
+      - name: CLI regression ship gate
+        run: PYTHONPATH=src python evals/run_cli_regression.py
