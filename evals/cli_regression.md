@@ -40,19 +40,20 @@ PROGRESS rows that depend on it, never SAFETY rows.)
 ## What the corpus encodes (snapshot, latest `main`)
 
 ```
-SAFETY: 12/12 ok  |  PROGRESS pending: 3
-Pending: A2-bellucci-30C, B2-diez-200g, E2-pelrine-117
+SAFETY: 12/12 ok  |  PROGRESS pending: 0
 ```
 
-- **Supported happy paths** — `A1` (`>220 °C` entails `>200 °C`) and `A3` (`1.7 eV`,
-  unblocked once #14 landed) ACCEPT and must stay green.
+- **Supported happy paths** — `A1` (`>220 °C` entails `>200 °C`), `A2`
+  (OpenAlex-reached `30 °C` conductivity measurements), `A3` (`1.7 eV`), `B2`
+  (`200 g` sulfur-network synthesis), and `E2` (`up to 117%` actuated strain)
+  ACCEPT and must stay green.
 - **Never-accept controls (all PASS)** — `B1` fabricated number, `C1`/`C2` relational,
   `D1`/`D2` unreachable (Elsevier / old Nature, abstract-only ceiling), `E1` dead DOI.
   `B3` (over-acceptance) is now `PARTIAL` after #11 — kept `must_not_accept` so the bug
   cannot silently regress.
-- **Remaining gated false-negatives** (target ACCEPT once fixed): `B2` → #10,
-  `E2` → up-to comparator, `A2` → residual condition handling (#13 already makes it
-  reachable via OpenAlex, but a trailing `in the range` qualifier still blocks ACCEPT).
+- **No current gated false-negatives** — if future supported rows are added before
+  their matcher/source work lands, they should use `gated_on` and report as
+  PROGRESS rather than failing SAFETY.
 
 The verdict labels for `A2`/`A3`/`B2` were grounded by fetching the live abstracts
 (CrossRef + OpenAlex) and confirming the value appears verbatim; no label asserts

@@ -10,9 +10,9 @@ classifies every row into one of:
       unreachable/over-accepting claim is ever waved through)
   A SAFETY failure exits non-zero and should block release.
 
-- PROGRESS — gated rows whose ``expected_verdict`` is not yet reached because the
+- PROGRESS — gated rows whose ``expected_verdict`` is not yet reached because a
   named issue (``gated_on``) has not landed. These are reported, not failed; they
-  flip to PASS as #10/#11/#13/#14 / the up-to comparator are fixed.
+  flip to PASS as their fixes land.
 
 Stdlib only. Usage:
     PYTHONPATH=src python3 evals/run_cli_regression.py
@@ -43,11 +43,14 @@ def _run_cli(rows: list[dict]) -> dict[str, dict]:
         for row in rows:
             handle.write(json.dumps({"id": row["id"], "doi": row["doi"], "claim": row["claim"]}) + "\n")
         claims_path = handle.name
-    proc = subprocess.run(
-        [sys.executable, "-m", "ref_verify.cli", "check-file", claims_path, "--json"],
-        capture_output=True,
-        text=True,
-    )
+    try:
+        proc = subprocess.run(
+            [sys.executable, "-m", "ref_verify.cli", "check-file", claims_path, "--json"],
+            capture_output=True,
+            text=True,
+        )
+    finally:
+        Path(claims_path).unlink(missing_ok=True)
     if not proc.stdout.strip():
         raise SystemExit(f"check-file produced no JSON. stderr:\n{proc.stderr}")
     payload = json.loads(proc.stdout)
