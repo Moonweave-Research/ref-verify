@@ -11,6 +11,7 @@ from ref_verify.batch import (
     detect_format,
     parse_claim_file,
     summarize_results,
+    render_batch_text,
 )
 
 
@@ -218,3 +219,20 @@ class BatchParserTests(unittest.TestCase):
 
         self.assertEqual(summary.failed, 3)
         self.assertEqual(summary.unverifiable, 3)
+
+    def test_render_batch_text_includes_failed_summary_count(self):
+        results = [
+            BatchRowResult(
+                row=ClaimInputRow(1, "a", "10.1000/a", "claim a", "auto", None),
+                payload={
+                    "verdict": "WARN",
+                    "status": "UNVERIFIABLE",
+                    "reason": "Source failed.",
+                    "error_code": "SOURCE_API_ERROR",
+                },
+            ),
+        ]
+
+        text = render_batch_text(results)
+
+        self.assertIn("failed=1", text)

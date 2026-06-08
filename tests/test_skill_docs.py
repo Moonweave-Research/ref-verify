@@ -167,6 +167,7 @@ class SkillDocsTests(unittest.TestCase):
             "Exit `2`: command completed, but one or more rows were not accepted",
             "Exit `1`: input or runtime failure prevented normal batch processing",
             "Agents must inspect JSON output even when the exit code is non-zero",
+            "Summary categories are diagnostic counts, not mutually exclusive buckets",
             "Do not use `ref-verify` to judge paper quality",
             "Do not fill missing abstract evidence from memory",
             "CSV is supported for user-created files, but agents should prefer JSONL",

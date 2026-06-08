@@ -133,7 +133,8 @@ def render_batch_text(results: list[BatchRowResult]) -> str:
         (
             f"Summary: total={summary.total} accept={summary.accept} "
             f"warn={summary.warn} reject={summary.reject} "
-            f"partial={summary.partial} unverifiable={summary.unverifiable}"
+            f"partial={summary.partial} unverifiable={summary.unverifiable} "
+            f"failed={summary.failed}"
         )
     ]
     for result in results:

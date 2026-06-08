@@ -74,7 +74,7 @@ Agents must inspect JSON output even when the exit code is non-zero. Exit `2` ca
   "summary": {
     "total": 2,
     "accept": 1,
-    "warn": 0,
+    "warn": 1,
     "reject": 0,
     "partial": 0,
     "unverifiable": 1,
@@ -93,10 +93,26 @@ Agents must inspect JSON output even when the exit code is non-zero. Exit `2` ca
       "abstract_source": "crossref",
       "source_attempts": [],
       "error_code": "CLAIM_SUPPORTED"
+    },
+    {
+      "row_number": 2,
+      "id": "claim-2",
+      "doi": "10.xxxx/example-b",
+      "claim": "The study included 12 patients.",
+      "verdict": "WARN",
+      "status": "UNVERIFIABLE",
+      "reason": "Row could not be checked: ...",
+      "evidence": "",
+      "abstract_source": null,
+      "source_attempts": [],
+      "error_code": "ROW_CHECK_ERROR"
     }
   ]
 }
 ```
+
+Summary categories are diagnostic counts, not mutually exclusive buckets. For
+example, a failed row can also be `WARN` and `UNVERIFIABLE`.
 
 Agents should route results by `error_code`, `verdict`, and `status`.
 
