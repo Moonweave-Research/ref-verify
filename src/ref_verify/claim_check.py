@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 
 from ref_verify.models import ClaimSupportResult, PaperRecord
+from ref_verify.numeric_claim import check_numeric_claim_support
 
 _PERCENTAGE_VALUE_PATTERN = r"\d+(?:,\d{3})*(?:\.\d+)?"
 _PERCENTAGE_UNIT_PATTERN = r"(?:%|\bpercent\b|\bper\s+cent\b)"
@@ -230,6 +231,18 @@ def check_claim_support(record: PaperRecord, claim: str) -> ClaimSupportResult:
     evidence_sentences = _ranked_evidence_sentences(record.abstract, claim)
     evidence_sentence = evidence_sentences[0] if evidence_sentences else record.abstract.strip()
 
+    if threshold is None or not _is_strain_percentage_claim(claim):
+        numeric_result = check_numeric_claim_support(record.abstract, claim)
+        if numeric_result.status == "SUPPORTED":
+            return ClaimSupportResult(
+                status="SUPPORTED",
+                verdict="ACCEPT",
+                reason=numeric_result.reason,
+                evidence=numeric_result.evidence,
+                paper=record,
+                claim=claim,
+            )
+
     if threshold is not None:
         for sentence_index, sentence in enumerate(evidence_sentences):
             supported = _sentence_supports_percentage_claim(
@@ -333,6 +346,11 @@ def _claim_percentage_comparator(claim: str) -> str:
     ):
         return "gt"
     return "exact"
+
+
+def _is_strain_percentage_claim(claim: str) -> bool:
+    claim_terms = {_stem(token) for token in _tokens(claim)}
+    return "strain" in claim_terms
 
 
 def _ranked_evidence_sentences(abstract: str, claim: str) -> list[str]:

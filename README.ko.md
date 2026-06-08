@@ -67,10 +67,12 @@ claim X를 뒷받침하는 논문 3개를 찾고, 각 인용을 검증해줘
 - CrossRef abstract 기반 주장 확인: `ref-verify check-claim`
   - 문장 그대로 드러나는 text claim
   - efficiency, response rate, actuation strain 같은 subject가 일치하는 percentage claim
+  - cycles, patients, voltage, temperature, concentration 같은 단순 unit/count claim
 - 에이전트가 읽기 쉬운 JSON 출력
 - `WARN`, `REJECT`, `UNVERIFIABLE` 결과에 대한 non-zero exit code
 
-DOI landing page 확인은 스킬 프로토콜을 따릅니다. Semantic Scholar,
+`p-value`, AUC/AUROC, F1 score, hazard ratio, odds ratio, confidence interval
+같은 통계 지표는 아직 수동 스킬 프로토콜을 따릅니다. DOI landing page 확인은 스킬 프로토콜을 따릅니다. Semantic Scholar,
 Unpaywall, arXiv, PubMed 대체 확인, 두 개 이상의 독립 출처로 존재 확인,
 철회 여부 확인도 `SKILL.md`에 있는 스킬 프로토콜이 담당합니다.
 

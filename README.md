@@ -64,10 +64,11 @@ checks that are currently safe to automate directly:
 - CrossRef abstract claim check: `ref-verify check-claim`
   - literal text claims
   - subject-matched percentage claims such as efficiency, response rate, or actuation strain
+  - simple unit/count claims such as cycles, patients, voltage, temperature, and concentration
 - JSON output for agent-readable routing
 - Non-zero exit codes for `WARN`, `REJECT`, and `UNVERIFIABLE` results
 
-DOI landing-page checks still use the skill protocol. Still handled by the skill protocol: Semantic Scholar, Unpaywall, arXiv, PubMed fallback checks, two-source existence checks, and retraction checks remain in `SKILL.md`.
+Statistical metrics such as p-values, AUC/AUROC, F1 score, hazard ratio, odds ratio, and confidence intervals still use the manual skill protocol. DOI landing-page checks still use the skill protocol. Still handled by the skill protocol: Semantic Scholar, Unpaywall, arXiv, PubMed fallback checks, two-source existence checks, and retraction checks remain in `SKILL.md`.
 
 Install the CLI from a local checkout:
 

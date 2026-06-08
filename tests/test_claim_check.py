@@ -872,6 +872,70 @@ class ClaimCheckTests(unittest.TestCase):
         self.assertEqual(result.verdict, "ACCEPT")
         self.assertIn("5000 cycles", result.evidence)
 
+    def test_supported_when_unit_claim_matches_subject_and_threshold(self):
+        cases = (
+            (
+                "The actuator survived 5000 cycles.",
+                "actuator survived at least 4000 cycles",
+            ),
+            (
+                "The device operated at 3.2 V.",
+                "device operated at least 3 V",
+            ),
+            (
+                "Samples were maintained at 37 °C.",
+                "samples maintained at 37 °C",
+            ),
+            (
+                "Cells were treated with 10 mg/mL polymer.",
+                "cells treated with 10 mg/mL polymer",
+            ),
+        )
+
+        for abstract, claim in cases:
+            with self.subTest(claim=claim):
+                record = PaperRecord(
+                    doi="10.1000/unit-claim",
+                    title="Unit claim",
+                    authors=["Lee"],
+                    year=2020,
+                    abstract=abstract,
+                    source="fixture",
+                )
+
+                result = check_claim_support(record, claim)
+
+                self.assertEqual(result.status, "SUPPORTED")
+                self.assertEqual(result.verdict, "ACCEPT")
+
+    def test_unit_claim_rejects_wrong_subject_or_unit(self):
+        cases = (
+            (
+                "Device efficiency reached 80%, and response rate was 95%.",
+                "device efficiency above 90%",
+            ),
+            (
+                "The device operated at 3.2 mA.",
+                "device operated at least 3 V",
+            ),
+        )
+
+        for abstract, claim in cases:
+            with self.subTest(claim=claim):
+                record = PaperRecord(
+                    doi="10.1000/unit-claim-negative",
+                    title="Unit claim negative",
+                    authors=["Lee"],
+                    year=2020,
+                    abstract=abstract,
+                    source="fixture",
+                )
+
+                result = check_claim_support(record, claim)
+
+                self.assertEqual(result.status, "PARTIAL")
+                self.assertEqual(result.verdict, "WARN")
+
     def test_non_percentage_claim_requires_matching_numeric_value(self):
         record = PaperRecord(
             doi="10.1000/lifetime",
