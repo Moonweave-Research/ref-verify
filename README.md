@@ -34,6 +34,8 @@ Works with **Claude Code, Cursor, Codex**, and any agent that supports the
 
 After installation, use it like a normal agent skill. You do not start a server and you do not configure MCP for this workflow. No MCP server is required for this workflow.
 
+For explicit agent tool-calling rules, see [AGENT_USAGE.md](https://github.com/Moonweave-Research/ref-verify/blob/main/AGENT_USAGE.md).
+
 ---
 
 ## Use it

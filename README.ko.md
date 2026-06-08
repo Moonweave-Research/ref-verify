@@ -36,6 +36,9 @@ npx skills add Moonweave-Research/ref-verify -g \
 워크플로우에는 MCP 서버가 필요하지 않습니다. 서버를 시작하거나 MCP를
 설정하지 않습니다.
 
+에이전트가 CLI를 호출할 때 따라야 할 명시적 규칙은
+[AGENT_USAGE.md](https://github.com/Moonweave-Research/ref-verify/blob/main/AGENT_USAGE.md)를 참고하세요.
+
 ---
 
 ## 사용 방법

@@ -2142,6 +2142,83 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["results"][1]["error_code"], "ROW_CHECK_ERROR")
         self.assertIn("upstream failed", payload["results"][1]["reason"])
 
+    def test_check_file_json_contract_for_agent_routing(self):
+        good = PaperRecord(
+            doi="10.1000/good",
+            title="Good paper",
+            authors=["Lee"],
+            year=2024,
+            abstract="The model achieved 95% accuracy.",
+            source="fixture",
+        )
+        client = MappingClient(
+            {"10.1000/good": good},
+            errors={"10.1000/bad": RuntimeError("upstream failed")},
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "claims.jsonl"
+            path.write_text(
+                "\n".join(
+                    [
+                        json.dumps(
+                            {
+                                "id": "accepted-claim",
+                                "doi": "10.1000/good",
+                                "claim": "The model achieved 95% accuracy.",
+                                "note": "draft paragraph 4",
+                            }
+                        ),
+                        json.dumps(
+                            {
+                                "id": "failed-claim",
+                                "doi": "10.1000/bad",
+                                "claim": "The model achieved 95% accuracy.",
+                            }
+                        ),
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            output = io.StringIO()
+
+            with redirect_stdout(output):
+                exit_code = main(
+                    ["check-file", str(path), "--json"],
+                    client=client,
+                    abstract_clients=[],
+                )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(
+            set(payload["summary"]),
+            {"total", "accept", "warn", "reject", "partial", "unverifiable", "failed"},
+        )
+        self.assertEqual(payload["summary"]["total"], 2)
+        self.assertEqual(len(payload["results"]), 2)
+
+        required_result_keys = {
+            "row_number",
+            "id",
+            "doi",
+            "claim",
+            "status",
+            "verdict",
+            "reason",
+            "evidence",
+            "abstract_source",
+            "source_attempts",
+            "error_code",
+        }
+        for result in payload["results"]:
+            with self.subTest(result=result["id"]):
+                self.assertTrue(required_result_keys <= set(result))
+
+        self.assertEqual(payload["results"][0]["note"], "draft paragraph 4")
+        self.assertEqual(payload["results"][0]["error_code"], "CLAIM_SUPPORTED")
+        self.assertEqual(payload["results"][1]["error_code"], "ROW_CHECK_ERROR")
+
 
 if __name__ == "__main__":
     unittest.main()

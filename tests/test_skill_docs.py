@@ -8,6 +8,7 @@ import unittest
 REPO_ROOT = Path(__file__).resolve().parents[1]
 GITHUB_README_URL = "https://github.com/Moonweave-Research/ref-verify/blob/main/README.md"
 GITHUB_KOREAN_README_URL = "https://github.com/Moonweave-Research/ref-verify/blob/main/README.ko.md"
+GITHUB_AGENT_USAGE_URL = "https://github.com/Moonweave-Research/ref-verify/blob/main/AGENT_USAGE.md"
 RAW_MARK_URL = (
     "https://raw.githubusercontent.com/Moonweave-Research/ref-verify/"
     "main/.github/assets/ref-verify-mark-512.png"
@@ -23,6 +24,7 @@ CHECK_CLAIM_ERROR_CODES = (
     "SOURCE_TIMEOUT",
     "SOURCE_UNSUPPORTED",
 )
+AGENT_USAGE_ERROR_CODES = CHECK_CLAIM_ERROR_CODES + ("ROW_CHECK_ERROR",)
 
 
 class SkillDocsTests(unittest.TestCase):
@@ -83,6 +85,7 @@ class SkillDocsTests(unittest.TestCase):
         self.assertIn("skill-level execution engine", readme)
         self.assertIn("No MCP server is required for this workflow", readme)
         self.assertIn("You do not start a server and you do not configure MCP", readme)
+        self.assertIn(f"[AGENT_USAGE.md]({GITHUB_AGENT_USAGE_URL})", readme)
         self.assertIn("DOI-bound abstract claim check", readme)
         self.assertIn("Semantic Scholar and PubMed fallback", readme)
         self.assertIn("Current `check-claim` error codes", readme)
@@ -111,6 +114,7 @@ class SkillDocsTests(unittest.TestCase):
         self.assertIn("--agent claude-code cursor codex", readme_ko)
         self.assertIn("스킬/플러그인 수준", readme_ko)
         self.assertIn("MCP 서버가 필요하지 않습니다", readme_ko)
+        self.assertIn(f"[AGENT_USAGE.md]({GITHUB_AGENT_USAGE_URL})", readme_ko)
         self.assertIn("문장 그대로 드러나는 text claim", readme_ko)
         self.assertIn("subject가 일치하는 percentage claim", readme_ko)
         self.assertIn("단순 unit/count claim", readme_ko)
@@ -151,6 +155,31 @@ class SkillDocsTests(unittest.TestCase):
         self.assertIn("Python 패키지는 CLI 전용", readme_ko)
         self.assertIn("`SKILL.md`를 설치하지 않습니다", readme_ko)
         self.assertIn("GitHub에서 설치합니다", readme_ko)
+
+    def test_agent_usage_contract_defines_routing_rules(self):
+        usage = (REPO_ROOT / "AGENT_USAGE.md").read_text(encoding="utf-8")
+
+        required_phrases = (
+            "`ref-verify` is a verifier, not a claim extractor",
+            "ref-verify check-file claims.jsonl --json",
+            "Treat only `verdict == \"ACCEPT\"` as verified",
+            "Exit `0`: command completed and every row was `ACCEPT`",
+            "Exit `2`: command completed, but one or more rows were not accepted",
+            "Exit `1`: input or runtime failure prevented normal batch processing",
+            "Agents must inspect JSON output even when the exit code is non-zero",
+            "Do not use `ref-verify` to judge paper quality",
+            "Do not fill missing abstract evidence from memory",
+            "CSV is supported for user-created files, but agents should prefer JSONL",
+            "ROW_CHECK_ERROR",
+            "failed > 0",
+        )
+
+        for phrase in required_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, usage)
+        for code in AGENT_USAGE_ERROR_CODES:
+            with self.subTest(error_code=code):
+                self.assertIn(code, usage)
 
     def test_cli_network_requirement_is_explicit(self):
         readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
