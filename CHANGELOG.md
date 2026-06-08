@@ -7,6 +7,13 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## Unreleased
+
+### Added
+
+- Added `ref-verify check-file` for JSONL and CSV DOI/claim batch checks.
+- Added fixture-backed numeric claim eval coverage for repeated-use workflows.
+
 ## [1.1.2] — 2026-06-08
 
 ### Changed

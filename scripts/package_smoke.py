@@ -41,8 +41,8 @@ def main() -> int:
         ref_verify = _venv_bin(venv_dir, "ref-verify")
 
         _run([str(pip), "install", str(wheel)])
-        _run([str(ref_verify), "--help"])
-        _run([str(ref_verify), "check-claim", "--help"])
+        for command in _cli_smoke_commands(str(ref_verify)):
+            _run(command)
         completed = _run(
             [
                 str(python),
@@ -68,6 +68,14 @@ def _venv_bin(venv_dir: Path, name: str) -> Path:
 
 def _contains_skill_file(names: set[str]) -> bool:
     return any(Path(name).name == "SKILL.md" for name in names)
+
+
+def _cli_smoke_commands(ref_verify: str) -> list[list[str]]:
+    return [
+        [ref_verify, "--help"],
+        [ref_verify, "check-claim", "--help"],
+        [ref_verify, "check-file", "--help"],
+    ]
 
 
 def _run(

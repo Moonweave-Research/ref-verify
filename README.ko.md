@@ -68,6 +68,7 @@ Python 패키지는 CLI 전용입니다. `SKILL.md`를 설치하지 않습니다
 
 - CrossRef 메타데이터 확인: `ref-verify verify-doi`
 - DOI에 묶인 abstract 기반 주장 확인: `ref-verify check-claim`
+- 여러 DOI 기반 주장 일괄 확인: `ref-verify check-file`
   - 문장 그대로 드러나는 text claim
   - efficiency, response rate, actuation strain 같은 subject가 일치하는 percentage claim
   - cycles, patients, voltage, temperature, concentration 같은 단순 unit/count claim
@@ -191,6 +192,28 @@ ref-verify check-claim <doi> --claim "<specific claim>" --json
 `PARTIAL`, `UNVERIFIABLE`은 non-zero exit code를 반환합니다. JSON 출력에는
 `abstract_source`, `source_attempts`, `error_code`가 포함되어 abstract 부재,
 소스 실패, DOI 불일치, 애매한 근거를 구분할 수 있습니다.
+
+초안, 리서치 메모, AI 에이전트 출력처럼 DOI/claim 쌍이 여러 개 있을 때는
+`check-file`을 사용합니다.
+
+JSONL:
+
+```bash
+ref-verify check-file claims.jsonl
+ref-verify check-file claims.jsonl --json
+```
+
+CSV:
+
+```bash
+ref-verify check-file claims.csv
+```
+
+각 행에는 `doi`와 `claim`이 필요합니다. `id`, `source`, `note`는 선택
+필드입니다. 배치 모드는 기존의 보수적인 `check-claim` 엔진을 그대로
+사용합니다. `ACCEPT`는 abstract가 숫자 claim을 명시적으로 지지한다는
+뜻입니다. `WARN`, `PARTIAL`, `REJECT`, `UNVERIFIABLE`은 검증된 claim으로
+취급하면 안 됩니다.
 
 현재 `check-claim` error code는 다음과 같습니다.
 

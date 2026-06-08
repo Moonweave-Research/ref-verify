@@ -1,6 +1,6 @@
 import unittest
 
-from scripts.package_smoke import _contains_skill_file
+from scripts.package_smoke import _cli_smoke_commands, _contains_skill_file
 
 
 class PackageSmokeTests(unittest.TestCase):
@@ -29,7 +29,11 @@ class PackageSmokeTests(unittest.TestCase):
             )
         )
 
+    def test_cli_smoke_commands_cover_batch_subcommand(self):
+        commands = _cli_smoke_commands("ref-verify")
+
+        self.assertIn(["ref-verify", "check-file", "--help"], commands)
+
 
 if __name__ == "__main__":
     unittest.main()
-

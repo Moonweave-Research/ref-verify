@@ -64,6 +64,7 @@ checks that are currently safe to automate directly:
 
 - CrossRef metadata check: `ref-verify verify-doi`
 - DOI-bound abstract claim check: `ref-verify check-claim`
+- Batch DOI-bound claim checks: `ref-verify check-file`
   - literal text claims
   - subject-matched percentage claims such as efficiency, response rate, or actuation strain
   - simple unit/count claims such as cycles, patients, voltage, temperature, and concentration
@@ -185,6 +186,28 @@ ref-verify check-claim <doi> --claim "<specific claim>" --json
 `UNVERIFIABLE` return a non-zero exit code. JSON output includes
 `abstract_source`, `source_attempts`, and `error_code` so agents can distinguish
 missing abstracts, source failures, DOI mismatches, and ambiguous evidence.
+
+Use `check-file` when a draft, literature note, or AI-agent output has many
+DOI/claim pairs.
+
+JSONL:
+
+```bash
+ref-verify check-file claims.jsonl
+ref-verify check-file claims.jsonl --json
+```
+
+CSV:
+
+```bash
+ref-verify check-file claims.csv
+```
+
+Each row must include `doi` and `claim`. Optional fields are `id`, `source`,
+and `note`. Batch mode reuses the same conservative `check-claim` engine:
+`ACCEPT` means the abstract explicitly supports the numeric claim. `WARN`,
+`PARTIAL`, `REJECT`, or `UNVERIFIABLE` means the claim should not be treated as
+verified.
 
 Current `check-claim` error codes:
 
