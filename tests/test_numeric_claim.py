@@ -42,6 +42,22 @@ class NumericClaimTests(unittest.TestCase):
         self.assertEqual(result.status, "SUPPORTED")
         self.assertIn("37 °C", result.evidence)
 
+    def test_rejects_comparative_evidence_for_exact_claim(self):
+        cases = (
+            "The polymer provided high thermal resistance (>220 °C).",
+            "The polymer provided high thermal resistance at least 220 °C.",
+            "The polymer provided high thermal resistance up to 220 °C.",
+        )
+
+        for abstract in cases:
+            with self.subTest(abstract=abstract):
+                result = check_numeric_claim_support(
+                    abstract,
+                    "polymer thermal resistance 220 °C",
+                )
+
+                self.assertEqual(result.status, "PARTIAL")
+
     def test_accepts_concentration_claim(self):
         result = check_numeric_claim_support(
             "Cells were treated with 10 mg/mL polymer.",
@@ -110,6 +126,39 @@ class NumericClaimTests(unittest.TestCase):
                 result = check_numeric_claim_support(abstract, claim)
 
                 self.assertEqual(result.status, "SUPPORTED")
+
+    def test_accepts_physical_measurement_condition_suffixes(self):
+        cases = (
+            (
+                (
+                    "The effective work function for aluminum-polyimide is estimated "
+                    "to be 1.7 eV in the temperature range between 100 and 270 °C."
+                ),
+                "effective work function for aluminum-polyimide is 1.7 eV",
+            ),
+            (
+                "The conductivity reached 5 S/m at 1 kHz.",
+                "conductivity reached 5 S/m",
+            ),
+            (
+                "The stress reached 120 MPa at 300 K.",
+                "stress reached 120 MPa",
+            ),
+        )
+
+        for abstract, claim in cases:
+            with self.subTest(claim=claim):
+                result = check_numeric_claim_support(abstract, claim)
+
+                self.assertEqual(result.status, "SUPPORTED")
+
+    def test_rejects_count_claim_condition_suffixes(self):
+        result = check_numeric_claim_support(
+            "The device lifetime was 5000 cycles at 5 V.",
+            "device lifetime was 5000 cycles",
+        )
+
+        self.assertEqual(result.status, "PARTIAL")
 
     def test_rejects_missing_subject_binding(self):
         result = check_numeric_claim_support(

@@ -22,6 +22,7 @@ CHECK_CLAIM_ERROR_CODES = (
     "DOI_MISMATCH",
     "SOURCE_API_ERROR",
     "SOURCE_TIMEOUT",
+    "SOURCE_RATE_LIMITED",
     "SOURCE_UNSUPPORTED",
 )
 AGENT_USAGE_ERROR_CODES = CHECK_CLAIM_ERROR_CODES + ("ROW_CHECK_ERROR",)
@@ -44,13 +45,14 @@ class SkillDocsTests(unittest.TestCase):
             "CLI Availability Check",
             "ref-verify --help",
             "python3 -m ref_verify.cli --help",
+            "npx skills add does not pip-install the Python CLI",
             "python3 -m ref_verify.cli verify-doi",
             "python3 -m ref_verify.cli check-claim",
             "CLI-first workflow",
             "verify-doi",
             "check-claim",
             "DOI-bound abstract claim checks",
-            "Semantic Scholar and PubMed fallback",
+            "OpenAlex, Semantic Scholar, and PubMed fallback",
             "abstract_source",
             "source_attempts",
             "error_code",
@@ -67,7 +69,7 @@ class SkillDocsTests(unittest.TestCase):
 
         self.assertNotIn("CrossRef-abstract claim checks", skill)
         self.assertNotIn("CrossRef did not expose enough abstract evidence", skill)
-        self.assertIn("CrossRef/S2/Unpaywall/arXiv/PubMed", skill)
+        self.assertIn("CrossRef/OpenAlex/S2/Unpaywall/arXiv/PubMed", skill)
         for code in CHECK_CLAIM_ERROR_CODES:
             with self.subTest(error_code=code):
                 self.assertIn(code, skill)
@@ -87,7 +89,7 @@ class SkillDocsTests(unittest.TestCase):
         self.assertIn("You do not start a server and you do not configure MCP", readme)
         self.assertIn(f"[AGENT_USAGE.md]({GITHUB_AGENT_USAGE_URL})", readme)
         self.assertIn("DOI-bound abstract claim check", readme)
-        self.assertIn("Semantic Scholar and PubMed fallback", readme)
+        self.assertIn("OpenAlex, Semantic Scholar, and PubMed fallback", readme)
         self.assertIn("Current `check-claim` error codes", readme)
         self.assertIn("CLAIM_NOT_EXPLICIT", readme)
         self.assertIn("SOURCE_TIMEOUT", readme)
@@ -189,10 +191,10 @@ class SkillDocsTests(unittest.TestCase):
 
         self.assertIn("zero third-party Python runtime dependencies", readme)
         self.assertIn("outbound HTTPS access", readme)
-        self.assertIn("CrossRef, Semantic Scholar, and PubMed", readme)
+        self.assertIn("CrossRef, OpenAlex, Semantic Scholar, and PubMed", readme)
         self.assertIn("third-party Python runtime dependency", readme_ko)
         self.assertIn("outbound HTTPS", readme_ko)
-        self.assertIn("CrossRef, Semantic Scholar, PubMed", readme_ko)
+        self.assertIn("CrossRef, OpenAlex, Semantic Scholar, PubMed", readme_ko)
         self.assertIn("zero third-party Python packages", changelog)
         self.assertIn("outbound HTTPS access", changelog)
 

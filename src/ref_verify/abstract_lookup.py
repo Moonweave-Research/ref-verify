@@ -202,6 +202,8 @@ def _final_error_code(
         return "SOURCE_API_ERROR"
     if "TIMEOUT" in statuses:
         return "SOURCE_TIMEOUT"
+    if "RATE_LIMITED" in statuses:
+        return "SOURCE_RATE_LIMITED"
     if "UNSUPPORTED" in statuses and "NO_ABSTRACT" not in statuses:
         return "SOURCE_UNSUPPORTED"
     if statuses and all(status == "NOT_FOUND" for status in statuses):

@@ -22,6 +22,7 @@ from ref_verify.claim_check import check_claim_support
 from ref_verify.crossref import CrossrefClient
 from ref_verify.doi_check import normalize_doi, verify_doi_metadata
 from ref_verify.models import CitationInput, ClaimSupportResult
+from ref_verify.openalex import OpenAlexClient
 from ref_verify.pubmed import PubMedClient
 from ref_verify.semantic_scholar import SemanticScholarClient
 
@@ -71,7 +72,7 @@ def _build_parser() -> argparse.ArgumentParser:
     claim.add_argument("--claim", required=True)
     claim.add_argument(
         "--source",
-        choices=("auto", "crossref", "semantic-scholar", "pubmed"),
+        choices=("auto", "crossref", "openalex", "semantic-scholar", "pubmed"),
         default="auto",
         help="Select an abstract source for debugging; default tries DOI-bound fallback sources.",
     )
@@ -199,7 +200,7 @@ def _claim_error_code(result: ClaimSupportResult) -> str:
 
 
 def _default_abstract_clients() -> list[AbstractSourceClient]:
-    return [SemanticScholarClient(), PubMedClient()]
+    return [OpenAlexClient(), SemanticScholarClient(), PubMedClient()]
 
 
 def _select_abstract_clients(

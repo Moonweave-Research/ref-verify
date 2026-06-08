@@ -119,6 +119,50 @@ _SCOPE_OR_COMPARATIVE_SUFFIX_TERMS = {
     "within",
 }
 
+_PHYSICAL_MEASUREMENT_UNITS = {
+    "ev",
+    "kev",
+    "mev",
+    "ohm-cm",
+    "gohm-cm",
+    "mohm-cm",
+    "kohm-cm",
+    "s/m",
+    "ms/m",
+    "ks/m",
+    "pa",
+    "kpa",
+    "mpa",
+    "gpa",
+    "v/m",
+    "mv/m",
+    "kv/m",
+    "v/cm",
+    "mv/cm",
+    "kv/cm",
+    "v/mm",
+    "mv/mm",
+    "kv/mm",
+}
+
+_MEASUREMENT_CONDITION_TERMS = {
+    "bias",
+    "field",
+    "frequency",
+    "humidity",
+    "hz",
+    "k",
+    "khz",
+    "mhz",
+    "pressure",
+    "range",
+    "ranges",
+    "relative",
+    "rh",
+    "temperature",
+    "voltage",
+}
+
 _UNIT_TERMS = {
     "a",
     "c",
@@ -423,10 +467,26 @@ def _has_unsupported_frame(value: str) -> bool:
             token
             for token in re.findall(r"[a-zA-Z]+", value[match.end() :].lower())
         ]
-        if any(token in _SCOPE_OR_COMPARATIVE_SUFFIX_TERMS for token in suffix_tokens):
+        if _has_disqualifying_suffix(match.group("unit"), suffix_tokens):
             return True
     prefix_tokens = re.findall(r"[a-zA-Z]+", value.lower())[:2]
     return any(token in {"after", "before", "under", "in"} for token in prefix_tokens)
+
+
+def _has_disqualifying_suffix(unit: str, suffix_tokens: list[str]) -> bool:
+    if not any(token in _SCOPE_OR_COMPARATIVE_SUFFIX_TERMS for token in suffix_tokens):
+        return False
+    normalized_unit = _normalize_unit(unit)
+    if (
+        normalized_unit in _PHYSICAL_MEASUREMENT_UNITS
+        and _looks_like_measurement_condition(suffix_tokens)
+    ):
+        return False
+    return True
+
+
+def _looks_like_measurement_condition(tokens: list[str]) -> bool:
+    return any(token in _MEASUREMENT_CONDITION_TERMS for token in tokens)
 
 
 def _evidence_entails_claim(
@@ -445,4 +505,4 @@ def _evidence_entails_claim(
         return evidence_value < claim_value
     if claim_comparator == "lte":
         return evidence_value <= claim_value
-    return evidence_value == claim_value
+    return evidence_comparator == "exact" and evidence_value == claim_value

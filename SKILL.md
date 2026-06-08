@@ -51,6 +51,9 @@ Before a DOI-backed check, see whether the executable engine is available:
 ref-verify --help
 ```
 
+npx skills add does not pip-install the Python CLI. If the console script is
+unavailable, do not treat that as a verification result.
+
 If the console script is unavailable but the repository source is present, use:
 
 ```bash
@@ -65,7 +68,7 @@ the CLI ran, and do not invent a result from memory.
 Use the CLI first when the user provides a DOI or asks whether a DOI-backed
 abstract supports a specific factual claim. Current CLI scope is CrossRef
 metadata verification plus DOI-bound abstract claim checks. Claim checks use
-CrossRef first, then DOI-bound Semantic Scholar and PubMed fallback when
+CrossRef first, then DOI-bound OpenAlex, Semantic Scholar, and PubMed fallback when
 CrossRef has no abstract.
 
 CrossRef metadata screen:
@@ -114,10 +117,10 @@ PYTHONPATH=src python3 -m ref_verify.cli check-claim <doi> --claim "<specific fa
 ```
 
 By default, `check-claim` uses CrossRef first. If CrossRef has no abstract, it
-tries DOI-bound Semantic Scholar and PubMed fallback sources. Use
-`--source crossref`, `--source semantic-scholar`, or `--source pubmed` for
+tries DOI-bound OpenAlex, Semantic Scholar, and PubMed fallback sources. Use
+`--source crossref`, `--source openalex`, `--source semantic-scholar`, or `--source pubmed` for
 source-specific debugging. Explicit non-CrossRef source selection bypasses
-CrossRef, so it can isolate a Semantic Scholar or PubMed failure.
+CrossRef, so it can isolate an OpenAlex, Semantic Scholar, or PubMed failure.
 
 Route the result:
 
@@ -141,8 +144,8 @@ decide the next step:
 - `DOI_NOT_FOUND`: selected source did not find a DOI-bound record.
 - `DOI_MISMATCH`: the primary or explicitly selected DOI-bound record did not
   match the requested DOI.
-- `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_UNSUPPORTED`: source lookup
-  failed, timed out, or could not be used.
+- `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_RATE_LIMITED`, `SOURCE_UNSUPPORTED`: source lookup
+  failed, timed out, was rate-limited, or could not be used.
 
 The CLI does not replace Layer 4 DOI landing-page resolution, two-source
 existence checks, or retraction checks. Continue the manual protocol for those
@@ -198,10 +201,11 @@ This is where the skill's core value lies. The goal is not just "does this paper
 
 Fetch the abstract using this priority order:
 1. CrossRef raw JSON: `https://api.crossref.org/works/{DOI}` — check the `abstract` field
-2. Semantic Scholar: append `&fields=abstract` to your S2 DOI lookup
-3. Open-access fallback: `https://api.unpaywall.org/v2/{DOI}?email=verify@ref-verify.local` — check `is_oa` and `oa_locations`
-4. arXiv fallback for preprints: `https://export.arxiv.org/api/query?id_list={arxiv_id}`
-5. PubMed Central for life/bio papers: `https://www.ncbi.nlm.nih.gov/pmc/articles/{PMCID}/`
+2. OpenAlex: `https://api.openalex.org/works/doi:{DOI}?mailto=verify@ref-verify.local` — reconstruct `abstract_inverted_index`
+3. Semantic Scholar: append `&fields=abstract` to your S2 DOI lookup
+4. Open-access fallback: `https://api.unpaywall.org/v2/{DOI}?email=verify@ref-verify.local` — check `is_oa` and `oa_locations`
+5. arXiv fallback for preprints: `https://export.arxiv.org/api/query?id_list={arxiv_id}`
+6. PubMed Central for life/bio papers: `https://www.ncbi.nlm.nih.gov/pmc/articles/{PMCID}/`
 
 After fetching, check: does the abstract contain the specific claim being cited?
 
@@ -233,7 +237,7 @@ REFERENCE AUDIT
 ────────────────────────────────────────────────
 Paper:   [Title from live source — not from memory]
 DOI:     [DOI] — [✓ Resolves | ✗ Dead | ✗ Wrong paper | ⚠ Paywalled-403]
-Authors: [Full list from CrossRef/S2]
+Authors: [Full list from CrossRef/OpenAlex/S2]
 Year:    [Year] — Source: CrossRef | S2 | arXiv
 Journal: [Full name]
 
@@ -241,7 +245,7 @@ EXISTENCE:  ✓ Confirmed (sources) | ⚠ Single-source | ✗ Not found
 METADATA:   ✓ Consistent | ⚠ Discrepancy: [field: value-A vs value-B]
 CONTENT:    ✓ Supported — "[verbatim abstract excerpt]"
             ⚠ Partial — abstract says: "[what it actually says]"
-            ✗ Contradicted | — Unverifiable (tried CrossRef/S2/Unpaywall/arXiv/PubMed)
+            ✗ Contradicted | — Unverifiable (tried CrossRef/OpenAlex/S2/Unpaywall/arXiv/PubMed)
 RETRACTION: ✓ None found | ✗ Retracted
 
 VERDICT: ACCEPT | WARN | REJECT

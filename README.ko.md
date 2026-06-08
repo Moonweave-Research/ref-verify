@@ -75,7 +75,7 @@ Python 패키지는 CLI 전용입니다. `SKILL.md`를 설치하지 않습니다
   - 문장 그대로 드러나는 text claim
   - efficiency, response rate, actuation strain 같은 subject가 일치하는 percentage claim
   - cycles, patients, voltage, temperature, concentration 같은 단순 unit/count claim
-  - CrossRef를 먼저 쓰고, CrossRef에 abstract가 없으면 DOI가 일치하는 Semantic Scholar와 PubMed fallback 사용
+  - CrossRef를 먼저 쓰고, CrossRef에 abstract가 없으면 DOI가 일치하는 OpenAlex, Semantic Scholar, PubMed fallback 사용
 - 에이전트가 읽기 쉬운 JSON 출력
 - `WARN`, `REJECT`, `UNVERIFIABLE` 결과에 대한 non-zero exit code
 
@@ -84,7 +84,7 @@ Python 패키지는 CLI 전용입니다. `SKILL.md`를 설치하지 않습니다
 철회 여부 확인도 `SKILL.md`에 있는 스킬 프로토콜이 담당합니다.
 
 CLI에는 third-party Python runtime dependency가 없지만, offline verifier는
-아닙니다. 실제 검증에는 CrossRef, Semantic Scholar, PubMed 같은 공개 학술
+아닙니다. 실제 검증에는 CrossRef, OpenAlex, Semantic Scholar, PubMed 같은 공개 학술
 API로 outbound HTTPS 요청을 보낼 수 있어야 합니다.
 
 로컬 체크아웃에서 CLI를 설치합니다.
@@ -125,7 +125,7 @@ ref-verify check-claim 10.1126/science.287.5454.836 \
   --json
 ```
 
-기본값으로 `check-claim`은 CrossRef를 먼저 사용합니다. CrossRef에 abstract가 없으면 DOI가 일치하는 Semantic Scholar와 PubMed fallback을 시도합니다. 특정 소스만 디버깅하려면 `--source crossref`, `--source semantic-scholar`, `--source pubmed`를 사용합니다. 명시적으로 non-CrossRef 소스를 고르면 CrossRef를 거치지 않습니다.
+기본값으로 `check-claim`은 CrossRef를 먼저 사용합니다. CrossRef에 abstract가 없으면 DOI가 일치하는 OpenAlex, Semantic Scholar, PubMed fallback을 시도합니다. 특정 소스만 디버깅하려면 `--source crossref`, `--source openalex`, `--source semantic-scholar`, `--source pubmed`를 사용합니다. 명시적으로 non-CrossRef 소스를 고르면 CrossRef를 거치지 않습니다.
 
 소스 체크아웃에서 바로 실행하는 예시는 다음과 같습니다.
 
@@ -181,7 +181,7 @@ ref-verify verify-doi <doi> --title "<title>" --first-author <last-name> --year 
 메타데이터가 자동화 단계를 조용히 통과할 수 없습니다.
 
 **Full Audit**은 논문을 처음 찾거나 제출 전 최종 점검을 할 때 사용합니다.
-스킬은 필요한 경우 CrossRef, Semantic Scholar, Unpaywall, arXiv, PubMed를
+스킬은 필요한 경우 CrossRef, OpenAlex, Semantic Scholar, Unpaywall, arXiv, PubMed를
 통해 abstract를 가져오고, 논문이 인용하려는 특정 주장을 뒷받침하는지
 확인합니다.
 
@@ -226,7 +226,7 @@ ref-verify check-file claims.csv
 - `NO_ABSTRACT`: 시도한 DOI-bound source에서 abstract text를 얻지 못함
 - `DOI_NOT_FOUND`: 선택한 source에서 DOI-bound record를 찾지 못함
 - `DOI_MISMATCH`: primary 또는 명시적으로 선택한 DOI-bound record가 요청 DOI와 다름
-- `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_UNSUPPORTED`: source lookup 실패 또는 사용 불가
+- `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_RATE_LIMITED`, `SOURCE_UNSUPPORTED`: source lookup 실패, timeout, rate limit, 사용 불가
 
 > 핵심 규칙: 논문 내용에 대한 모든 설명은 live-fetched abstract에서
 > 나와야 합니다. fallback 확인 후에도 abstract에 접근할 수 없으면

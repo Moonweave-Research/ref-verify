@@ -52,7 +52,7 @@ Required fields:
 Optional fields:
 
 - `id`: stable identifier for mapping results back to the draft.
-- `source`: one of `auto`, `crossref`, `semantic-scholar`, or `pubmed`.
+- `source`: one of `auto`, `crossref`, `openalex`, `semantic-scholar`, or `pubmed`.
 - `note`: any caller context. It is preserved in JSON output.
 
 CSV is supported for user-created files, but agents should prefer JSONL because it avoids CSV quoting ambiguity.
@@ -124,7 +124,7 @@ Common routing:
 - `NO_ABSTRACT`: no trusted DOI-bound abstract evidence was available.
 - `DOI_NOT_FOUND`: selected source did not find a DOI-bound record.
 - `DOI_MISMATCH`: selected DOI-bound record did not match the requested DOI.
-- `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_UNSUPPORTED`: source lookup failed or could not be used.
+- `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_RATE_LIMITED`, `SOURCE_UNSUPPORTED`: source lookup failed, timed out, was rate-limited, or could not be used.
 - `ROW_CHECK_ERROR`: one row could not be checked, but other rows may still have results.
 
 ## Agent Must Not

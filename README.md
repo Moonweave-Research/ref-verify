@@ -70,7 +70,7 @@ checks that are currently safe to automate directly:
   - literal text claims
   - subject-matched percentage claims such as efficiency, response rate, or actuation strain
   - simple unit/count claims such as cycles, patients, voltage, temperature, and concentration
-  - CrossRef first, then DOI-bound Semantic Scholar and PubMed fallback when CrossRef has no abstract
+  - CrossRef first, then DOI-bound OpenAlex, Semantic Scholar, and PubMed fallback when CrossRef has no abstract
 - JSON output for agent-readable routing
 - Non-zero exit codes for `WARN`, `REJECT`, and `UNVERIFIABLE` results
 
@@ -78,7 +78,7 @@ Statistical metrics such as p-values, AUC/AUROC, F1 score, hazard ratio, odds ra
 
 The CLI has zero third-party Python runtime dependencies, but it is not an
 offline verifier. Functional checks require outbound HTTPS access to public
-academic APIs such as CrossRef, Semantic Scholar, and PubMed.
+academic APIs such as CrossRef, OpenAlex, Semantic Scholar, and PubMed.
 
 Install the CLI from a local checkout:
 
@@ -119,7 +119,7 @@ ref-verify check-claim 10.1126/science.287.5454.836 \
   --json
 ```
 
-By default, `check-claim` uses CrossRef first. If CrossRef has no abstract, it tries DOI-bound Semantic Scholar and PubMed fallback sources. Use `--source crossref`, `--source semantic-scholar`, or `--source pubmed` for source-specific debugging; explicit non-CrossRef source selection bypasses CrossRef.
+By default, `check-claim` uses CrossRef first. If CrossRef has no abstract, it tries DOI-bound OpenAlex, Semantic Scholar, and PubMed fallback sources. Use `--source crossref`, `--source openalex`, `--source semantic-scholar`, or `--source pubmed` for source-specific debugging; explicit non-CrossRef source selection bypasses CrossRef.
 
 Source-checkout equivalents:
 
@@ -174,8 +174,8 @@ ref-verify verify-doi <doi> --title "<title>" --first-author <last-name> --year 
 exit code, so weak or mismatched metadata cannot silently pass automation gates.
 
 **Full Audit** is for literature search and final pre-submission review. The
-skill fetches abstracts through CrossRef, Semantic Scholar, Unpaywall, arXiv,
-and PubMed where needed, then checks whether the paper supports the specific
+skill fetches abstracts through CrossRef, OpenAlex, Semantic Scholar, Unpaywall,
+arXiv, and PubMed where needed, then checks whether the paper supports the specific
 claim being cited.
 
 For a single DOI-backed claim, the CLI can run the abstract check:
@@ -219,7 +219,7 @@ Current `check-claim` error codes:
 - `NO_ABSTRACT`: attempted DOI-bound sources did not provide abstract text.
 - `DOI_NOT_FOUND`: selected source did not find a DOI-bound record.
 - `DOI_MISMATCH`: the primary or explicitly selected DOI-bound record did not match the requested DOI.
-- `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_UNSUPPORTED`: source lookup failed or could not be used.
+- `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_RATE_LIMITED`, `SOURCE_UNSUPPORTED`: source lookup failed, timed out, was rate-limited, or could not be used.
 
 > Core rule: every content statement about a paper must come from a live-fetched
 > abstract. If the abstract is inaccessible after fallback checks, say

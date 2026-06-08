@@ -6,7 +6,7 @@ from contextlib import redirect_stdout
 from pathlib import Path
 
 from ref_verify.abstract_lookup import AbstractSourceError
-from ref_verify.cli import main
+from ref_verify.cli import _default_abstract_clients, main
 from ref_verify.crossref import parse_crossref_work
 from ref_verify.models import PaperRecord
 
@@ -384,6 +384,47 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["source_attempts"][0]["source"], "semantic_scholar")
         self.assertEqual(payload["source_attempts"][0]["status"], "FOUND")
 
+    def test_check_claim_openalex_source_option(self):
+        crossref_record = PaperRecord(
+            doi="10.1000/openalex",
+            title="CrossRef no abstract",
+            authors=["Lee"],
+            year=2024,
+            abstract=None,
+            source="fixture",
+        )
+        openalex_record = PaperRecord(
+            doi="10.1000/openalex",
+            title="OpenAlex paper",
+            authors=["Lee"],
+            year=2024,
+            abstract="The actuator survived 5000 cycles.",
+            source="fixture",
+        )
+        openalex = FakeAbstractSourceClient("openalex", record=openalex_record)
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/openalex",
+                    "--claim",
+                    "The actuator survived 5000 cycles.",
+                    "--source",
+                    "openalex",
+                    "--json",
+                ],
+                client=FakeClient(crossref_record),
+                abstract_clients=[openalex],
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["abstract_source"], "openalex")
+        self.assertEqual(payload["source_attempts"][0]["source"], "openalex")
+        self.assertEqual(payload["error_code"], "CLAIM_SUPPORTED")
+
     def test_check_claim_uses_semantic_scholar_fallback_when_crossref_has_no_abstract(self):
         crossref_record = PaperRecord(
             doi="10.1000/noabstract",
@@ -423,6 +464,14 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["abstract_source"], "semantic_scholar")
         self.assertEqual(payload["source_attempts"][0]["status"], "NO_ABSTRACT")
         self.assertEqual(payload["source_attempts"][1]["status"], "FOUND")
+
+    def test_default_fallback_order_tries_openalex_before_semantic_scholar(self):
+        clients = _default_abstract_clients()
+
+        self.assertEqual(
+            [client.source_name for client in clients],
+            ["openalex", "semantic_scholar", "pubmed"],
+        )
 
     def test_check_claim_ignores_mismatched_fallback_and_uses_next_source(self):
         crossref_record = PaperRecord(
@@ -627,6 +676,39 @@ class CliTests(unittest.TestCase):
             "NO_ABSTRACT",
             "NO_ABSTRACT",
         ])
+
+    def test_check_claim_reports_source_rate_limited(self):
+        crossref_record = PaperRecord(
+            doi="10.1000/rate-limited",
+            title="No abstract",
+            authors=["Lee"],
+            year=2024,
+            abstract=None,
+            source="fixture",
+        )
+        semantic = FakeAbstractSourceClient(
+            "semantic_scholar",
+            raises=AbstractSourceError("RATE_LIMITED", "Semantic Scholar rate limit exceeded."),
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "check-claim",
+                    "10.1000/rate-limited",
+                    "--claim",
+                    "The actuator survived 5000 cycles.",
+                    "--json",
+                ],
+                client=FakeClient(crossref_record),
+                abstract_clients=[semantic],
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["error_code"], "SOURCE_RATE_LIMITED")
+        self.assertEqual(payload["source_attempts"][1]["status"], "RATE_LIMITED")
 
     def test_check_claim_does_not_promote_fallback_doi_mismatch_to_final_error(self):
         crossref_record = PaperRecord(

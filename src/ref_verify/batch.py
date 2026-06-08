@@ -7,11 +7,12 @@ from pathlib import Path
 from typing import Any, Literal
 
 BatchFormat = Literal["jsonl", "csv"]
-_VALID_SOURCES = {"auto", "crossref", "semantic-scholar", "pubmed"}
+_VALID_SOURCES = {"auto", "crossref", "openalex", "semantic-scholar", "pubmed"}
 _FAILED_ERROR_CODES = {
     "ROW_CHECK_ERROR",
     "SOURCE_API_ERROR",
     "SOURCE_TIMEOUT",
+    "SOURCE_RATE_LIMITED",
     "SOURCE_UNSUPPORTED",
 }
 
