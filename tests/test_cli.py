@@ -1,7 +1,9 @@
 import io
 import json
+import tempfile
 import unittest
 from contextlib import redirect_stdout
+from pathlib import Path
 
 from ref_verify.abstract_lookup import AbstractSourceError
 from ref_verify.cli import main
@@ -1910,6 +1912,79 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["error_code"], "CLAIM_SUPPORTED")
         self.assertEqual(payload["abstract_source"], "crossref")
         self.assertIn("source_attempts", payload)
+
+    def test_check_file_jsonl_outputs_json_summary(self):
+        record = PaperRecord(
+            doi="10.1000/batch",
+            title="Batch paper",
+            authors=["Lee"],
+            year=2024,
+            abstract="The model achieved 95% accuracy.",
+            source="fixture",
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "claims.jsonl"
+            path.write_text(
+                json.dumps(
+                    {
+                        "id": "c1",
+                        "doi": "10.1000/batch",
+                        "claim": "The model achieved 95% accuracy.",
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            output = io.StringIO()
+
+            with redirect_stdout(output):
+                exit_code = main(
+                    ["check-file", str(path), "--json"],
+                    client=FakeClient(record),
+                    abstract_clients=[],
+                )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["summary"]["total"], 1)
+        self.assertEqual(payload["summary"]["accept"], 1)
+        self.assertEqual(payload["results"][0]["id"], "c1")
+        self.assertEqual(payload["results"][0]["verdict"], "ACCEPT")
+
+    def test_check_file_jsonl_exits_two_when_any_claim_warns(self):
+        record = PaperRecord(
+            doi="10.1000/batch-warn",
+            title="Batch warning",
+            authors=["Lee"],
+            year=2024,
+            abstract="The model achieved 90% accuracy.",
+            source="fixture",
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "claims.jsonl"
+            path.write_text(
+                json.dumps(
+                    {
+                        "doi": "10.1000/batch-warn",
+                        "claim": "The model achieved 95% accuracy.",
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            output = io.StringIO()
+
+            with redirect_stdout(output):
+                exit_code = main(
+                    ["check-file", str(path), "--json"],
+                    client=FakeClient(record),
+                    abstract_clients=[],
+                )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["summary"]["warn"], 1)
+        self.assertEqual(payload["results"][0]["status"], "PARTIAL")
 
 
 if __name__ == "__main__":

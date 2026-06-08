@@ -3,12 +3,20 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from pathlib import Path
 from typing import Sequence
 
 from ref_verify.abstract_lookup import (
     AbstractSourceClient,
     lookup_abstract,
     lookup_selected_abstract,
+)
+from ref_verify.batch import (
+    BatchInputError,
+    BatchRowResult,
+    batch_payload,
+    parse_claim_file,
+    render_batch_text,
 )
 from ref_verify.claim_check import check_claim_support
 from ref_verify.crossref import CrossrefClient
@@ -34,6 +42,8 @@ def main(
             return _verify_doi(args, lookup_client)
         if args.command == "check-claim":
             return _check_claim(args, lookup_client, fallback_clients)
+        if args.command == "check-file":
+            return _check_file(args, lookup_client, fallback_clients)
     except Exception as exc:
         _emit({"error": str(exc)}, as_json=getattr(args, "json", False))
         return 1
@@ -67,6 +77,11 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     claim.add_argument("--json", action="store_true")
 
+    check_file = subparsers.add_parser("check-file", help="Check claims from a JSONL or CSV file")
+    check_file.add_argument("path")
+    check_file.add_argument("--format", choices=("jsonl", "csv"))
+    check_file.add_argument("--json", action="store_true")
+
     return parser
 
 
@@ -92,6 +107,33 @@ def _check_claim(
     payload = _run_claim_check(args.doi, args.claim, args.source, client, fallback_clients)
     _emit(payload, as_json=args.json)
     return 0 if payload.get("verdict") == "ACCEPT" else 2
+
+
+def _check_file(
+    args: argparse.Namespace,
+    client: CrossrefClient,
+    fallback_clients: Sequence[AbstractSourceClient],
+) -> int:
+    try:
+        rows = parse_claim_file(Path(args.path), args.format)
+    except BatchInputError as exc:
+        _emit({"error": str(exc)}, as_json=args.json)
+        return 1
+
+    results = [
+        BatchRowResult(
+            row=row,
+            payload=_run_claim_check(row.doi, row.claim, row.source, client, fallback_clients),
+        )
+        for row in rows
+    ]
+    payload = batch_payload(results)
+    if args.json:
+        _emit(payload, as_json=True)
+    else:
+        print(render_batch_text(results))
+    summary = payload["summary"]
+    return 0 if summary["total"] == summary["accept"] else 2
 
 
 def _run_claim_check(
