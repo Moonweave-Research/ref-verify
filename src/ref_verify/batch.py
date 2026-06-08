@@ -76,10 +76,14 @@ def parse_claim_file(path: Path, explicit_format: str | None) -> list[ClaimInput
     batch_format = detect_format(path, explicit_format)
     try:
         if batch_format == "jsonl":
-            return _parse_jsonl(path)
-        return _parse_csv(path)
+            rows = _parse_jsonl(path)
+        else:
+            rows = _parse_csv(path)
     except OSError as exc:
         raise BatchInputError(f"Could not read input file: {exc}") from exc
+    if not rows:
+        raise BatchInputError("Input file does not contain any claim rows")
+    return rows
 
 
 def summarize_results(results: list[BatchRowResult]) -> BatchSummary:
@@ -170,6 +174,11 @@ def _parse_csv(path: Path) -> list[ClaimInputRow]:
         reader = csv.DictReader(handle)
         if reader.fieldnames is None:
             raise BatchInputError("CSV input is missing a header row")
+        fieldnames = {field.strip() for field in reader.fieldnames if field}
+        missing = {"doi", "claim"} - fieldnames
+        if missing:
+            missing_fields = ", ".join(sorted(missing))
+            raise BatchInputError(f"CSV header must include doi and claim fields; missing: {missing_fields}")
         for row_number, raw in enumerate(reader, start=2):
             rows.append(_row_from_mapping(raw, line_number=row_number, row_label="line"))
     return rows

@@ -89,6 +89,25 @@ class BatchParserTests(unittest.TestCase):
         self.assertEqual(rows[0].doi, "10.1000/a")
         self.assertEqual(rows[0].source, "crossref")
 
+    def test_csv_without_required_headers_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "claims.csv"
+            path.write_text(
+                "10.1000/a,This paper reports 95% accuracy.\n",
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(BatchInputError, "CSV header.*doi.*claim"):
+                parse_claim_file(path, None)
+
+    def test_empty_input_file_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "claims.jsonl"
+            path.write_text("", encoding="utf-8")
+
+            with self.assertRaisesRegex(BatchInputError, "does not contain any claim rows"):
+                parse_claim_file(path, None)
+
     def test_missing_required_field_is_rejected_with_row_number(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "claims.jsonl"
