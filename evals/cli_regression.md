@@ -33,6 +33,10 @@ their `gated_on` issue is resolved. This is how the corpus tracks the roadmap.
 PYTHONPATH=src python3 evals/run_cli_regression.py
 ```
 
+The same command is also wired into the manual GitHub Actions **Live Smoke**
+workflow. It is intentionally not part of every pull-request CI run because it
+depends on live public APIs.
+
 Exit code is non-zero iff a SAFETY invariant is violated. (Live network: CrossRef /
 OpenAlex / Semantic Scholar / PubMed. Semantic-Scholar free-tier 429 only affects
 PROGRESS rows that depend on it, never SAFETY rows.)
