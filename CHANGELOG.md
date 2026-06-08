@@ -16,6 +16,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Added `ref-verify check-file` for JSONL and CSV DOI/claim batch checks.
 - Added fixture-backed numeric claim eval coverage for repeated-use workflows.
 - Added DOI-bound OpenAlex abstract fallback before Semantic Scholar and PubMed.
+- Added a CLI regression corpus and manual Live Smoke ship gate for release-readiness checks.
+- Added English and Korean scope guidance that explains what the tool verifies, what it does not verify, and how to interpret non-`ACCEPT` verdicts.
 
 ### Fixed
 

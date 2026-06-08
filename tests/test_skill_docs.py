@@ -204,8 +204,8 @@ class SkillDocsTests(unittest.TestCase):
             encoding="utf-8"
         )
 
-        self.assertIn('version = "1.1.2"', pyproject)
-        self.assertIn('__version__ = "1.1.2"', init)
+        self.assertIn('version = "1.2.0"', pyproject)
+        self.assertIn('__version__ = "1.2.0"', init)
 
     def test_readmes_prioritize_user_workflow_before_architecture_details(self):
         readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
