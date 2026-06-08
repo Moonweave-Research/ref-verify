@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+## [1.2.0] — 2026-06-08
+
 ### Added
 
 - Added `ref-verify check-file` for JSONL and CSV DOI/claim batch checks.
