@@ -167,6 +167,45 @@ PYTHONPATH=src python3 -m unittest discover -s tests -v
 
 ---
 
+## 범위 — 무엇을 확인하고 무엇을 확인하지 않는가
+
+`ref-verify`는 만능 판정기가 아니라 보수적인 안전장치입니다. 일부러
+flag를 더 자주 냅니다. `ACCEPT`는 높은 확신의 통과이고, 그 외 결과는
+"자동으로 확인할 수 없으니 사람이 확인해야 한다"는 뜻이지 "인용이
+틀렸다"는 뜻은 아닙니다.
+
+**확인하는 것**
+
+- DOI 메타데이터: 제목, 첫 번째 저자 성, 연도를 CrossRef와 비교합니다.
+- DOI-bound **abstract**가 특정 숫자 또는 literal claim을 명시적으로
+  뒷받침하는지 확인합니다. abstract에 접근할 수 없으면 추측하지 않고
+  `UNVERIFIABLE`을 반환합니다.
+
+**확인하지 않는 것** (의도적으로 범위 밖이며 버그가 아닙니다)
+
+- **본문, figure, table, supplementary 값** — abstract-only입니다. 숫자가
+  본문에만 있으면 `UNVERIFIABLE`로 남습니다.
+- **관계형/정성적 claim** — proportionality, mechanism, "더 강하다/넓다"
+  같은 표현은 자동 판정하지 않습니다. value+unit 또는 literal claim 중심입니다.
+- **publisher가 abstract를 공개 API에 제공하지 않는 논문** — CrossRef나
+  OpenAlex에서 abstract가 없으면 `UNVERIFIABLE`입니다. 이는 claim 판단이
+  아니라 접근 가능성 판단입니다.
+- **복잡한 통계 지표** — p-value, AUC/AUROC, F1, hazard/odds ratio,
+  confidence interval은 CLI가 아니라 수동 skill protocol 범위입니다.
+- **논문 품질, novelty, 학계 consensus**, 또는 논문 전체가 넓은 주장을
+  뒷받침하는지 여부.
+
+**판정 읽는 법**
+
+| Verdict | 의미 |
+|---|---|
+| `ACCEPT` | 가져온 abstract가 claim을 명시적으로 뒷받침함. 높은 확신의 통과. |
+| `WARN` / `PARTIAL` | abstract는 읽었지만 정확한 claim을 명시적으로 뒷받침하지 않음. 원문 확인 필요. |
+| `UNVERIFIABLE` | 확인할 abstract에 접근하지 못함. claim 자체가 틀렸다는 뜻은 아님. |
+| `REJECT` | DOI가 죽었거나, 다른 논문으로 연결되거나, 모순/철회 근거가 있음. |
+
+---
+
 ## 모드
 
 **Quick Screen**은 이미 DOI가 있을 때 사용합니다. CrossRef로 DOI, 제목,
