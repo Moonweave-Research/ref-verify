@@ -120,6 +120,7 @@ _SCOPE_OR_COMPARATIVE_SUFFIX_TERMS = {
 }
 
 _PHYSICAL_MEASUREMENT_UNITS = {
+    "c",
     "ev",
     "kev",
     "mev",
@@ -242,19 +243,19 @@ def check_numeric_claim_support(abstract: str, claim: str) -> NumericClaimResult
         )
 
     related_evidence = ""
-    for clause in _clauses(abstract):
+    for clause, subject_context in _clause_contexts(abstract):
         if _has_unsupported_frame(clause):
             related_evidence = related_evidence or clause
             continue
         evidence_expressions = _extract_evidence_expressions(clause)
         if not evidence_expressions:
             continue
-        if _subject_terms_match(claim_expression.subject_terms, clause):
+        if _subject_terms_match(claim_expression.subject_terms, subject_context):
             related_evidence = related_evidence or clause
         for evidence_expression in evidence_expressions:
             if not _units_match(claim_expression.unit, evidence_expression.unit):
                 continue
-            if not _subject_terms_match(claim_expression.subject_terms, clause):
+            if not _subject_terms_match(claim_expression.subject_terms, subject_context):
                 continue
             if _evidence_entails_claim(
                 evidence_expression.value,
@@ -308,7 +309,12 @@ def _extract_evidence_expressions(clause: str) -> list[NumericExpression]:
 
 
 def _clauses(value: str) -> list[str]:
-    clauses: list[str] = []
+    return [clause for clause, _ in _clause_contexts(value)]
+
+
+def _clause_contexts(value: str) -> list[tuple[str, str]]:
+    clauses: list[tuple[str, str]] = []
+    previous_sentence = ""
     for sentence in re.split(r"(?<=[.!?])\s+|[.;:]\s+", value.strip()):
         sentence = sentence.strip()
         if not sentence:
@@ -319,8 +325,17 @@ def _clauses(value: str) -> list[str]:
             if part.strip()
         ]
         for part in parts:
-            clauses.extend(_split_numeric_comma_clauses(part))
+            for clause in _split_numeric_comma_clauses(part):
+                clauses.append((clause, _subject_context(clause, previous_sentence)))
+        previous_sentence = sentence
     return clauses
+
+
+def _subject_context(clause: str, previous_sentence: str) -> str:
+    tokens = _tokens(clause)
+    if tokens and _stem(tokens[0]) in {"measurement", "measurements"} and previous_sentence:
+        return f"{previous_sentence} {clause}"
+    return clause
 
 
 def _split_numeric_comma_clauses(value: str) -> list[str]:
@@ -329,7 +344,12 @@ def _split_numeric_comma_clauses(value: str) -> list[str]:
         return [value.strip()]
     if parts[0].lower().split()[:1] in (["after"], ["before"], ["under"], ["in"]):
         return [value.strip()]
-    if sum(1 for part in parts if _MEASUREMENT_PATTERN.search(part)) >= 2:
+    units = [
+        _normalize_unit(match.group("unit"))
+        for part in parts
+        for match in _MEASUREMENT_PATTERN.finditer(part)
+    ]
+    if len(units) != len(set(units)):
         return parts
     return [value.strip()]
 
@@ -414,6 +434,8 @@ def _claim_comparator(prefix: str) -> str:
         return "gte"
     if re.search(r"\b(?:at most|no more than)\b", normalized):
         return "lte"
+    if re.search(r"\bup to\b", normalized):
+        return "up_to"
     if re.search(r"\b(?:below|under|less than)\b", normalized):
         return "lt"
     if re.search(r"\b(?:above|over|greater than|more than|exceeded|exceeds)\b", normalized):
@@ -469,8 +491,21 @@ def _has_unsupported_frame(value: str) -> bool:
         ]
         if _has_disqualifying_suffix(match.group("unit"), suffix_tokens):
             return True
+    if _starts_with_current_study_intro(value):
+        return False
     prefix_tokens = re.findall(r"[a-zA-Z]+", value.lower())[:2]
     return any(token in {"after", "before", "under", "in"} for token in prefix_tokens)
+
+
+def _starts_with_current_study_intro(value: str) -> bool:
+    normalized = " ".join(re.findall(r"[a-zA-Z]+", value.lower()))
+    return bool(
+        re.match(
+            r"^(?:hence|therefore|accordingly)?\s*in "
+            r"(?:(?:the|this|our)\s+)?(?:present\s+)?(?:study|work)\b",
+            normalized,
+        )
+    )
 
 
 def _has_disqualifying_suffix(unit: str, suffix_tokens: list[str]) -> bool:
@@ -496,6 +531,8 @@ def _evidence_entails_claim(
     claim_comparator: str,
 ) -> bool:
     if evidence_comparator == "up_to":
+        if claim_comparator == "up_to":
+            return evidence_value == claim_value
         return claim_comparator in {"lt", "lte"} and evidence_value <= claim_value
     if claim_comparator == "gt":
         return evidence_value > claim_value

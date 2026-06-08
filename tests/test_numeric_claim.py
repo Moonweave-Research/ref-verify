@@ -24,6 +24,15 @@ class NumericClaimTests(unittest.TestCase):
         self.assertEqual(result.status, "SUPPORTED")
         self.assertIn("5000 cycles", result.evidence)
 
+    def test_accepts_matching_up_to_unit_claim(self):
+        result = check_numeric_claim_support(
+            "The device survived up to 3000 cycles.",
+            "The device survived up to 3000 cycles.",
+        )
+
+        self.assertEqual(result.status, "SUPPORTED")
+        self.assertIn("3000 cycles", result.evidence)
+
     def test_accepts_subject_matched_unit_claim(self):
         result = check_numeric_claim_support(
             "The device operated at 3.2 V.",
@@ -33,6 +42,28 @@ class NumericClaimTests(unittest.TestCase):
         self.assertEqual(result.status, "SUPPORTED")
         self.assertIn("3.2 V", result.evidence)
 
+    def test_accepts_present_study_intro_with_subject_after_commas(self):
+        result = check_numeric_claim_support(
+            (
+                "Hence, in the present study, we synthesized a 200 g scale of "
+                "amorphous, hydrophobic as well as translucent, hyperbranched "
+                "polymeric sulfur networks that provide high thermal resistance "
+                "(>220 °C)."
+            ),
+            "The polymeric sulfur networks were synthesized on a 200 g scale.",
+        )
+
+        self.assertEqual(result.status, "SUPPORTED")
+        self.assertIn("200 g", result.evidence)
+
+    def test_rejects_wrong_subject_when_same_unit_repeats_across_commas(self):
+        result = check_numeric_claim_support(
+            "Device A survived 5000 cycles, Device B survived 1000 cycles.",
+            "Device B survived 5000 cycles.",
+        )
+
+        self.assertEqual(result.status, "PARTIAL")
+
     def test_accepts_temperature_claim(self):
         result = check_numeric_claim_support(
             "Samples were maintained at 37 °C.",
@@ -41,6 +72,29 @@ class NumericClaimTests(unittest.TestCase):
 
         self.assertEqual(result.status, "SUPPORTED")
         self.assertIn("37 °C", result.evidence)
+
+    def test_accepts_generic_measurement_subject_from_previous_sentence(self):
+        result = check_numeric_claim_support(
+            (
+                "This paper reports electrical conductivity in wet polyimide. "
+                "Measurements were carried out at 30 °C with electric fields in the range."
+            ),
+            "The conductivity measurements were carried out at 30 °C.",
+        )
+
+        self.assertEqual(result.status, "SUPPORTED")
+        self.assertIn("30 °C", result.evidence)
+
+    def test_rejects_previous_sentence_subject_for_qualified_measurements(self):
+        result = check_numeric_claim_support(
+            (
+                "This paper reports electrical conductivity in wet polyimide. "
+                "Tensile measurements were carried out at 30 °C."
+            ),
+            "The conductivity measurements were carried out at 30 °C.",
+        )
+
+        self.assertEqual(result.status, "PARTIAL")
 
     def test_rejects_comparative_evidence_for_exact_claim(self):
         cases = (
@@ -143,6 +197,13 @@ class NumericClaimTests(unittest.TestCase):
             (
                 "The stress reached 120 MPa at 300 K.",
                 "stress reached 120 MPa",
+            ),
+            (
+                (
+                    "Conductivity measurements were carried out at 30 °C with "
+                    "electric fields in the range."
+                ),
+                "conductivity measurements were carried out at 30 °C",
             ),
         )
 
