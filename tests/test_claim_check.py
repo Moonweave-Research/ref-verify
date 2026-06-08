@@ -951,6 +951,27 @@ class ClaimCheckTests(unittest.TestCase):
                 self.assertEqual(result.status, "PARTIAL")
                 self.assertEqual(result.verdict, "WARN")
 
+    def test_up_to_percentage_claim_is_supported_by_matching_up_to_evidence(self):
+        record = PaperRecord(
+            doi="10.1000/up-to-verbatim",
+            title="Up to strain actuator",
+            authors=["Pelrine"],
+            year=2000,
+            abstract=(
+                "Actuated strains up to 117% were demonstrated with silicone "
+                "elastomers."
+            ),
+            source="fixture",
+        )
+
+        result = check_claim_support(
+            record,
+            "Actuated strains up to 117% were demonstrated with silicone elastomers.",
+        )
+
+        self.assertEqual(result.status, "SUPPORTED")
+        self.assertEqual(result.verdict, "ACCEPT")
+
     def test_non_percentage_claim_requires_matching_numeric_value(self):
         record = PaperRecord(
             doi="10.1000/lifetime",

@@ -24,6 +24,15 @@ class NumericClaimTests(unittest.TestCase):
         self.assertEqual(result.status, "SUPPORTED")
         self.assertIn("5000 cycles", result.evidence)
 
+    def test_accepts_matching_up_to_unit_claim(self):
+        result = check_numeric_claim_support(
+            "The device survived up to 3000 cycles.",
+            "The device survived up to 3000 cycles.",
+        )
+
+        self.assertEqual(result.status, "SUPPORTED")
+        self.assertIn("3000 cycles", result.evidence)
+
     def test_accepts_subject_matched_unit_claim(self):
         result = check_numeric_claim_support(
             "The device operated at 3.2 V.",
@@ -63,6 +72,29 @@ class NumericClaimTests(unittest.TestCase):
 
         self.assertEqual(result.status, "SUPPORTED")
         self.assertIn("37 °C", result.evidence)
+
+    def test_accepts_generic_measurement_subject_from_previous_sentence(self):
+        result = check_numeric_claim_support(
+            (
+                "This paper reports electrical conductivity in wet polyimide. "
+                "Measurements were carried out at 30 °C with electric fields in the range."
+            ),
+            "The conductivity measurements were carried out at 30 °C.",
+        )
+
+        self.assertEqual(result.status, "SUPPORTED")
+        self.assertIn("30 °C", result.evidence)
+
+    def test_rejects_previous_sentence_subject_for_qualified_measurements(self):
+        result = check_numeric_claim_support(
+            (
+                "This paper reports electrical conductivity in wet polyimide. "
+                "Tensile measurements were carried out at 30 °C."
+            ),
+            "The conductivity measurements were carried out at 30 °C.",
+        )
+
+        self.assertEqual(result.status, "PARTIAL")
 
     def test_rejects_comparative_evidence_for_exact_claim(self):
         cases = (
@@ -165,6 +197,13 @@ class NumericClaimTests(unittest.TestCase):
             (
                 "The stress reached 120 MPa at 300 K.",
                 "stress reached 120 MPa",
+            ),
+            (
+                (
+                    "Conductivity measurements were carried out at 30 °C with "
+                    "electric fields in the range."
+                ),
+                "conductivity measurements were carried out at 30 °C",
             ),
         )
 
