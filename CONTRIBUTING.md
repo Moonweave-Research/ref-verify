@@ -66,4 +66,4 @@ Pull requests that include a new test case or a documented before/after example 
 
 ## Questions
 
-Open a [GitHub Discussion](https://github.com/moonweave/ref-verify/discussions) for anything that isn't a bug or a concrete feature request.
+Open a [GitHub Discussion](https://github.com/Moonweave-Research/ref-verify/discussions) for anything that isn't a bug or a concrete feature request.

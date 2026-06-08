@@ -23,7 +23,10 @@ Cursor, Codex 같은 스킬 지원 에이전트가 초안에 참고문헌을 넣
 
 ```bash
 # Node.js에 포함된 npx 필요
-npx skills add Moonweave-Research/ref-verify -g
+npx skills add Moonweave-Research/ref-verify -g \
+  --skill ref-verify \
+  --agent claude-code cursor codex \
+  -y
 ```
 
 **Claude Code, Cursor, Codex** 및 `npx skills` 생태계를 지원하는

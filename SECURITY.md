@@ -18,7 +18,7 @@
 
 ## Reporting
 
-Do not open a public issue for security vulnerabilities. Email the maintainer directly or use [GitHub's private vulnerability reporting](https://github.com/moonweave/ref-verify/security/advisories/new).
+Do not open a public issue for security vulnerabilities. Email the maintainer directly or use [GitHub's private vulnerability reporting](https://github.com/Moonweave-Research/ref-verify/security/advisories/new).
 
 Include:
 - A description of the vulnerability

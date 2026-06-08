@@ -23,7 +23,10 @@ supports a specific claim, or audit references before submission. No server setu
 
 ```bash
 # requires npx (comes with Node.js)
-npx skills add Moonweave-Research/ref-verify -g
+npx skills add Moonweave-Research/ref-verify -g \
+  --skill ref-verify \
+  --agent claude-code cursor codex \
+  -y
 ```
 
 Works with **Claude Code, Cursor, Codex**, and any agent that supports the
