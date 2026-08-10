@@ -161,20 +161,20 @@ normal CI does not fail because an upstream API is temporarily unavailable.
 
 ---
 
-## Scope — what it does and does not verify
+## Scope — optional CLI versus manual audit
 
 `ref-verify` is a conservative guard, not an oracle. It errs toward flagging: an
 `ACCEPT` is high-confidence, and **anything else means "not auto-verifiable —
 check it yourself", not "the citation is wrong."**
 
-**It verifies**
+**The optional CLI verifies**
 
 - DOI metadata: title, first-author surname, and year against CrossRef.
 - Whether a DOI-bound **abstract** explicitly supports a specific numeric or
   literal claim, quoted verbatim. If no abstract is reachable, it returns
   `UNVERIFIABLE` rather than guessing.
 
-**It does not verify** (out of scope by design, not bugs)
+**The optional CLI does not verify** (out of scope by design, not bugs)
 
 - **Full-text, figure, table, or supplementary values** — abstract-only. A number
   that appears only in the body stays `UNVERIFIABLE`.
@@ -188,7 +188,13 @@ check it yourself", not "the citation is wrong."**
 - **Paper quality, novelty, field consensus**, or whether the *full* paper
   supports a broader statement.
 
-**Reading a verdict**
+The agent skill's manual Full Audit protocol goes beyond the optional CLI for
+mechanism, implementation, and procedural claims. It requires a fetched
+full-text passage at that source depth; when full text is unavailable, it
+returns `WARN (ABSTRACT-ONLY)` instead of upgrading an abstract topic match to
+`ACCEPT`.
+
+**Reading a CLI verdict**
 
 | Verdict | Meaning |
 |---|---|
@@ -213,8 +219,9 @@ exit code, so weak or mismatched metadata cannot silently pass automation gates.
 
 **Full Audit** is for literature search and final pre-submission review. The
 skill fetches abstracts through CrossRef, OpenAlex, Semantic Scholar, Unpaywall,
-arXiv, and PubMed where needed, then checks whether the paper supports the specific
-claim being cited.
+arXiv, and PubMed where needed. For a topline claim, it checks the abstract; for
+a mechanism, implementation, or procedural claim, it continues to a fetched
+full-text passage before assigning support.
 
 For a single DOI-backed claim, the CLI can run the abstract check:
 
@@ -260,8 +267,9 @@ Current `check-claim` error codes:
 - `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_RATE_LIMITED`, `SOURCE_UNSUPPORTED`: source lookup failed, timed out, was rate-limited, or could not be used.
 
 > Core rule: every content statement about a paper must come from a live-fetched
-> abstract. If the abstract is inaccessible after fallback checks, say
-> `UNVERIFIABLE`. Do not fill the gap from memory.
+> source at the depth the claim requires — abstract for topline claims, full
+> text for mechanism, implementation, or procedural claims. If the required
+> source is inaccessible, say so. Do not fill the gap from memory.
 
 ---
 

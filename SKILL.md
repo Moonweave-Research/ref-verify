@@ -1,13 +1,13 @@
 ---
 name: ref-verify
-description: "Prevents citation hallucination in academic writing. Invoke when: finding papers to support a specific claim; verifying/checking/auditing existing citations or DOIs; confirming whether a paper actually says what the user claims it says ('is that what the paper says?', 'did they actually show X?'); adding a citation by describing a paper ('add a citation for the paper where X'); running a pre-submission reference sweep. Do NOT invoke for: formatting references in APA/IEEE style, general topic explanations, citation style questions, or prose editing. Selects Quick Screen (seconds per paper) or Full Audit (abstract fetch + claim check) automatically."
+description: "Prevents citation hallucination in academic writing. Invoke when: finding papers to support a specific claim; verifying/checking/auditing existing citations or DOIs; confirming whether a paper actually says what the user claims it says ('is that what the paper says?', 'did they actually show X?'); adding a citation by describing a paper ('add a citation for the paper where X'); running a pre-submission reference sweep. Do NOT invoke for: formatting references in APA/IEEE style, general topic explanations, citation style questions, or prose editing. Selects Quick Screen (seconds per paper) or Full Audit (source-depth claim check) automatically."
 ---
 
 # ref-verify — Reference Hallucination Guard
 
 The specific failure this skill prevents: LLMs describe paper content from recalled training data rather than from what the abstract actually says. A paper gets attributed findings it doesn't contain, or cited for claims that appear nowhere in the text. The fix is one rule applied consistently:
 
-**Every content statement about a paper must come from a live-fetched abstract, quoted or paraphrased verbatim. If you cannot fetch the abstract, say so explicitly — never fill the gap with recalled description.**
+**Every content statement about a paper must come from a live-fetched source — abstract for topline/headline claims, full text for mechanism/implementation/procedural claims — quoted or paraphrased verbatim. If you cannot fetch the required source, say so explicitly — never fill the gap with recalled description, and never let a topical abstract match stand in for a mechanism-level claim.**
 
 ---
 
@@ -32,7 +32,7 @@ User is writing inline and adds a single citation from memory?
   └─ Quick Screen minimum; Full Audit if citing for a specific claim
 ```
 
-The expensive part is Full Audit (5-layer, abstract fetch). Quick Screen costs ~5s per paper. Only escalate to Full Audit when the task genuinely requires content verification.
+The expensive part is Full Audit (5-layer, source-depth evidence fetch). Quick Screen costs ~5s per paper. Only escalate to Full Audit when the task genuinely requires content verification.
 
 ---
 
@@ -132,6 +132,11 @@ Route the result:
   attempted CLI sources. Continue the manual fallback chain below instead of
   treating the claim as rejected or supported.
 
+CLI `ACCEPT` is abstract-level evidence only. If the claim describes a
+mechanism, implementation, or procedure, do not promote that result to the
+Full Audit verdict; classify the claim in Layer 3 and obtain the required
+full-text evidence first.
+
 For JSON output, use `abstract_source`, `source_attempts`, and `error_code` to
 decide the next step:
 
@@ -199,22 +204,69 @@ Extract from confirmed sources and compare: title, all authors (last names), yea
 
 This is where the skill's core value lies. The goal is not just "does this paper exist" but "does this paper actually contain the claim being attributed to it."
 
+**Step 0 — Classify the claim.**
+
+Before fetching anything, classify what kind of claim is being verified:
+
+- **Topline/headline claim** — a finding of the kind abstracts conventionally state (overall result, top-line number, general conclusion). Abstract-only evidence is a legitimate source of truth for this class.
+- **Mechanism/implementation/procedural claim** — describes *how* something works or was done: a specific mechanism, algorithm, architecture, parameter, experimental step, control condition, or a numeric value tied to a table/figure/method section rather than the summary result. Abstracts routinely omit this content even when the paper supports it. Signal words: "mechanism," "how," "architecture," "algorithm," "implementation," "procedure," "protocol," "parameter," "control group," "ablation," "table," "figure," or any claim more specific than what a one-paragraph summary would state.
+
+If the claim is mechanism/implementation-class, an abstract-only check is not sufficient even when the abstract is topically on point. Fetch the abstract as evidence of existence/topic match, but do not resolve the verdict from the abstract alone — continue to Layer 3b below.
+
 Fetch the abstract using this priority order:
 1. CrossRef raw JSON: `https://api.crossref.org/works/{DOI}` — check the `abstract` field
-2. OpenAlex: `https://api.openalex.org/works/doi:{DOI}?mailto=verify@ref-verify.local` — reconstruct `abstract_inverted_index`
+2. OpenAlex: `https://api.openalex.org/works/doi:{DOI}?mailto={contact_email}` — reconstruct `abstract_inverted_index`
 3. Semantic Scholar: append `&fields=abstract` to your S2 DOI lookup
-4. Open-access fallback: `https://api.unpaywall.org/v2/{DOI}?email=verify@ref-verify.local` — check `is_oa` and `oa_locations`
+4. Open-access fallback: `https://api.unpaywall.org/v2/{DOI}?email={contact_email}` — check `is_oa` and `oa_locations`
 5. arXiv fallback for preprints: `https://export.arxiv.org/api/query?id_list={arxiv_id}`
 6. PubMed Central for life/bio papers: `https://www.ncbi.nlm.nih.gov/pmc/articles/{PMCID}/`
+
+For APIs that require a contact email, replace `{contact_email}` with a real,
+user-authorized address from configuration. Do not send a placeholder address.
 
 After fetching, check: does the abstract contain the specific claim being cited?
 
 - Abstract explicitly contains the claim (quote it verbatim) → `CONTENT: SUPPORTED`
 - Abstract is about the topic but doesn't make the specific claim → `CONTENT: PARTIAL — quote what it actually says`
 - Abstract contradicts the claim → `CONTENT: CONTRADICTED — do not use this citation`
-- Abstract not accessible after trying all 5 sources → `CONTENT: UNVERIFIABLE — user must check full text`
+- Abstract not accessible after trying all sources → `CONTENT: UNVERIFIABLE — user must check full text`
+- Claim is mechanism/implementation-class and full text could not be obtained after trying all Layer 3b sources → `CONTENT: ABSTRACT-ONLY — full text unavailable, verification insufficient`. This label must never be upgraded to SUPPORTED/ACCEPT.
 
-**The rule that cannot be relaxed**: if you describe what a paper "shows" or "demonstrates" or "reports," you must quote or directly paraphrase the fetched abstract text. Summarizing from memory is not permitted even if you feel confident.
+**The rule that cannot be relaxed**: if you describe what a paper "shows" or
+"demonstrates" or "reports," you must quote or directly paraphrase fetched
+source text at the required depth. Summarizing from memory is not permitted
+even if you feel confident.
+
+**Layer 3b — Full-Text Confirmation (mechanism/implementation-class claims only)**
+
+Required whenever Step 0 classified the claim as mechanism/implementation-class,
+or whenever the abstract verdict is `PARTIAL` for a claim more specific than the
+abstract's summary level. Skip only for topline claims that received
+`CONTENT: SUPPORTED` directly from the abstract.
+
+Fetch the paper body in this priority order, stopping at the first success:
+
+1. **Local Zotero PDF** — if a Zotero library is configured, query its database
+   for this DOI, resolve the attachment key, and read the linked PDF. A common
+   default is `~/Zotero/zotero.sqlite` with attachments under
+   `~/Zotero/storage/{key}/`; discover the actual path instead of assuming it.
+2. **research-wiki vault** — when the `research-wiki` skill is available,
+   search its configured vault for an already-ingested full-text copy. Do not
+   assume a machine-specific vault path.
+3. **Open-access link** — resolve and fetch the actual full text (not just an
+   availability flag):
+   - Unpaywall: `https://api.unpaywall.org/v2/{DOI}?email={contact_email}`
+     → fetch `best_oa_location.url_for_pdf` (or any `oa_locations[].url_for_pdf`).
+   - arXiv: `https://export.arxiv.org/api/query?id_list={arxiv_id}` → fetch the
+     full paper, not only the `<summary>` field.
+4. **Failure** — if none of the above yields a readable full text, do not treat
+   the abstract as sufficient. Apply the `CONTENT: ABSTRACT-ONLY` label defined
+   above.
+
+When full text is obtained, quote the passage that supports, partially supports,
+or contradicts the claim. For a mechanism/implementation claim, `CONTENT:
+SUPPORTED` requires a full-text quote — an abstract-level topic match cannot
+satisfy it.
 
 **Layer 4 — DOI Resolution**
 
@@ -243,8 +295,9 @@ Journal: [Full name]
 
 EXISTENCE:  ✓ Confirmed (sources) | ⚠ Single-source | ✗ Not found
 METADATA:   ✓ Consistent | ⚠ Discrepancy: [field: value-A vs value-B]
-CONTENT:    ✓ Supported — "[verbatim abstract excerpt]"
-            ⚠ Partial — abstract says: "[what it actually says]"
+CONTENT:    ✓ Supported — "[verbatim excerpt — abstract for topline, full text for mechanism claims]"
+            ⚠ Partial — source says: "[what it actually says]"
+            ⚠ Abstract-only — mechanism/implementation claim, full text unavailable after Zotero/research-wiki/OA attempts
             ✗ Contradicted | — Unverifiable (tried CrossRef/OpenAlex/S2/Unpaywall/arXiv/PubMed)
 RETRACTION: ✓ None found | ✗ Retracted
 
@@ -253,10 +306,12 @@ Reason: [one sentence — what's missing or wrong]
 ────────────────────────────────────────────────
 ```
 
-CONTENT field must show either a verbatim excerpt or an explicit "Unverifiable" — never a summary written from memory.
+CONTENT field must show either a verbatim excerpt or an explicit non-support
+state such as `ABSTRACT-ONLY` or `UNVERIFIABLE` — never a summary written from
+memory.
 
-**ACCEPT**: two-source confirmed, DOI resolves to right paper, content supported by fetched abstract, no retraction.
-**WARN**: solvable issue — single source, partial content match, or abstract inaccessible after trying all fallbacks. Safe to use if user verifies the flagged item.
+**ACCEPT**: two-source confirmed, DOI resolves to the right paper, content supported at the required source depth (abstract for topline claims; full text for mechanism/implementation/procedural claims), and no retraction.
+**WARN**: solvable issue — single source, partial content match, abstract inaccessible after trying all fallbacks, or (mechanism/implementation claim) full text inaccessible after trying Zotero/research-wiki/OA fallbacks. The full-text-inaccessible case must carry the ABSTRACT-ONLY label in the summary table (e.g. `WARN (ABSTRACT-ONLY: mechanism claim, PDF unreachable)`) and can never be reported as ACCEPT. Safe to use if user verifies the flagged item.
 **REJECT**: DOI dead or resolves to wrong paper, paper not found anywhere, content contradicted, or retraction confirmed.
 
 Summary table after all cards:
@@ -276,10 +331,11 @@ X / Y verified.  Z need attention.
 ## Anti-Hallucination Rules
 
 - Never recall a DOI from memory — fetch from CrossRef or S2.
-- Never describe paper content without a fetched abstract to quote from.
+- Never describe paper content without fetched source text at the required depth to quote from.
 - Never fill in missing metadata by guessing or pattern-matching.
 - If two sources disagree, show both — do not choose silently.
-- If the abstract is inaccessible after all five fallback sources, mark UNVERIFIABLE and stop — do not substitute a description from memory.
+- If the source required for the claim depth is inaccessible after all fallbacks, mark UNVERIFIABLE or ABSTRACT-ONLY as defined above — do not substitute a description from memory.
+- Never resolve a mechanism/implementation-class claim from an abstract topic match alone — fetch full text via Layer 3b, or mark ABSTRACT-ONLY and stop.
 
 ---
 

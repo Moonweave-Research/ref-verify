@@ -167,21 +167,21 @@ PYTHONPATH=src python3 -m unittest discover -s tests -v
 
 ---
 
-## 범위 — 무엇을 확인하고 무엇을 확인하지 않는가
+## 범위 — 선택적 CLI와 수동 감사의 경계
 
 `ref-verify`는 만능 판정기가 아니라 보수적인 안전장치입니다. 일부러
 flag를 더 자주 냅니다. `ACCEPT`는 높은 확신의 통과이고, 그 외 결과는
 "자동으로 확인할 수 없으니 사람이 확인해야 한다"는 뜻이지 "인용이
 틀렸다"는 뜻은 아닙니다.
 
-**확인하는 것**
+**선택적 CLI가 확인하는 것**
 
 - DOI 메타데이터: 제목, 첫 번째 저자 성, 연도를 CrossRef와 비교합니다.
 - DOI-bound **abstract**가 특정 숫자 또는 literal claim을 명시적으로
   뒷받침하는지 확인합니다. abstract에 접근할 수 없으면 추측하지 않고
   `UNVERIFIABLE`을 반환합니다.
 
-**확인하지 않는 것** (의도적으로 범위 밖이며 버그가 아닙니다)
+**선택적 CLI가 확인하지 않는 것** (의도적으로 범위 밖이며 버그가 아닙니다)
 
 - **본문, figure, table, supplementary 값** — abstract-only입니다. 숫자가
   본문에만 있으면 `UNVERIFIABLE`로 남습니다.
@@ -195,7 +195,12 @@ flag를 더 자주 냅니다. `ACCEPT`는 높은 확신의 통과이고, 그 외
 - **논문 품질, novelty, 학계 consensus**, 또는 논문 전체가 넓은 주장을
   뒷받침하는지 여부.
 
-**판정 읽는 법**
+에이전트 스킬의 수동 Full Audit 프로토콜은 mechanism, implementation,
+procedure claim에 대해 선택적 CLI보다 더 깊게 확인합니다. 이 경우
+full-text passage를 직접 가져와야 하며, 본문에 접근하지 못하면 abstract의
+주제 일치만으로 `ACCEPT`하지 않고 `WARN (ABSTRACT-ONLY)`로 남깁니다.
+
+**CLI 판정 읽는 법**
 
 | Verdict | 의미 |
 |---|---|
@@ -221,8 +226,9 @@ ref-verify verify-doi <doi> --title "<title>" --first-author <last-name> --year 
 
 **Full Audit**은 논문을 처음 찾거나 제출 전 최종 점검을 할 때 사용합니다.
 스킬은 필요한 경우 CrossRef, OpenAlex, Semantic Scholar, Unpaywall, arXiv, PubMed를
-통해 abstract를 가져오고, 논문이 인용하려는 특정 주장을 뒷받침하는지
-확인합니다.
+통해 source text를 가져옵니다. topline claim은 abstract에서 확인하고,
+mechanism, implementation, procedure claim은 full text passage까지 확인한
+뒤에만 지지 판정을 내립니다.
 
 단일 DOI 기반 주장에 대해서는 CLI가 abstract 확인을 수행할 수 있습니다.
 
@@ -267,9 +273,11 @@ ref-verify check-file claims.csv
 - `DOI_MISMATCH`: primary 또는 명시적으로 선택한 DOI-bound record가 요청 DOI와 다름
 - `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_RATE_LIMITED`, `SOURCE_UNSUPPORTED`: source lookup 실패, timeout, rate limit, 사용 불가
 
-> 핵심 규칙: 논문 내용에 대한 모든 설명은 live-fetched abstract에서
-> 나와야 합니다. fallback 확인 후에도 abstract에 접근할 수 없으면
-> `UNVERIFIABLE`이라고 말합니다. 기억으로 빈칸을 채우지 않습니다.
+> 핵심 규칙: 논문 내용에 대한 모든 설명은 claim에 필요한 깊이의
+> live-fetched source에서 나와야 합니다. topline claim에는 abstract,
+> mechanism, implementation, procedure claim에는 full text가 필요합니다.
+> 필요한 source에 접근하지 못하면 그 사실을 밝히고 기억으로 빈칸을
+> 채우지 않습니다.
 
 ---
 

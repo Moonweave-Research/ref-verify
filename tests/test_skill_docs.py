@@ -74,6 +74,28 @@ class SkillDocsTests(unittest.TestCase):
             with self.subTest(error_code=code):
                 self.assertIn(code, skill)
 
+    def test_skill_requires_source_depth_for_mechanism_claims(self):
+        skill = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
+        readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+        readme_ko = (REPO_ROOT / "README.ko.md").read_text(encoding="utf-8")
+
+        required_skill_phrases = (
+            "mechanism/implementation/procedural claims",
+            "CLI `ACCEPT` is abstract-level evidence only",
+            "Full-Text Confirmation",
+            "content supported at the required source depth",
+            "fetched source text at the required depth",
+            "CONTENT: ABSTRACT-ONLY",
+        )
+        for phrase in required_skill_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, skill)
+
+        self.assertNotIn("/Users/", skill)
+        self.assertNotIn("verify@ref-verify.local", skill)
+        self.assertIn("manual Full Audit protocol", readme)
+        self.assertIn("수동 Full Audit 프로토콜", readme_ko)
+
     def test_readme_positions_cli_as_skill_execution_engine_not_mcp(self):
         readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
 
