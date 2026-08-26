@@ -306,5 +306,4 @@ that as `WARN (PARTIAL)` instead of accepting the citation.
 
 ## Related
 
-- [anneal-skill](https://github.com/Moonweave-Systems/anneal-skill) - measure-first decision discipline for AI agents
-- [decide-skill](https://github.com/Moonweave-Systems/decide-skill) - decision automation for non-expert domains
+- [decision-kernel](https://github.com/Moonweave-Systems/decision-kernel) - evidence-gated decisions and drift/done checks for coding agents
