@@ -231,6 +231,7 @@ class NumericExpression:
     comparator: str
     subject_terms: set[str]
     evidence: str
+    prefix_scale: str = ""
 
 
 def check_numeric_claim_support(abstract: str, claim: str) -> NumericClaimResult:
@@ -253,7 +254,7 @@ def check_numeric_claim_support(abstract: str, claim: str) -> NumericClaimResult
         if _subject_terms_match(claim_expression.subject_terms, subject_context):
             related_evidence = related_evidence or clause
         for evidence_expression in evidence_expressions:
-            if not _units_match(claim_expression.unit, evidence_expression.unit):
+            if not _units_match(claim_expression, evidence_expression):
                 continue
             if not _subject_terms_match(claim_expression.subject_terms, subject_context):
                 continue
@@ -287,6 +288,7 @@ def _extract_claim_expression(claim: str) -> NumericExpression | None:
         comparator=_claim_comparator(claim[: match.start()]),
         subject_terms=_subject_terms(claim[: match.start()]),
         evidence=claim,
+        prefix_scale=_prefix_scale(match.group("unit")),
     )
 
 
@@ -303,6 +305,7 @@ def _extract_evidence_expressions(clause: str) -> list[NumericExpression]:
                 ),
                 subject_terms=_subject_terms(clause[: match.start()]),
                 evidence=clause,
+                prefix_scale=_prefix_scale(match.group("unit")),
             )
         )
     return expressions
@@ -412,8 +415,37 @@ def _normalize_unit(value: str) -> str:
     return normalized.rstrip("s")
 
 
-def _units_match(left: str, right: str) -> bool:
-    return left == right
+def _units_match(left: NumericExpression, right: NumericExpression) -> bool:
+    if left.unit != right.unit:
+        return False
+    # "mV" and "MV" differ by a factor of a million; only an all-lowercase token
+    # (common in typed claims) is left ambiguous and allowed to match either.
+    if left.prefix_scale and right.prefix_scale:
+        return left.prefix_scale == right.prefix_scale
+    return True
+
+
+_PREFIX_SENSITIVE_UNITS = {
+    "ma",
+    "mev",
+    "mhz",
+    "mohm-cm",
+    "mpa",
+    "ms/m",
+    "mv",
+    "mv/cm",
+    "mv/m",
+    "mv/mm",
+}
+
+
+def _prefix_scale(raw_unit: str) -> str:
+    if _normalize_unit(raw_unit) not in _PREFIX_SENSITIVE_UNITS:
+        return ""
+    stripped = raw_unit.strip()
+    if stripped == stripped.lower():
+        return ""
+    return "mega" if stripped[0] == "M" else "milli"
 
 
 def _claim_comparator(prefix: str) -> str:
@@ -534,6 +566,20 @@ def _evidence_entails_claim(
         if claim_comparator == "up_to":
             return evidence_value == claim_value
         return claim_comparator in {"lt", "lte"} and evidence_value <= claim_value
+    # Evidence that only bounds the value from one side cannot support a claim
+    # bounding it from the other side ("below 50" never establishes "above 40").
+    if evidence_comparator in {"lt", "lte"}:
+        if claim_comparator == "lt":
+            return evidence_value <= claim_value if evidence_comparator == "lt" else evidence_value < claim_value
+        if claim_comparator == "lte":
+            return evidence_value <= claim_value
+        return False
+    if evidence_comparator in {"gt", "gte"}:
+        if claim_comparator == "gt":
+            return evidence_value >= claim_value if evidence_comparator == "gt" else evidence_value > claim_value
+        if claim_comparator == "gte":
+            return evidence_value >= claim_value
+        return False
     if claim_comparator == "gt":
         return evidence_value > claim_value
     if claim_comparator == "gte":

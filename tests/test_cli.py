@@ -4,6 +4,7 @@ import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
+from urllib.error import HTTPError
 
 from ref_verify.abstract_lookup import AbstractSourceError
 from ref_verify.cli import _default_abstract_clients, main
@@ -301,6 +302,77 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["verdict"], "ACCEPT")
         self.assertEqual(payload["abstract_source"], "crossref")
         self.assertEqual(payload["error_code"], "CLAIM_SUPPORTED")
+
+    def test_verify_doi_reports_dead_doi_as_reject_with_verdict_key(self):
+        error = HTTPError("https://api.crossref.org/works/x", 404, "Not Found", None, None)
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                ["verify-doi", "10.1126/science.999999.9999", "--json"],
+                client=FailingClient(error),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["verdict"], "REJECT")
+        self.assertEqual(payload["error_code"], "DOI_NOT_FOUND")
+        self.assertNotIn("error", payload)
+
+    def test_verify_doi_still_surfaces_non_404_http_errors(self):
+        error = HTTPError("https://api.crossref.org/works/x", 503, "Unavailable", None, None)
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                ["verify-doi", "10.1000/example", "--json"],
+                client=FailingClient(error),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 1)
+        self.assertIn("error", payload)
+
+    def test_check_claim_reports_dead_doi_as_reject(self):
+        error = HTTPError("https://api.crossref.org/works/x", 404, "Not Found", None, None)
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                ["check-claim", "10.1126/science.999999.9999", "--claim", "strain above 100%", "--json"],
+                client=FailingClient(error),
+                abstract_clients=[],
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["verdict"], "REJECT")
+        self.assertEqual(payload["error_code"], "DOI_NOT_FOUND")
+
+    def test_check_claim_rejects_retracted_paper_before_reading_abstract(self):
+        record = PaperRecord(
+            doi="10.1000/retracted",
+            title="RETRACTED: Dielectric elastomer actuators",
+            authors=["Pelrine"],
+            year=2000,
+            abstract="Actuated strains up to 117% were demonstrated.",
+            source="fixture",
+            retraction_doi="10.1000/retraction-notice",
+        )
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                ["check-claim", "10.1000/retracted", "--claim", "actuation strain above 100%", "--json"],
+                client=FakeClient(record),
+                abstract_clients=[],
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["status"], "RETRACTED")
+        self.assertEqual(payload["verdict"], "REJECT")
+        self.assertEqual(payload["error_code"], "PAPER_RETRACTED")
 
     def test_check_claim_does_not_query_fallback_when_crossref_has_abstract(self):
         record = PaperRecord(

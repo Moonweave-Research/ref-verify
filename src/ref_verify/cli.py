@@ -5,6 +5,7 @@ import json
 import sys
 from pathlib import Path
 from typing import Sequence
+from urllib.error import HTTPError
 
 from ref_verify.abstract_lookup import (
     AbstractSourceClient,
@@ -18,7 +19,7 @@ from ref_verify.batch import (
     parse_claim_file,
     render_batch_text,
 )
-from ref_verify.claim_check import check_claim_support
+from ref_verify.claim_check import check_claim_support, retracted_claim_result
 from ref_verify.crossref import CrossrefClient
 from ref_verify.doi_check import normalize_doi, verify_doi_metadata
 from ref_verify.models import CitationInput, ClaimSupportResult
@@ -88,13 +89,31 @@ def _build_parser() -> argparse.ArgumentParser:
 
 def _verify_doi(args: argparse.Namespace, client: CrossrefClient) -> int:
     lookup_doi = normalize_doi(args.doi)
-    fetched = client.fetch_work(lookup_doi)
     provided = CitationInput(
         doi=args.doi,
         title=args.title,
         first_author=args.first_author,
         year=args.year,
     )
+    try:
+        fetched = client.fetch_work(lookup_doi)
+    except HTTPError as exc:
+        if not _is_not_found(exc):
+            raise
+        # A dead DOI is a verdict, not a tool failure; keep the `verdict` key so
+        # callers that parse JSON do not have to special-case the error shape.
+        _emit(
+            {
+                "verdict": "REJECT",
+                "mismatches": ["doi"],
+                "reason": "CrossRef has no record for this DOI (HTTP 404).",
+                "provided": provided.to_dict(),
+                "fetched": None,
+                "error_code": "DOI_NOT_FOUND",
+            },
+            as_json=args.json,
+        )
+        return 2
     result = verify_doi_metadata(provided, fetched)
     _emit(result.to_dict(), as_json=args.json)
     return 0 if result.verdict == "PASS" else 2
@@ -147,7 +166,20 @@ def _run_claim_check(
     lookup_doi = normalize_doi(doi)
     selected_clients = _select_abstract_clients(fallback_clients, source)
     if source in ("auto", "crossref"):
-        fetched = client.fetch_work(lookup_doi)
+        try:
+            fetched = client.fetch_work(lookup_doi)
+        except HTTPError as exc:
+            if not _is_not_found(exc):
+                raise
+            return _doi_not_found_payload(claim)
+        if fetched.retraction_doi:
+            # Fallback abstract sources would drop the retraction flag, so decide here.
+            result = retracted_claim_result(fetched, claim)
+            payload = result.to_dict()
+            payload["abstract_source"] = None
+            payload["source_attempts"] = []
+            payload["error_code"] = "PAPER_RETRACTED"
+            return payload
         lookup_result = lookup_abstract(lookup_doi, fetched, selected_clients)
     else:
         lookup_result = lookup_selected_abstract(lookup_doi, selected_clients)
@@ -164,6 +196,24 @@ def _run_claim_check(
 
     result = check_claim_support(lookup_result.record, claim)
     return _claim_payload(result, lookup_result)
+
+
+def _is_not_found(exc: HTTPError) -> bool:
+    return getattr(exc, "code", None) == 404
+
+
+def _doi_not_found_payload(claim: str) -> dict:
+    return {
+        "status": "UNVERIFIABLE",
+        "verdict": "REJECT",
+        "reason": "CrossRef has no record for this DOI (HTTP 404).",
+        "evidence": "",
+        "paper": None,
+        "claim": claim,
+        "abstract_source": None,
+        "source_attempts": [],
+        "error_code": "DOI_NOT_FOUND",
+    }
 
 
 def _row_error_payload(claim: str, exc: Exception) -> dict:
@@ -190,6 +240,8 @@ def _claim_payload(result: ClaimSupportResult, lookup_result) -> dict:
 def _claim_error_code(result: ClaimSupportResult) -> str:
     if result.verdict == "ACCEPT":
         return "CLAIM_SUPPORTED"
+    if result.status == "RETRACTED":
+        return "PAPER_RETRACTED"
     if result.status == "UNVERIFIABLE":
         return "NO_ABSTRACT"
     if result.status == "PARTIAL":

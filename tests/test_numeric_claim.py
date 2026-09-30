@@ -229,6 +229,46 @@ class NumericClaimTests(unittest.TestCase):
 
         self.assertEqual(result.status, "PARTIAL")
 
+    def test_upper_bounded_evidence_does_not_support_lower_bounded_claim(self):
+        for abstract, claim in (
+            ("The modulus was below 50 MPa.", "modulus above 40 MPa"),
+            ("The breakdown field was at most 100 MV/m.", "breakdown field at least 80 MV/m"),
+            ("The modulus was at least 50 MPa.", "modulus below 60 MPa"),
+        ):
+            with self.subTest(abstract=abstract, claim=claim):
+                result = check_numeric_claim_support(abstract, claim)
+
+                self.assertEqual(result.status, "PARTIAL")
+
+    def test_one_sided_evidence_supports_claim_bounded_on_the_same_side(self):
+        for abstract, claim in (
+            ("The modulus was below 50 MPa.", "modulus below 60 MPa"),
+            ("The modulus was at least 50 MPa.", "modulus above 40 MPa"),
+        ):
+            with self.subTest(abstract=abstract, claim=claim):
+                result = check_numeric_claim_support(abstract, claim)
+
+                self.assertEqual(result.status, "SUPPORTED")
+
+    def test_milli_and_mega_prefixes_do_not_match(self):
+        for abstract, claim in (
+            ("The output voltage was 5 mV.", "output voltage of 5 MV"),
+            ("The current reached 2 mA.", "current reached 2 MA"),
+            ("The modulus was 3 MPa.", "modulus of 3 mPa"),
+        ):
+            with self.subTest(abstract=abstract, claim=claim):
+                result = check_numeric_claim_support(abstract, claim)
+
+                self.assertEqual(result.status, "PARTIAL")
+
+    def test_lowercase_unit_prefix_stays_ambiguous(self):
+        result = check_numeric_claim_support(
+            "The output voltage was 5 mV.",
+            "output voltage of 5 mv",
+        )
+
+        self.assertEqual(result.status, "SUPPORTED")
+
 
 class NumericClaimEvalFixtureTests(unittest.TestCase):
     def test_numeric_claim_eval_fixture(self):

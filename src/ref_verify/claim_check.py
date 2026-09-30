@@ -215,7 +215,23 @@ _UNSUPPORTED_CLAIM_FRAME_PATTERNS = (
 )
 
 
+def retracted_claim_result(record: PaperRecord, claim: str) -> ClaimSupportResult:
+    return ClaimSupportResult(
+        status="RETRACTED",
+        verdict="REJECT",
+        reason=(
+            "CrossRef records this paper as retracted "
+            f"(notice DOI {record.retraction_doi}); its abstract cannot support the claim."
+        ),
+        evidence="",
+        paper=record,
+        claim=claim,
+    )
+
+
 def check_claim_support(record: PaperRecord, claim: str) -> ClaimSupportResult:
+    if record.retraction_doi:
+        return retracted_claim_result(record, claim)
     if not record.abstract:
         return ClaimSupportResult(
             status="UNVERIFIABLE",
