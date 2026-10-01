@@ -36,6 +36,9 @@ npx skills add Moonweave-Research/ref-verify -g \
 워크플로우에는 MCP 서버가 필요하지 않습니다. 서버를 시작하거나 MCP를
 설정하지 않습니다.
 
+스킬 안에 CLI 엔진이 함께 들어 있고 에이전트가 스킬 폴더에서 직접 실행하므로
+따로 설치할 것이 없습니다. `python3`로 Python 3.10 이상을 실행할 수 있어야 합니다.
+
 에이전트가 CLI를 호출할 때 따라야 할 명시적 규칙은
 [AGENT_USAGE.md](https://github.com/Moonweave-Research/ref-verify/blob/main/AGENT_USAGE.md)를 참고하세요.
 
@@ -80,14 +83,21 @@ Python 패키지는 CLI 전용입니다. `SKILL.md`를 설치하지 않습니다
 - `WARN`, `REJECT`, `UNVERIFIABLE` 결과에 대한 non-zero exit code
 
 `p-value`, AUC/AUROC, F1 score, hazard ratio, odds ratio, confidence interval
-같은 통계 지표는 아직 수동 스킬 프로토콜을 따릅니다. DOI landing page 확인은 스킬 프로토콜을 따릅니다. Unpaywall, arXiv, 두 개 이상의 독립 출처로 존재 확인,
+같은 통계 지표는 아직 수동 스킬 프로토콜을 따릅니다. DOI landing page 확인은 스킬 프로토콜을 따릅니다. Unpaywall, arXiv, 두 개 이상의 독립 출처로 존재 확인도 스킬 프로토콜이 담당합니다.
 CrossRef가 철회 공지를 기록한 DOI는 CLI가 바로 `REJECT`합니다. CrossRef에 없는 철회 배너 확인은 여전히 `SKILL.md`의 스킬 프로토콜이 담당합니다.
 
 CLI에는 third-party Python runtime dependency가 없지만, offline verifier는
 아닙니다. 실제 검증에는 CrossRef, OpenAlex, Semantic Scholar, PubMed 같은 공개 학술
 API로 outbound HTTPS 요청을 보낼 수 있어야 합니다.
 
-로컬 체크아웃에서 CLI를 설치합니다.
+CLI를 직접 쓰려면 PyPI에서 설치합니다.
+
+```bash
+uvx ref-verify --help            # 설치 없이 실행 (uv)
+pipx install ref-verify          # 또는 `ref-verify` 명령 설치
+```
+
+로컬 체크아웃에서 설치할 수도 있습니다.
 
 ```bash
 git clone https://github.com/Moonweave-Research/ref-verify.git

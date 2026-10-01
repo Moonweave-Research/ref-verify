@@ -45,23 +45,41 @@ not yet cover.
 
 ### CLI Availability Check
 
-Before a DOI-backed check, see whether the executable engine is available:
+The skill ships its own engine: `npx skills add` copies the `src/` folder next
+to this SKILL.md. Before a DOI-backed check, resolve the engine once, in this
+order, and keep the first command that prints help:
 
-```bash
-ref-verify --help
-```
+1. **Bundled with this skill** (same version as this SKILL.md; no install, no
+   network for setup):
 
-npx skills add does not pip-install the Python CLI. If the console script is
-unavailable, do not treat that as a verification result.
+   ```bash
+   PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli --help
+   ```
 
-If the console script is unavailable but the repository source is present, use:
+   `$SKILL_DIR` is the absolute path of the folder that contains this SKILL.md
+   (Claude Code shows it as the skill's base directory; `npx skills add -g`
+   installs it under `~/.agents/skills/ref-verify`). Never use a relative
+   `src` path: the working directory is the user's project, not the skill
+   folder. Requires Python 3.10 or newer.
 
-```bash
-PYTHONPATH=src python3 -m ref_verify.cli --help
-```
+2. **Installed console script** (`pip install ref-verify` or `pipx install ref-verify`):
 
-If both commands fail, follow the manual fallback protocol below. Do not pretend
-the CLI ran, and do not invent a result from memory.
+   ```bash
+   ref-verify --help
+   ```
+
+   npx skills add does not pip-install the Python CLI, so this is often absent.
+
+3. **From PyPI through uv**:
+
+   ```bash
+   uvx --from 'ref-verify>=1.2.1' ref-verify --help
+   ```
+
+In the commands below, `ref-verify` stands for whichever engine resolved. An
+unavailable engine is not a verification result. If all three fail, follow the
+manual fallback protocol below. Do not pretend the CLI ran, and do not invent a
+result from memory.
 
 ### CLI-first workflow
 
@@ -81,10 +99,10 @@ ref-verify verify-doi <doi> \
   --json
 ```
 
-Source-checkout fallback:
+Bundled-engine form:
 
 ```bash
-PYTHONPATH=src python3 -m ref_verify.cli verify-doi <doi> \
+PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli verify-doi <doi> \
   --title "<provided title>" \
   --first-author <provided-first-author-last-name> \
   --year <provided-year> \
@@ -110,10 +128,10 @@ Single claim check against a DOI abstract:
 ref-verify check-claim <doi> --claim "<specific factual claim>" --json
 ```
 
-Source-checkout fallback:
+Bundled-engine form:
 
 ```bash
-PYTHONPATH=src python3 -m ref_verify.cli check-claim <doi> --claim "<specific factual claim>" --json
+PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli check-claim <doi> --claim "<specific factual claim>" --json
 ```
 
 By default, `check-claim` uses CrossRef first. If CrossRef has no abstract, it

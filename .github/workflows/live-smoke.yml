@@ -35,5 +35,14 @@ jobs:
             --claim "actuation strain above 100%" \
             --json
 
+      - name: Retracted paper is rejected
+        shell: bash
+        run: |
+          out="$(ref-verify verify-doi '10.1016/S0140-6736(97)11096-0' \
+            --title 'Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children' \
+            --first-author Wakefield --year 1998 --json || true)"
+          echo "$out"
+          echo "$out" | python -c 'import json,sys; d=json.load(sys.stdin); assert d["verdict"] == "REJECT" and "retracted" in d["mismatches"], d'
+
       - name: CLI regression ship gate
         run: PYTHONPATH=src python evals/run_cli_regression.py

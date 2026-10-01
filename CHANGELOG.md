@@ -9,6 +9,13 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+## [1.2.1] — 2026-10-01
+
+### Changed
+
+- `SKILL.md` now runs the engine bundled with the skill by absolute path (`$SKILL_DIR/src`). Agents that installed the skill with `npx skills add` previously could not run the CLI at all: the console script is not installed, and the relative `PYTHONPATH=src` fallback only worked from inside the skill folder. `uvx --from 'ref-verify>=1.2.1'` is the third option.
+- README documents `uvx ref-verify` and `pipx install ref-verify`.
+
 ### Fixed
 
 - `verify-doi` and `check-claim` now return `REJECT` for a DOI that CrossRef records as retracted (read from `updated-by`), and a `RETRACTED:` title prefix no longer masquerades as a title mismatch.
