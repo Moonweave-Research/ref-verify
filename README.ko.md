@@ -81,7 +81,7 @@ Python 패키지는 CLI 전용입니다. `SKILL.md`를 설치하지 않습니다
 
 `p-value`, AUC/AUROC, F1 score, hazard ratio, odds ratio, confidence interval
 같은 통계 지표는 아직 수동 스킬 프로토콜을 따릅니다. DOI landing page 확인은 스킬 프로토콜을 따릅니다. Unpaywall, arXiv, 두 개 이상의 독립 출처로 존재 확인,
-철회 여부 확인도 `SKILL.md`에 있는 스킬 프로토콜이 담당합니다.
+CrossRef가 철회 공지를 기록한 DOI는 CLI가 바로 `REJECT`합니다. CrossRef에 없는 철회 배너 확인은 여전히 `SKILL.md`의 스킬 프로토콜이 담당합니다.
 
 CLI에는 third-party Python runtime dependency가 없지만, offline verifier는
 아닙니다. 실제 검증에는 CrossRef, OpenAlex, Semantic Scholar, PubMed 같은 공개 학술
@@ -269,7 +269,8 @@ ref-verify check-file claims.csv
 - `CLAIM_NOT_EXPLICIT`: abstract는 있지만 claim을 명시적으로 뒷받침하지 않음
 - `CLAIM_AMBIGUOUS`: 숫자나 맥락은 있으나 subject/숫자 연결이 애매함
 - `NO_ABSTRACT`: 시도한 DOI-bound source에서 abstract text를 얻지 못함
-- `DOI_NOT_FOUND`: 선택한 source에서 DOI-bound record를 찾지 못함
+- `DOI_NOT_FOUND`: CrossRef에 DOI 기록이 없거나(HTTP 404) 선택한 source에서 DOI-bound record를 찾지 못함. JSON에는 `verdict: REJECT`가 함께 담김
+- `PAPER_RETRACTED`: CrossRef에 철회 공지가 있어 초록을 읽기 전에 거절함
 - `DOI_MISMATCH`: primary 또는 명시적으로 선택한 DOI-bound record가 요청 DOI와 다름
 - `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_RATE_LIMITED`, `SOURCE_UNSUPPORTED`: source lookup 실패, timeout, rate limit, 사용 불가
 

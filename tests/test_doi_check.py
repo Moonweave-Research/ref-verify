@@ -295,6 +295,49 @@ class DoiCheckTests(unittest.TestCase):
         self.assertIn("metadata", result.mismatches)
         self.assertIn("year", result.mismatches)
 
+    def test_rejects_retracted_paper_even_when_metadata_matches(self):
+        provided = CitationInput(
+            doi="10.1000/retracted",
+            title="Ileal-lymphoid-nodular hyperplasia",
+            first_author="Wakefield",
+            year=1998,
+        )
+        fetched = PaperRecord(
+            doi="10.1000/retracted",
+            title="RETRACTED: Ileal-lymphoid-nodular hyperplasia",
+            authors=["Wakefield"],
+            year=1998,
+            abstract=None,
+            source="fixture",
+            retraction_doi="10.1000/retraction-notice",
+        )
+
+        result = verify_doi_metadata(provided, fetched)
+
+        self.assertEqual(result.verdict, "REJECT")
+        self.assertEqual(result.mismatches, ["retracted"])
+        self.assertIn("10.1000/retraction-notice", result.reason)
+
+    def test_retracted_title_prefix_does_not_count_as_a_title_mismatch(self):
+        provided = CitationInput(
+            doi="10.1000/retracted",
+            title="Ileal-lymphoid-nodular hyperplasia",
+            first_author="Wakefield",
+            year=1998,
+        )
+        fetched = PaperRecord(
+            doi="10.1000/retracted",
+            title="RETRACTED: Ileal-lymphoid-nodular hyperplasia",
+            authors=["Wakefield"],
+            year=1998,
+            abstract=None,
+            source="fixture",
+        )
+
+        result = verify_doi_metadata(provided, fetched)
+
+        self.assertNotIn("title", result.mismatches)
+
 
 if __name__ == "__main__":
     unittest.main()

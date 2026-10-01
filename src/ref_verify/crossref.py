@@ -54,7 +54,22 @@ def parse_crossref_work(message: dict[str, Any]) -> PaperRecord:
         source="CrossRef",
         journal=journal,
         url=str(url) if url else None,
+        retraction_doi=_retraction_doi(message),
     )
+
+
+_RETRACTION_UPDATE_TYPES = {"retraction", "withdrawal", "removal", "partial_retraction"}
+
+
+def _retraction_doi(message: dict[str, Any]) -> str | None:
+    # CrossRef lists retraction notices under `updated-by`; the retracted work itself
+    # keeps its original DOI, so the metadata alone looks like a normal paper.
+    for update in message.get("updated-by") or []:
+        if not isinstance(update, dict):
+            continue
+        if str(update.get("type") or "").lower() in _RETRACTION_UPDATE_TYPES:
+            return str(update.get("DOI") or "") or "unknown"
+    return None
 
 
 def _first_string(value: Any) -> str | None:

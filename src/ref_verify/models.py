@@ -25,6 +25,7 @@ class PaperRecord:
     source: str
     journal: str | None = None
     url: str | None = None
+    retraction_doi: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

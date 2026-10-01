@@ -9,6 +9,13 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+### Fixed
+
+- `verify-doi` and `check-claim` now return `REJECT` for a DOI that CrossRef records as retracted (read from `updated-by`), and a `RETRACTED:` title prefix no longer masquerades as a title mismatch.
+- Numeric claims: evidence bounded from one side ("below 50 MPa", "at most 100 MV/m") no longer supports a claim bounded from the other side.
+- Numeric claims: `mV`/`MV`, `mA`/`MA`, `mPa`/`MPa` and similar prefixes are no longer treated as the same unit; an all-lowercase unit stays ambiguous.
+- A dead DOI (CrossRef 404) now yields a JSON payload with `verdict: REJECT` and `error_code: DOI_NOT_FOUND` instead of a bare error.
+
 ## [1.2.0] — 2026-06-08
 
 ### Added

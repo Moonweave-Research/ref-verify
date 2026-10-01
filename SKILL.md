@@ -146,15 +146,17 @@ decide the next step:
 - `CLAIM_AMBIGUOUS`: numeric evidence or context exists, but binding is
   ambiguous.
 - `NO_ABSTRACT`: attempted DOI-bound sources did not provide abstract text.
-- `DOI_NOT_FOUND`: selected source did not find a DOI-bound record.
+- `DOI_NOT_FOUND`: CrossRef has no record for the DOI (HTTP 404), or the selected source did not find a DOI-bound record.
+- `PAPER_RETRACTED`: CrossRef lists a retraction notice for the DOI; the claim is rejected before any abstract is read.
 - `DOI_MISMATCH`: the primary or explicitly selected DOI-bound record did not
   match the requested DOI.
 - `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_RATE_LIMITED`, `SOURCE_UNSUPPORTED`: source lookup
   failed, timed out, was rate-limited, or could not be used.
 
-The CLI does not replace Layer 4 DOI landing-page resolution, two-source
-existence checks, or retraction checks. Continue the manual protocol for those
-layers when the selected mode requires them.
+The CLI does not replace Layer 4 DOI landing-page resolution or two-source
+existence checks, and it only catches retractions that CrossRef records as a
+retraction notice. Continue the manual protocol for those layers when the
+selected mode requires them.
 
 ---
 

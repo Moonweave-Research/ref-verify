@@ -74,7 +74,7 @@ checks that are currently safe to automate directly:
 - JSON output for agent-readable routing
 - Non-zero exit codes for `WARN`, `REJECT`, and `UNVERIFIABLE` results
 
-Statistical metrics such as p-values, AUC/AUROC, F1 score, hazard ratio, odds ratio, and confidence intervals still use the manual skill protocol. DOI landing-page checks still use the skill protocol. Still handled by the skill protocol: Unpaywall, arXiv, two-source existence checks, and retraction checks remain in `SKILL.md`.
+Statistical metrics such as p-values, AUC/AUROC, F1 score, hazard ratio, odds ratio, and confidence intervals still use the manual skill protocol. DOI landing-page checks still use the skill protocol. The CLI rejects a DOI that CrossRef records as retracted (via its retraction notice); retraction banners CrossRef does not know about, Unpaywall, arXiv, and two-source existence checks remain in the `SKILL.md` protocol.
 
 The CLI has zero third-party Python runtime dependencies, but it is not an
 offline verifier. Functional checks require outbound HTTPS access to public
@@ -262,7 +262,8 @@ Current `check-claim` error codes:
 - `CLAIM_NOT_EXPLICIT`: an abstract was available, but the claim was not explicitly supported.
 - `CLAIM_AMBIGUOUS`: numeric evidence or context exists, but binding is ambiguous.
 - `NO_ABSTRACT`: attempted DOI-bound sources did not provide abstract text.
-- `DOI_NOT_FOUND`: selected source did not find a DOI-bound record.
+- `DOI_NOT_FOUND`: CrossRef has no record for the DOI (HTTP 404), or the selected source did not find a DOI-bound record. The JSON still carries a `verdict` of `REJECT`.
+- `PAPER_RETRACTED`: CrossRef lists a retraction notice for the DOI; the claim is rejected before any abstract is read.
 - `DOI_MISMATCH`: the primary or explicitly selected DOI-bound record did not match the requested DOI.
 - `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_RATE_LIMITED`, `SOURCE_UNSUPPORTED`: source lookup failed, timed out, was rate-limited, or could not be used.
 

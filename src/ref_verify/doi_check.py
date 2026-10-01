@@ -75,9 +75,18 @@ def verify_doi_metadata(
     ):
         mismatches.append("year")
 
+    if fetched.retraction_doi:
+        mismatches.append("retracted")
+
     if not mismatches:
         verdict = "PASS"
         reason = "Provided citation metadata matches the fetched CrossRef record."
+    elif "retracted" in mismatches:
+        verdict = "REJECT"
+        reason = (
+            "CrossRef records this paper as retracted "
+            f"(notice DOI {fetched.retraction_doi}); do not use it as a source."
+        )
     elif any(field in mismatches for field in ("doi", "title", "first_author")):
         verdict = "REJECT"
         reason = "DOI resolves to a materially different paper than provided."
@@ -128,10 +137,17 @@ def _strip_trailing_doi_punctuation(value: str) -> str:
 
 
 def _titles_match(provided: str, fetched: str) -> bool:
+    fetched = _strip_retraction_prefix(fetched)
     if _numbers(provided) != _numbers(fetched):
         return False
 
     return _title_tokens(provided) == _title_tokens(fetched)
+
+
+def _strip_retraction_prefix(title: str) -> str:
+    # Publishers prepend "RETRACTED:" to the stored title; the citation being checked
+    # carries the original title, and the retraction itself is reported separately.
+    return re.sub(r"^\s*(?:retracted|withdrawn|retraction)\s*:\s*", "", title, flags=re.IGNORECASE)
 
 
 def _author_matches(provided: str, fetched: str | None) -> bool:

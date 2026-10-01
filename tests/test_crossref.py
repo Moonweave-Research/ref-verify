@@ -41,6 +41,33 @@ class CrossrefTests(unittest.TestCase):
 
         self.assertIsNone(record.year)
 
+    def test_reads_retraction_notice_from_updated_by(self):
+        message = {
+            "DOI": "10.1016/s0140-6736(97)11096-0",
+            "title": ["RETRACTED: Ileal-lymphoid-nodular hyperplasia"],
+            "author": [{"family": "Wakefield", "given": "AJ"}],
+            "issued": {"date-parts": [[1998]]},
+            "updated-by": [
+                {"type": "correction", "DOI": "10.1016/s0140-6736(04)15715-2"},
+                {"type": "retraction", "DOI": "10.1016/s0140-6736(10)60175-4"},
+            ],
+        }
+
+        record = parse_crossref_work(message)
+
+        self.assertEqual(record.retraction_doi, "10.1016/s0140-6736(10)60175-4")
+
+    def test_correction_alone_is_not_a_retraction(self):
+        message = {
+            "DOI": "10.1000/corrected",
+            "title": ["Corrected paper"],
+            "updated-by": [{"type": "correction", "DOI": "10.1000/corrigendum"}],
+        }
+
+        record = parse_crossref_work(message)
+
+        self.assertIsNone(record.retraction_doi)
+
     def test_preserves_group_author_name(self):
         message = {
             "DOI": "10.1000/group-author",
