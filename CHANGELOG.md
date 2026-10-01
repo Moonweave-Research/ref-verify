@@ -9,7 +9,13 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
-## [1.2.1] — 2026-10-01
+## [1.2.2] — 2026-10-01
+
+### Fixed
+
+- A citation that itself carries the publisher's "RETRACTED:" title prefix is no longer reported as a title mismatch on top of the retraction (`mismatches: ["retracted"]`, not `["title", "retracted"]`).
+
+## [1.2.1] — 2026-10-01 (GitHub release only; not published to PyPI)
 
 ### Changed
 
