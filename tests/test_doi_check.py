@@ -338,6 +338,28 @@ class DoiCheckTests(unittest.TestCase):
 
         self.assertNotIn("title", result.mismatches)
 
+    def test_citation_carrying_the_retracted_prefix_is_not_a_title_mismatch(self):
+        provided = CitationInput(
+            doi="10.1000/retracted",
+            title="RETRACTED: Ileal-lymphoid-nodular hyperplasia",
+            first_author="Wakefield",
+            year=1998,
+        )
+        fetched = PaperRecord(
+            doi="10.1000/retracted",
+            title="RETRACTED: Ileal-lymphoid-nodular hyperplasia",
+            authors=["Wakefield"],
+            year=1998,
+            abstract=None,
+            source="fixture",
+            retraction_doi="10.1000/retraction-notice",
+        )
+
+        result = verify_doi_metadata(provided, fetched)
+
+        self.assertEqual(result.verdict, "REJECT")
+        self.assertEqual(result.mismatches, ["retracted"])
+
 
 if __name__ == "__main__":
     unittest.main()

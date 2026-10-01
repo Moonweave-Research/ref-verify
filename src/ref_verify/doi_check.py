@@ -137,6 +137,7 @@ def _strip_trailing_doi_punctuation(value: str) -> str:
 
 
 def _titles_match(provided: str, fetched: str) -> bool:
+    provided = _strip_retraction_prefix(provided)
     fetched = _strip_retraction_prefix(fetched)
     if _numbers(provided) != _numbers(fetched):
         return False
@@ -145,8 +146,8 @@ def _titles_match(provided: str, fetched: str) -> bool:
 
 
 def _strip_retraction_prefix(title: str) -> str:
-    # Publishers prepend "RETRACTED:" to the stored title; the citation being checked
-    # carries the original title, and the retraction itself is reported separately.
+    # Publishers prepend "RETRACTED:" to the stored title, and a citation may or may not
+    # carry it; the retraction itself is reported separately, never as a title mismatch.
     return re.sub(r"^\s*(?:retracted|withdrawn|retraction)\s*:\s*", "", title, flags=re.IGNORECASE)
 
 
