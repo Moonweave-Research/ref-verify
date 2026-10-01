@@ -34,6 +34,8 @@ Works with **Claude Code, Cursor, Codex**, and any agent that supports the
 
 After installation, use it like a normal agent skill. You do not start a server and you do not configure MCP for this workflow. No MCP server is required for this workflow.
 
+The skill includes its own copy of the CLI engine, and the agent runs it from the skill folder, so nothing else needs to be installed. Python 3.10 or newer must be available as `python3`.
+
 For explicit agent tool-calling rules, see [AGENT_USAGE.md](https://github.com/Moonweave-Research/ref-verify/blob/main/AGENT_USAGE.md).
 
 ---
@@ -80,7 +82,14 @@ The CLI has zero third-party Python runtime dependencies, but it is not an
 offline verifier. Functional checks require outbound HTTPS access to public
 academic APIs such as CrossRef, OpenAlex, Semantic Scholar, and PubMed.
 
-Install the CLI from a local checkout:
+To run the CLI yourself, install it from PyPI:
+
+```bash
+uvx ref-verify --help            # run without installing (uv)
+pipx install ref-verify          # or install the `ref-verify` command
+```
+
+Or install it from a local checkout:
 
 ```bash
 git clone https://github.com/Moonweave-Research/ref-verify.git

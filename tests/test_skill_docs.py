@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import subprocess
+import tempfile
 import sys
 import unittest
 
@@ -227,8 +228,34 @@ class SkillDocsTests(unittest.TestCase):
             encoding="utf-8"
         )
 
-        self.assertIn('version = "1.2.0"', pyproject)
-        self.assertIn('__version__ = "1.2.0"', init)
+        self.assertIn('version = "1.2.1"', pyproject)
+        self.assertIn('__version__ = "1.2.1"', init)
+
+    def test_skill_runs_bundled_engine_by_absolute_path(self):
+        # npx skills add copies src/ next to SKILL.md but installs no console script, and the
+        # agent's working directory is the user's project, so a relative PYTHONPATH=src fails.
+        skill = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
+
+        self.assertNotIn("PYTHONPATH=src ", skill)
+        self.assertIn('PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli --help', skill)
+        self.assertIn('PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli verify-doi', skill)
+        self.assertIn('PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli check-claim', skill)
+        self.assertInOrder(skill, ("$SKILL_DIR/src", "ref-verify --help", "uvx --from 'ref-verify>=1.2.1'"))
+
+    def test_bundled_engine_runs_from_another_working_directory(self):
+        env = os.environ.copy()
+        env["PYTHONPATH"] = str(REPO_ROOT / "src")
+        with tempfile.TemporaryDirectory() as project:
+            result = subprocess.run(
+                [sys.executable, "-m", "ref_verify.cli", "--help"],
+                cwd=project,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("verify-doi", result.stdout)
 
     def test_readmes_prioritize_user_workflow_before_architecture_details(self):
         readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
