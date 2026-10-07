@@ -14,6 +14,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - On-disk HTTP response cache (default 7 days; HTTP 404 kept for 1 day) shared by the CrossRef, OpenAlex, Semantic Scholar, and PubMed clients. Location: `REF_VERIFY_CACHE_DIR`, else `$XDG_CACHE_HOME/ref-verify`, else `~/.cache/ref-verify`. Disable with `--no-cache` or `REF_VERIFY_NO_CACHE=1`; set the lifetime with `REF_VERIFY_CACHE_TTL_DAYS`.
 - `check-file --workers N` (default 4) checks rows in parallel; output keeps input order, and Semantic Scholar requests stay one at a time.
 - `ref-verify check-bib <path>` checks a BibTeX, RIS, or plain-text/Markdown reference list. References with a DOI are compared with CrossRef metadata; references without one are looked up with CrossRef bibliographic search (`REFERENCE_RESOLVED` with `resolved_doi`, or `REFERENCE_UNMATCHED` / `UNVERIFIED` when nothing matches). Set `REF_VERIFY_MAILTO` to identify yourself to CrossRef search.
+- `--report <path.html|path.md>` on `check-bib` and `check-file` writes a self-contained HTML (inline CSS, no scripts, only `doi.org` links) or Markdown verdict report with summary counts, a colour per verdict, reasons, and evidence. Any other extension is rejected before lookups start.
 
 ### Changed
 

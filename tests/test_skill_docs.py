@@ -123,6 +123,7 @@ class SkillDocsTests(unittest.TestCase):
             with self.subTest(error_code=code):
                 self.assertIn(code, readme)
         self.assertIn("ref-verify check-bib", readme)
+        self.assertIn("--report report.html", readme)
         self.assertIn("literal text claims", readme)
         self.assertIn("subject-matched percentage claims", readme)
         self.assertIn("simple unit/count claims", readme)
@@ -155,6 +156,7 @@ class SkillDocsTests(unittest.TestCase):
             with self.subTest(error_code=code):
                 self.assertIn(code, readme_ko)
         self.assertIn("ref-verify check-bib", readme_ko)
+        self.assertIn("--report report.html", readme_ko)
         self.assertIn("ref-verify verify-doi", readme_ko)
         self.assertIn("ref-verify check-claim", readme_ko)
         self.assertIn("README.ko.md", readme_ko)

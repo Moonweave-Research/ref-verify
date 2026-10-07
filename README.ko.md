@@ -321,6 +321,21 @@ CrossRef 서지 검색으로 찾아 제목이 일치하고 연도 차이가 1년
 - `REFERENCE_UNMATCHED`: DOI가 없고 일치하는 CrossRef 기록도 찾지 못함(`status: UNVERIFIED`, `verdict: WARN`). 도구가 자동으로 확인하지 못했다는 뜻이지 참고문헌이 틀렸다는 뜻은 아니므로 직접 확인합니다
 - `DOI_NOT_FOUND`, `PAPER_RETRACTED`, `ROW_CHECK_ERROR`: `check-claim`, `check-file`과 같음. 그 밖의 DOI 기반 결과는 `error_code: null`이며 `verdict`와 `mismatches`를 봅니다
 
+결과를 공동 저자나 지도교수에게 넘기려면 `check-bib` 또는 `check-file`에
+`--report`를 붙입니다. 파일 확장자가 형식을 정합니다.
+
+```bash
+ref-verify check-bib references.bib --report report.html
+ref-verify check-file claims.jsonl --report report.md
+```
+
+HTML 파일은 그 자체로 완결됩니다(인라인 CSS, 스크립트 없음, `https://doi.org/`
+링크 외 외부 자원 없음). 요약 수치와 참고문헌·주장마다 색으로 구분한 행
+(`PASS`/`ACCEPT` 초록, `WARN` 호박색, `REJECT` 빨강, `UNVERIFIED` 회색), 이유,
+근거를 보여 줍니다. `UNVERIFIED`는 도구가 자동으로 확인하지 못했다는 표시이지
+참고문헌이 틀렸다는 판정이 아닙니다. Markdown 파일은 같은 내용을 표로 담습니다.
+콘솔 출력과 `--json` 출력은 바뀌지 않습니다.
+
 > 핵심 규칙: 논문 내용에 대한 모든 설명은 claim에 필요한 깊이의
 > live-fetched source에서 나와야 합니다. topline claim에는 abstract,
 > mechanism, implementation, procedure claim에는 full text가 필요합니다.

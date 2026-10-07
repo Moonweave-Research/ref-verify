@@ -314,6 +314,22 @@ when every reference is `PASS`.
 - `REFERENCE_UNMATCHED`: the reference had no DOI and no CrossRef record matched (`status: UNVERIFIED`, `verdict: WARN`). The tool could not confirm it automatically; that does not mean the reference is wrong. Verify it manually.
 - `DOI_NOT_FOUND`, `PAPER_RETRACTED`, `ROW_CHECK_ERROR`: as for `check-claim` and `check-file`. Other DOI-backed results carry `error_code: null`; read `verdict` and `mismatches`.
 
+To hand the result to a co-author or supervisor, add `--report` to `check-bib`
+or `check-file`. The file extension picks the format:
+
+```bash
+ref-verify check-bib references.bib --report report.html
+ref-verify check-file claims.jsonl --report report.md
+```
+
+The HTML file is self-contained (inline CSS, no scripts, no external resources
+other than `https://doi.org/` links) and shows the summary counts, one coloured
+row per reference or claim (`PASS`/`ACCEPT` green, `WARN` amber, `REJECT` red,
+`UNVERIFIED` grey), the reason, and the evidence. `UNVERIFIED` marks a result
+the tool could not confirm automatically; it is not a finding that the
+reference is wrong. The Markdown file has the same content as a table. Console
+and `--json` output are unchanged.
+
 > Core rule: every content statement about a paper must come from a live-fetched
 > source at the depth the claim requires — abstract for topline claims, full
 > text for mechanism, implementation, or procedural claims. If the required

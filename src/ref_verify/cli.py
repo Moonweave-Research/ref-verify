@@ -4,6 +4,7 @@ import argparse
 import json
 import sys
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Sequence
 from urllib.error import HTTPError
@@ -34,6 +35,16 @@ from ref_verify.reference_resolve import (
     check_reference,
     reference_payload,
     render_reference_text,
+)
+from ref_verify.report import (
+    ReportError,
+    ReportFormat,
+    ReportRow,
+    render_report,
+    report_format,
+    rows_from_batch_results,
+    rows_from_reference_results,
+    write_report,
 )
 from ref_verify.semantic_scholar import SemanticScholarClient
 
@@ -80,6 +91,7 @@ def _build_parser() -> argparse.ArgumentParser:
     # resetting a top-level --no-cache back to False.
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--no-cache", action="store_true", default=argparse.SUPPRESS, help=no_cache_help)
+    report_help = "Also write a self-contained verdict report; .html or .md picks the format."
     subparsers = parser.add_subparsers(dest="command")
 
     verify = subparsers.add_parser("verify-doi", help="Check DOI metadata", parents=[common])
@@ -117,6 +129,7 @@ def _build_parser() -> argparse.ArgumentParser:
         default=4,
         help="Rows checked in parallel (default 4); output keeps input order.",
     )
+    check_file.add_argument("--report", help=report_help)
     check_file.add_argument("--json", action="store_true")
 
     check_bib = subparsers.add_parser(
@@ -136,6 +149,7 @@ def _build_parser() -> argparse.ArgumentParser:
         default=4,
         help="References checked in parallel (default 4); output keeps input order.",
     )
+    check_bib.add_argument("--report", help=report_help)
     check_bib.add_argument("--json", action="store_true")
 
     return parser
@@ -199,8 +213,9 @@ def _check_file(
     fallback_clients: Sequence[AbstractSourceClient],
 ) -> int:
     try:
+        report = _report_target(args)
         rows = parse_claim_file(Path(args.path), args.format)
-    except BatchInputError as exc:
+    except (BatchInputError, ReportError) as exc:
         _emit({"error": str(exc)}, as_json=args.json)
         return 1
 
@@ -214,6 +229,18 @@ def _check_file(
     with ThreadPoolExecutor(max_workers=args.workers) as executor:
         results = list(executor.map(check_row, rows))
     payload = batch_payload(results)
+    if report is not None:
+        try:
+            _write_report(
+                report,
+                "check-file",
+                Path(args.path).name,
+                payload["summary"],
+                rows_from_batch_results(results),
+            )
+        except ReportError as exc:
+            _emit({"error": str(exc)}, as_json=args.json)
+            return 1
     if args.json:
         _emit(payload, as_json=True)
     else:
@@ -224,8 +251,9 @@ def _check_file(
 
 def _check_bib(args: argparse.Namespace, client: CrossrefClient) -> int:
     try:
+        report = _report_target(args)
         entries = parse_reference_file(Path(args.path), args.format)
-    except ReferenceInputError as exc:
+    except (ReferenceInputError, ReportError) as exc:
         _emit({"error": str(exc)}, as_json=args.json)
         return 1
 
@@ -235,12 +263,50 @@ def _check_bib(args: argparse.Namespace, client: CrossrefClient) -> int:
     with ThreadPoolExecutor(max_workers=args.workers) as executor:
         results = list(executor.map(check_entry, entries))
     payload = reference_payload(results)
+    if report is not None:
+        try:
+            _write_report(
+                report,
+                "check-bib",
+                Path(args.path).name,
+                payload["summary"],
+                rows_from_reference_results(results),
+            )
+        except ReportError as exc:
+            _emit({"error": str(exc)}, as_json=args.json)
+            return 1
     if args.json:
         _emit(payload, as_json=True)
     else:
         print(render_reference_text(results))
     summary = payload["summary"]
     return 0 if summary["total"] == summary["pass"] else 2
+
+
+def _report_target(args: argparse.Namespace) -> tuple[Path, ReportFormat] | None:
+    if not args.report:
+        return None
+    path = Path(args.report)
+    return path, report_format(path)
+
+
+def _write_report(
+    target: tuple[Path, ReportFormat],
+    command: str,
+    source_name: str,
+    summary: dict[str, int],
+    rows: list[ReportRow],
+) -> None:
+    path, fmt = target
+    content = render_report(
+        fmt,
+        command=command,
+        source_name=source_name,
+        summary=summary,
+        rows=rows,
+        generated_at=datetime.now(timezone.utc),
+    )
+    write_report(path, content)
 
 
 def _run_claim_check(
