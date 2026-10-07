@@ -82,6 +82,18 @@ The CLI has zero third-party Python runtime dependencies, but it is not an
 offline verifier. Functional checks require outbound HTTPS access to public
 academic APIs such as CrossRef, OpenAlex, Semantic Scholar, and PubMed.
 
+### Cache
+
+The CLI keeps API responses on disk for 7 days, so re-running a check does not
+query CrossRef and the abstract sources again. A DOI that returned HTTP 404 is
+kept for 1 day only, so a newly registered DOI is re-checked soon. Rate limits
+(429) and server errors (5xx) are retried up to 3 times with backoff, honouring
+`Retry-After` up to 10 s, and are never cached.
+
+- Location: `$REF_VERIFY_CACHE_DIR`, else `$XDG_CACHE_HOME/ref-verify`, else `~/.cache/ref-verify`.
+- Lifetime: `REF_VERIFY_CACHE_TTL_DAYS` (default `7`).
+- Disable: `--no-cache` on any command, or `REF_VERIFY_NO_CACHE=1`. Delete the directory to clear it.
+
 To run the CLI yourself, install it from PyPI:
 
 ```bash
@@ -260,7 +272,8 @@ ref-verify check-file claims.csv
 ```
 
 Each row must include `doi` and `claim`. Optional fields are `id`, `source`,
-and `note`. Batch mode reuses the same conservative `check-claim` engine:
+and `note`. Rows are checked 4 at a time by default (`--workers N`); output keeps
+the input order, and Semantic Scholar requests still go one at a time. Batch mode reuses the same conservative `check-claim` engine:
 `ACCEPT` means the abstract explicitly supports the numeric claim. `WARN`,
 `PARTIAL`, `REJECT`, or `UNVERIFIABLE` means the claim should not be treated as
 verified.

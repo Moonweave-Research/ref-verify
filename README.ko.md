@@ -90,6 +90,18 @@ CLI에는 third-party Python runtime dependency가 없지만, offline verifier�
 아닙니다. 실제 검증에는 CrossRef, OpenAlex, Semantic Scholar, PubMed 같은 공개 학술
 API로 outbound HTTPS 요청을 보낼 수 있어야 합니다.
 
+### 캐시
+
+CLI는 API 응답을 디스크에 7일 동안 보관하므로, 같은 검사를 다시 돌려도
+CrossRef와 abstract 소스에 다시 요청하지 않습니다. HTTP 404가 나온 DOI는
+1일만 보관해 새로 등록된 DOI를 곧 다시 확인합니다. 요청 제한(429)과 서버
+오류(5xx)는 backoff를 두고 최대 3번 재시도하며(`Retry-After`는 10초까지
+따름), 캐시에 남기지 않습니다.
+
+- 위치: `$REF_VERIFY_CACHE_DIR`, 없으면 `$XDG_CACHE_HOME/ref-verify`, 그것도 없으면 `~/.cache/ref-verify`.
+- 보관 기간: `REF_VERIFY_CACHE_TTL_DAYS` (기본 `7`).
+- 끄기: 모든 명령에서 `--no-cache`, 또는 `REF_VERIFY_NO_CACHE=1`. 비우려면 디렉터리를 지웁니다.
+
 CLI를 직접 쓰려면 PyPI에서 설치합니다.
 
 ```bash
@@ -268,7 +280,8 @@ ref-verify check-file claims.csv
 ```
 
 각 행에는 `doi`와 `claim`이 필요합니다. `id`, `source`, `note`는 선택
-필드입니다. 배치 모드는 기존의 보수적인 `check-claim` 엔진을 그대로
+필드입니다. 기본으로 4행씩 동시에 확인하며(`--workers N`), 출력 순서는 입력
+순서를 그대로 따르고 Semantic Scholar 요청은 여전히 한 번에 하나씩 보냅니다. 배치 모드는 기존의 보수적인 `check-claim` 엔진을 그대로
 사용합니다. `ACCEPT`는 abstract가 숫자 claim을 명시적으로 지지한다는
 뜻입니다. `WARN`, `PARTIAL`, `REJECT`, `UNVERIFIABLE`은 검증된 claim으로
 취급하면 안 됩니다.

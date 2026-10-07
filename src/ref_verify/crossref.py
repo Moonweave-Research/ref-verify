@@ -1,34 +1,29 @@
 from __future__ import annotations
 
 import html
-import json
 import re
 from typing import Any
 from urllib.parse import quote
-from urllib.request import Request, urlopen
 
-from ref_verify import __version__
+from ref_verify.cache import ResponseCache
 from ref_verify.doi_check import normalize_doi
+from ref_verify.http import USER_AGENT, fetch_json
 from ref_verify.models import PaperRecord
 
 
 class CrossrefClient:
-    def __init__(self, timeout: float = 20.0) -> None:
+    def __init__(self, timeout: float = 20.0, *, cache: ResponseCache | None = None) -> None:
         self.timeout = timeout
+        self.cache = cache
 
     def fetch_work(self, doi: str) -> PaperRecord:
         encoded_doi = quote(normalize_doi(doi), safe="")
-        request = Request(
+        payload = fetch_json(
             f"https://api.crossref.org/works/{encoded_doi}",
-            headers={
-                "User-Agent": (
-                    f"ref-verify/{__version__} "
-                    "(+https://github.com/Moonweave-Research/ref-verify)"
-                )
-            },
+            headers={"User-Agent": USER_AGENT},
+            timeout=self.timeout,
+            cache=self.cache,
         )
-        with urlopen(request, timeout=self.timeout) as response:
-            payload = json.loads(response.read().decode("utf-8"))
         return parse_crossref_work(payload["message"])
 
 

@@ -1,8 +1,10 @@
 import io
 import json
 import tempfile
+import threading
+import time
 import unittest
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from urllib.error import HTTPError
 
@@ -49,6 +51,21 @@ class MappingClient:
     def fetch_work(self, doi):
         if doi in self.errors:
             raise self.errors[doi]
+        return self.records[doi]
+
+
+class SlowClient:
+    # Later DOIs answer sooner, so parallel workers finish in reverse input order.
+    def __init__(self, records):
+        self.records = records
+        self.completed = []
+        self.lock = threading.Lock()
+
+    def fetch_work(self, doi):
+        position = list(self.records).index(doi)
+        time.sleep(0.04 * (len(self.records) - position))
+        with self.lock:
+            self.completed.append(doi)
         return self.records[doi]
 
 
@@ -2372,6 +2389,62 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["results"][0]["note"], "draft paragraph 4")
         self.assertEqual(payload["results"][0]["error_code"], "CLAIM_SUPPORTED")
         self.assertEqual(payload["results"][1]["error_code"], "ROW_CHECK_ERROR")
+
+
+    def _run_parallel_check_file(self, workers):
+        dois = [f"10.1000/order-{index}" for index in range(5)]
+        client = SlowClient(
+            {
+                doi: PaperRecord(
+                    doi=doi,
+                    title="Order paper",
+                    authors=["Lee"],
+                    year=2024,
+                    abstract="The model achieved 95% accuracy.",
+                    source="fixture",
+                )
+                for doi in dois
+            }
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "claims.jsonl"
+            path.write_text(
+                "".join(
+                    json.dumps({"id": doi, "doi": doi, "claim": "The model achieved 95% accuracy."}) + "\n"
+                    for doi in dois
+                ),
+                encoding="utf-8",
+            )
+            output = io.StringIO()
+            with redirect_stdout(output):
+                exit_code = main(
+                    ["check-file", str(path), "--workers", str(workers), "--json"],
+                    client=client,
+                    abstract_clients=[],
+                )
+        payload = json.loads(output.getvalue())
+        return dois, client.completed, payload, exit_code
+
+    def test_check_file_workers_keep_input_order(self):
+        dois, completed, payload, exit_code = self._run_parallel_check_file(workers=5)
+
+        self.assertEqual(exit_code, 0)
+        # Positive control: rows really ran concurrently and finished out of order.
+        self.assertEqual(completed, list(reversed(dois)))
+        self.assertEqual([result["id"] for result in payload["results"]], dois)
+        self.assertEqual([result["row_number"] for result in payload["results"]], [1, 2, 3, 4, 5])
+
+    def test_check_file_single_worker_runs_sequentially(self):
+        dois, completed, payload, _ = self._run_parallel_check_file(workers=1)
+
+        self.assertEqual(completed, dois)
+        self.assertEqual([result["id"] for result in payload["results"]], dois)
+
+    def test_check_file_rejects_non_positive_workers(self):
+        with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as context:
+            main(["check-file", "claims.jsonl", "--workers", "0"])
+
+        self.assertEqual(context.exception.code, 2)
 
 
 if __name__ == "__main__":

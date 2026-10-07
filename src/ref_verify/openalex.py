@@ -1,24 +1,30 @@
 from __future__ import annotations
 
-import json
 import os
 import re
 from typing import Any
 from urllib.error import HTTPError
 from urllib.parse import quote, urlencode
-from urllib.request import Request, urlopen
 
-from ref_verify import __version__
 from ref_verify.abstract_lookup import AbstractSourceError
+from ref_verify.cache import ResponseCache
 from ref_verify.doi_check import normalize_doi
+from ref_verify.http import USER_AGENT, fetch_json
 from ref_verify.models import PaperRecord
 
 
 class OpenAlexClient:
     source_name = "openalex"
 
-    def __init__(self, timeout: float = 20.0, mailto: str | None = None) -> None:
+    def __init__(
+        self,
+        timeout: float = 20.0,
+        mailto: str | None = None,
+        *,
+        cache: ResponseCache | None = None,
+    ) -> None:
         self.timeout = timeout
+        self.cache = cache
         self.mailto = mailto or os.environ.get(
             "REF_VERIFY_OPENALEX_MAILTO",
             "verify@ref-verify.local",
@@ -26,19 +32,13 @@ class OpenAlexClient:
 
     def fetch_record(self, doi: str) -> PaperRecord | None:
         work_id = quote(f"doi:{normalize_doi(doi)}", safe=":")
-        request = Request(
-            f"https://api.openalex.org/works/{work_id}?"
-            + urlencode({"mailto": self.mailto}),
-            headers={
-                "User-Agent": (
-                    f"ref-verify/{__version__} "
-                    "(+https://github.com/Moonweave-Research/ref-verify)"
-                )
-            },
-        )
         try:
-            with urlopen(request, timeout=self.timeout) as response:
-                payload = json.loads(response.read().decode("utf-8"))
+            payload = fetch_json(
+                f"https://api.openalex.org/works/{work_id}?" + urlencode({"mailto": self.mailto}),
+                headers={"User-Agent": USER_AGENT},
+                timeout=self.timeout,
+                cache=self.cache,
+            )
         except HTTPError as exc:
             if exc.code == 404:
                 raise AbstractSourceError("NOT_FOUND", "OpenAlex had no work for the DOI.") from exc

@@ -116,7 +116,7 @@ class AbstractSourceTests(unittest.TestCase):
             )
         )
 
-    def test_semantic_scholar_retries_429_once_then_parses_record(self):
+    def test_semantic_scholar_retries_429_then_parses_record(self):
         first = HTTPError(
             url="https://example.test",
             code=429,
@@ -135,10 +135,10 @@ class AbstractSourceTests(unittest.TestCase):
         )
 
         with patch(
-            "ref_verify.semantic_scholar.urlopen",
+            "ref_verify.http.urlopen",
             side_effect=[first, response],
-        ) as urlopen:
-            client = SemanticScholarClient(timeout=1.0, max_retries=1, retry_delay=0)
+        ) as urlopen, patch("ref_verify.http.time.sleep") as sleep:
+            client = SemanticScholarClient(timeout=1.0, max_retries=1)
 
             record = client.fetch_record("10.1000/example")
 
@@ -146,6 +146,7 @@ class AbstractSourceTests(unittest.TestCase):
         assert record is not None
         self.assertEqual(record.abstract, "The actuator survived 5000 cycles.")
         self.assertEqual(urlopen.call_count, 2)
+        self.assertEqual(sleep.call_count, 1)
 
     def test_semantic_scholar_reports_429_as_rate_limited(self):
         error = HTTPError(
@@ -156,8 +157,8 @@ class AbstractSourceTests(unittest.TestCase):
             fp=None,
         )
 
-        with patch("ref_verify.semantic_scholar.urlopen", side_effect=error):
-            client = SemanticScholarClient(timeout=1.0, max_retries=0, retry_delay=0)
+        with patch("ref_verify.http.urlopen", side_effect=error):
+            client = SemanticScholarClient(timeout=1.0, max_retries=0)
 
             with self.assertRaises(AbstractSourceError) as context:
                 client.fetch_record("10.1000/example")
