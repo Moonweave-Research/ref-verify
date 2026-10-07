@@ -41,6 +41,18 @@ class CrossrefTests(unittest.TestCase):
 
         self.assertIsNone(record.year)
 
+    def test_skips_null_date_parts(self):
+        message = {
+            "DOI": "10.1000/null-date",
+            "title": ["Search result with an empty date"],
+            "published-print": {"date-parts": [[None]]},
+            "issued": {"date-parts": [[2019]]},
+        }
+
+        record = parse_crossref_work(message)
+
+        self.assertEqual(record.year, 2019)
+
     def test_reads_retraction_notice_from_updated_by(self):
         message = {
             "DOI": "10.1016/s0140-6736(97)11096-0",

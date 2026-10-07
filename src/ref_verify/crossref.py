@@ -87,7 +87,8 @@ def _crossref_author_name(author: Any) -> str:
 def _published_year(message: dict[str, Any]) -> int | None:
     for key in ("published-print", "published-online", "published", "issued"):
         date_parts = message.get(key, {}).get("date-parts")
-        if date_parts and date_parts[0]:
+        # Search results sometimes carry `[[null]]` for a date CrossRef does not know.
+        if date_parts and date_parts[0] and date_parts[0][0] is not None:
             return int(date_parts[0][0])
     return None
 
