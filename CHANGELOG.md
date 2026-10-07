@@ -13,11 +13,16 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 - On-disk HTTP response cache (default 7 days; HTTP 404 kept for 1 day) shared by the CrossRef, OpenAlex, Semantic Scholar, and PubMed clients. Location: `REF_VERIFY_CACHE_DIR`, else `$XDG_CACHE_HOME/ref-verify`, else `~/.cache/ref-verify`. Disable with `--no-cache` or `REF_VERIFY_NO_CACHE=1`; set the lifetime with `REF_VERIFY_CACHE_TTL_DAYS`.
 - `check-file --workers N` (default 4) checks rows in parallel; output keeps input order, and Semantic Scholar requests stay one at a time.
+- `ref-verify check-bib <path>` checks a BibTeX, RIS, or plain-text/Markdown reference list. References with a DOI are compared with CrossRef metadata; references without one are looked up with CrossRef bibliographic search (`REFERENCE_RESOLVED` with `resolved_doi`, or `REFERENCE_UNMATCHED` / `UNVERIFIED` when nothing matches). Set `REF_VERIFY_MAILTO` to identify yourself to CrossRef search.
 
 ### Changed
 
 - All four API clients now share one HTTP layer that retries 429 and 5xx responses up to 3 times with exponential backoff (capped at 10 s) and honours `Retry-After` up to 10 s. Previously only Semantic Scholar retried, once, on 429. Error codes are unchanged.
 - `SemanticScholarClient` no longer takes `retry_delay`; its `max_retries` default is now 3.
+
+### Fixed
+
+- A CrossRef record whose first date field is `[[null]]` no longer fails the lookup; the year is read from the next date field.
 
 ## [1.2.2] — 2026-10-01
 

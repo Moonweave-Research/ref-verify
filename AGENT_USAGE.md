@@ -20,6 +20,26 @@ Examples:
 
 Do not use `ref-verify` to judge paper quality, field consensus, full-text claims, table values, figure values, or complex statistical interpretation.
 
+## Reference Lists
+
+When the user gives a reference list (a `.bib` or `.ris` export, or a pasted or
+Markdown bibliography), check the references themselves before any claim:
+
+```bash
+ref-verify check-bib references.bib --json
+```
+
+Use `--format txt` for a pasted list saved under another extension. Treat only
+`verdict == "PASS"` as a confirmed reference. `REFERENCE_UNMATCHED` means
+CrossRef search found no matching record: report it as unverified and ask the
+user to check it; never call it fabricated. For a `REFERENCE_RESOLVED` result,
+use `resolved_doi` as the DOI in the claim checks below. Then extract claims
+for the confirmed references and run `check-file`.
+
+`check-bib` uses the same exit codes as `check-file` (`0` only when every
+reference is `PASS`, `2` otherwise, `1` for input errors) and returns
+`{"summary": {"total", "pass", "warn", "reject", "unverified", "failed"}, "results": [...]}`.
+
 ## Agent Workflow
 
 1. Extract candidate `{doi, claim}` pairs from the working context.
@@ -127,6 +147,8 @@ Common routing:
 - `DOI_MISMATCH`: selected DOI-bound record did not match the requested DOI.
 - `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_RATE_LIMITED`, `SOURCE_UNSUPPORTED`: source lookup failed, timed out, was rate-limited, or could not be used.
 - `ROW_CHECK_ERROR`: one row could not be checked, but other rows may still have results.
+- `REFERENCE_RESOLVED` (`check-bib`): a reference without a DOI matched a CrossRef record; use `resolved_doi`.
+- `REFERENCE_UNMATCHED` (`check-bib`): no CrossRef record matched; unverified, not proven wrong.
 
 ## Agent Must Not
 

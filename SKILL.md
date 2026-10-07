@@ -24,6 +24,7 @@ User says "find papers on X" or "cite papers supporting claim Y"?
   └─ Full Audit (searching from scratch requires content verification)
 
 User says "verify/check my reference list" or pre-submission audit?
+  └─ CLI available → run check-bib on the list first, then the steps below
   └─ ≤5 refs  → Full Audit all
   └─ >5 refs  → Quick Screen all first; Full Audit MISMATCH/DEAD + any ref
                  cited for a specific factual claim
@@ -122,6 +123,31 @@ Route the result:
 - `REJECT`: stop using that citation as verified; report the mismatch and ask
   for a corrected DOI or citation unless the user explicitly wants alternatives.
 
+Reference list check (BibTeX, RIS, or a plain-text/Markdown bibliography). Run
+this first when the user hands over a reference list, then check claims:
+
+```bash
+ref-verify check-bib <references.bib|references.ris|references.txt> --json
+```
+
+Bundled-engine form:
+
+```bash
+PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli check-bib <references file> --json
+```
+
+Route each result:
+
+- `PASS`: the reference matches a CrossRef record (by its DOI, or found by
+  search with `REFERENCE_RESOLVED` and a `resolved_doi`).
+- `WARN` with `REFERENCE_UNMATCHED` (`status: UNVERIFIED`): CrossRef search
+  found no matching record. Report it as unverified and run the manual Quick
+  Screen on it; do not call it fabricated from this result alone.
+- Other `WARN`: metadata partly differs or the reference text was too thin to
+  confirm; report the `mismatches` and check manually.
+- `REJECT`: dead DOI (`DOI_NOT_FOUND`), retraction (`PAPER_RETRACTED`), or a
+  DOI that points to a different paper. Stop using it as verified.
+
 Single claim check against a DOI abstract:
 
 ```bash
@@ -170,6 +196,8 @@ decide the next step:
   match the requested DOI.
 - `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_RATE_LIMITED`, `SOURCE_UNSUPPORTED`: source lookup
   failed, timed out, was rate-limited, or could not be used.
+- `REFERENCE_RESOLVED`, `REFERENCE_UNMATCHED` (`check-bib` only): a reference
+  without a DOI did or did not match a CrossRef record.
 
 The CLI does not replace Layer 4 DOI landing-page resolution or two-source
 existence checks, and it only catches retractions that CrossRef records as a

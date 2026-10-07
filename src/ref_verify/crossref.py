@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import html
+import os
 import re
 from typing import Any
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 
 from ref_verify.cache import ResponseCache
 from ref_verify.doi_check import normalize_doi
@@ -25,6 +26,20 @@ class CrossrefClient:
             cache=self.cache,
         )
         return parse_crossref_work(payload["message"])
+
+    def search_bibliographic(self, query: str, rows: int = 3) -> list[PaperRecord]:
+        params = {"query.bibliographic": query, "rows": str(rows)}
+        mailto = os.environ.get("REF_VERIFY_MAILTO")
+        if mailto:
+            params["mailto"] = mailto
+        payload = fetch_json(
+            "https://api.crossref.org/works?" + urlencode(params),
+            headers={"User-Agent": USER_AGENT},
+            timeout=self.timeout,
+            cache=self.cache,
+        )
+        items = payload.get("message", {}).get("items", [])
+        return [parse_crossref_work(item) for item in items if isinstance(item, dict)]
 
 
 def parse_crossref_work(message: dict[str, Any]) -> PaperRecord:

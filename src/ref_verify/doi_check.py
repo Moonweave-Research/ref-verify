@@ -206,3 +206,24 @@ def _transliterate_greek_letters(value: str) -> str:
         f" {_GREEK_LETTER_NAMES[char]} " if char in _GREEK_LETTER_NAMES else char
         for char in value
     )
+
+
+titles_match = _titles_match
+author_matches = _author_matches
+author_tokens = _author_tokens
+
+
+def title_in_text(title: str, text: str) -> bool:
+    title_tokens = _title_tokens(_strip_retraction_prefix(title))
+    text_tokens = _title_tokens(text)
+    width = len(title_tokens)
+    if not width:
+        return False
+    return any(text_tokens[start : start + width] == title_tokens for start in range(len(text_tokens) - width + 1))
+
+
+def title_token_overlap(title: str, text: str) -> float:
+    title_tokens = set(_title_tokens(_strip_retraction_prefix(title)))
+    if not title_tokens:
+        return 0.0
+    return len(title_tokens & set(_title_tokens(text))) / len(title_tokens)

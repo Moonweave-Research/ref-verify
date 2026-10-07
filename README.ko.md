@@ -79,6 +79,7 @@ Python 패키지는 CLI 전용입니다. `SKILL.md`를 설치하지 않습니다
   - efficiency, response rate, actuation strain 같은 subject가 일치하는 percentage claim
   - cycles, patients, voltage, temperature, concentration 같은 단순 unit/count claim
   - CrossRef를 먼저 쓰고, CrossRef에 abstract가 없으면 DOI가 일치하는 OpenAlex, Semantic Scholar, PubMed fallback 사용
+- 참고문헌 목록 확인(BibTeX, RIS, 일반 텍스트, Markdown): `ref-verify check-bib`
 - 에이전트가 읽기 쉬운 JSON 출력
 - `WARN`, `REJECT`, `UNVERIFIABLE` 결과에 대한 non-zero exit code
 
@@ -296,6 +297,29 @@ ref-verify check-file claims.csv
 - `PAPER_RETRACTED`: CrossRef에 철회 공지가 있어 초록을 읽기 전에 거절함
 - `DOI_MISMATCH`: primary 또는 명시적으로 선택한 DOI-bound record가 요청 DOI와 다름
 - `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_RATE_LIMITED`, `SOURCE_UNSUPPORTED`: source lookup 실패, timeout, rate limit, 사용 불가
+
+DOI/claim 쌍이 아니라 참고문헌 목록이 있을 때는 `check-bib`을 사용합니다.
+
+```bash
+ref-verify check-bib references.bib
+ref-verify check-bib references.ris --json
+ref-verify check-bib references.md --format txt
+```
+
+BibTeX, RIS, 일반 텍스트·Markdown 목록(문단마다, 줄마다, 또는
+`[1]`/`1.`/`1)` 번호마다 참고문헌 하나)을 읽습니다. DOI가 있는 항목은
+`verify-doi`처럼 CrossRef 기록과 대조하고, 일반 텍스트 항목은 본문에
+CrossRef 제목과 제1저자가 드러날 때만 통과합니다. DOI가 없는 항목은
+CrossRef 서지 검색으로 찾아 제목이 일치하고 연도 차이가 1년 이내일 때만
+받아들입니다. 출력은 표이며, `--json`이면 `summary`(`total`, `pass`, `warn`,
+`reject`, `unverified`, `failed`)와 `results`를 담은 객체입니다. 모든 항목이
+`PASS`일 때만 exit `0`입니다.
+
+`check-bib` error code:
+
+- `REFERENCE_RESOLVED`: DOI가 없던 항목을 CrossRef 검색으로 찾았고 `resolved_doi`에 기록함. 연도가 1년 다르거나 제1저자가 다르면 `WARN`
+- `REFERENCE_UNMATCHED`: DOI가 없고 일치하는 CrossRef 기록도 찾지 못함(`status: UNVERIFIED`, `verdict: WARN`). 도구가 자동으로 확인하지 못했다는 뜻이지 참고문헌이 틀렸다는 뜻은 아니므로 직접 확인합니다
+- `DOI_NOT_FOUND`, `PAPER_RETRACTED`, `ROW_CHECK_ERROR`: `check-claim`, `check-file`과 같음. 그 밖의 DOI 기반 결과는 `error_code: null`이며 `verdict`와 `mismatches`를 봅니다
 
 > 핵심 규칙: 논문 내용에 대한 모든 설명은 claim에 필요한 깊이의
 > live-fetched source에서 나와야 합니다. topline claim에는 abstract,
