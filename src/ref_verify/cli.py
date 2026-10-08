@@ -24,7 +24,7 @@ from ref_verify.batch import (
 )
 from ref_verify.cache import ResponseCache, default_cache
 from ref_verify.claim_check import check_claim_support, retracted_claim_result
-from ref_verify.crossref import CrossrefClient
+from ref_verify.crossref import CrossrefClient, not_in_crossref_reason, other_registration_agency
 from ref_verify.doi_check import normalize_doi, verify_doi_metadata
 from ref_verify.models import CitationInput, ClaimSupportResult
 from ref_verify.openalex import OpenAlexClient
@@ -185,6 +185,21 @@ def _verify_doi(args: argparse.Namespace, client: CrossrefClient) -> int:
     except HTTPError as exc:
         if not _is_not_found(exc):
             raise
+        agency = other_registration_agency(client, lookup_doi)
+        if agency:
+            _emit(
+                {
+                    "status": "UNVERIFIED",
+                    "verdict": "WARN",
+                    "mismatches": [],
+                    "reason": not_in_crossref_reason(agency, lookup_doi),
+                    "provided": provided.to_dict(),
+                    "fetched": None,
+                    "error_code": "DOI_NOT_IN_CROSSREF",
+                },
+                as_json=args.json,
+            )
+            return 2
         # A dead DOI is a verdict, not a tool failure; keep the `verdict` key so
         # callers that parse JSON do not have to special-case the error shape.
         _emit(
@@ -365,7 +380,10 @@ def _run_claim_check(
         except HTTPError as exc:
             if not _is_not_found(exc):
                 raise
-            return _doi_not_found_payload(claim)
+            agency = other_registration_agency(client, lookup_doi)
+            if not agency:
+                return _doi_not_found_payload(claim)
+            return _not_in_crossref_claim(lookup_doi, claim, agency, selected_clients)
         if fetched.retraction_doi:
             # Fallback abstract sources would drop the retraction flag, so decide here.
             result = retracted_claim_result(fetched, claim)
@@ -407,6 +425,34 @@ def _doi_not_found_payload(claim: str) -> dict:
         "abstract_source": None,
         "source_attempts": [],
         "error_code": "DOI_NOT_FOUND",
+    }
+
+
+def _not_in_crossref_claim(
+    doi: str,
+    claim: str,
+    agency: str,
+    fallback_clients: Sequence[AbstractSourceClient],
+) -> dict:
+    # CrossRef has no record, but OpenAlex or Semantic Scholar often index arXiv and other
+    # DataCite works with their abstracts.
+    lookup_result = lookup_selected_abstract(doi, fallback_clients)
+    if lookup_result.record.abstract:
+        return _claim_payload(check_claim_support(lookup_result.record, claim), lookup_result)
+    sources = ", ".join(client.source_name for client in fallback_clients) or "no other source"
+    return {
+        "status": "UNVERIFIABLE",
+        "verdict": "WARN",
+        "reason": (
+            f"This DOI is registered with {agency}, not CrossRef, and no DOI-bound abstract was "
+            f"found ({sources} tried), so the claim was not judged; open https://doi.org/{doi}."
+        ),
+        "evidence": "",
+        "paper": None,
+        "claim": claim,
+        "abstract_source": None,
+        "source_attempts": [attempt.to_dict() for attempt in lookup_result.attempts],
+        "error_code": "DOI_NOT_IN_CROSSREF",
     }
 
 

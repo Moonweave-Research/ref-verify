@@ -381,7 +381,8 @@ Current `check-claim` error codes:
 - `CLAIM_NOT_EXPLICIT`: an abstract was available, but the claim was not explicitly supported.
 - `CLAIM_AMBIGUOUS`: numeric evidence or context exists, but binding is ambiguous.
 - `NO_ABSTRACT`: attempted DOI-bound sources did not provide abstract text.
-- `DOI_NOT_FOUND`: CrossRef has no record for the DOI (HTTP 404), or the selected source did not find a DOI-bound record. The JSON still carries a `verdict` of `REJECT`.
+- `DOI_NOT_FOUND`: neither CrossRef nor doi.org knows the DOI, or the selected source did not find a DOI-bound record. The JSON still carries a `verdict` of `REJECT`.
+- `DOI_NOT_IN_CROSSREF`: CrossRef has no record, but doi.org lists the DOI with another agency (DataCite for arXiv and Zenodo, KISTI, JaLC, ...). `verify-doi` returns `verdict: WARN`, `status: UNVERIFIED` without comparing metadata; `check-claim` tries OpenAlex, Semantic Scholar (arXiv DOIs by arXiv identifier), and PubMed for the abstract and judges the claim if one has it, otherwise returns `status: UNVERIFIABLE`, `verdict: WARN` with this code. Not a dead DOI.
 - `PAPER_RETRACTED`: CrossRef lists a retraction notice for the DOI; the claim is rejected before any abstract is read.
 - `DOI_MISMATCH`: the primary or explicitly selected DOI-bound record did not match the requested DOI.
 - `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_RATE_LIMITED`, `SOURCE_UNSUPPORTED`: source lookup failed, timed out, was rate-limited, or could not be used.
