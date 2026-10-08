@@ -124,6 +124,11 @@ def parse_crossref_work(message: dict[str, Any]) -> PaperRecord:
         alt_years=years[1:],
         work_type=str(message["type"]) if message.get("type") else None,
         is_about_other_work=_is_about_other_work(message, title),
+        journal_abbreviations=[
+            str(value).strip() for value in message.get("short-container-title") or [] if str(value).strip()
+        ],
+        volume=_first_string(message.get("volume")),
+        first_page=_first_page(message),
     )
 
 
@@ -170,6 +175,16 @@ def _is_about_other_work(message: dict[str, Any], title: str) -> bool:
     if isinstance(relations, dict) and _ABOUT_OTHER_WORK_RELATIONS & set(relations):
         return True
     return bool(_ABOUT_OTHER_WORK_TITLE.match(title))
+
+
+def _first_page(message: dict[str, Any]) -> str | None:
+    article_number = _first_string(message.get("article-number"))
+    if article_number:
+        return article_number
+    page = _first_string(message.get("page"))
+    if not page:
+        return None
+    return re.split(r"\s*[-\u2013\u2014,]\s*", page)[0] or None
 
 
 def _first_string(value: Any) -> str | None:

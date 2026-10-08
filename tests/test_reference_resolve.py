@@ -397,6 +397,140 @@ class DoiReferenceTests(unittest.TestCase):
         self.assertEqual(reference_payload([result])["summary"]["failed"], 1)
 
 
+BCS = PaperRecord(
+    doi="10.1103/physrev.108.1175",
+    title="Theory of Superconductivity",
+    authors=["Bardeen", "Cooper", "Schrieffer"],
+    year=1957,
+    abstract=None,
+    source="CrossRef",
+    journal="Physical Review",
+    journal_abbreviations=["Phys. Rev."],
+    volume="108",
+    first_page="1175",
+)
+
+
+class TitlelessCitationTests(unittest.TestCase):
+    def test_titleless_citation_with_doi_passes_on_journal_volume_page_year_and_author(self):
+        entry = _entry(
+            doi=BCS.doi,
+            year=1957,
+            raw="J. Bardeen, L. N. Cooper, and J. R. Schrieffer, Phys. Rev. 108, 1175 (1957). doi:10.1103/physrev.108.1175",
+        )
+
+        result = check_reference(entry, FakeCrossref(works={BCS.doi: BCS}))
+
+        self.assertEqual(result.verdict, "PASS")
+        self.assertEqual(
+            result.reason,
+            "The reference has no article title; it matches CrossRef's record for this DOI on journal, volume, "
+            "first page, year, and first author.",
+        )
+
+    def test_titleless_citation_names_each_field_that_differs(self):
+        entry = _entry(
+            doi=BCS.doi,
+            year=1958,
+            raw="J. Bardeen, L. N. Cooper, and J. R. Schrieffer, Phys. Rev. 109, 1175 (1958). doi:10.1103/physrev.108.1175",
+        )
+
+        result = check_reference(entry, FakeCrossref(works={BCS.doi: BCS}))
+
+        self.assertEqual((result.verdict, result.status), ("WARN", "MISMATCH"))
+        self.assertIn("volume (CrossRef: 108); year (reference: 1958; CrossRef: 1957)", result.reason)
+        self.assertNotIn("may point to a different paper", result.reason)
+
+    def test_abbreviated_journal_matches_the_full_name(self):
+        prl = PaperRecord(
+            doi="10.1103/physrevlett.98.123456", title="Some letter", authors=["Author"], year=2007,
+            abstract=None, source="CrossRef", journal="Physical Review Letters", volume="98", first_page="123456",
+        )
+        entry = _entry(doi=prl.doi, year=2007, raw="A. Author et al., Phys. Rev. Lett. 98, 123456 (2007).")
+
+        self.assertEqual(check_reference(entry, FakeCrossref(works={prl.doi: prl})).verdict, "PASS")
+
+    def test_titleless_citation_without_doi_resolves_only_on_full_agreement(self):
+        epr = PaperRecord(
+            doi="10.1103/physrev.47.777",
+            title="Can Quantum-Mechanical Description of Physical Reality Be Considered Complete?",
+            authors=["Einstein", "Podolsky", "Rosen"], year=1935, abstract=None, source="CrossRef",
+            journal="Physical Review", volume="47", first_page="777",
+        )
+        good = _entry(year=1935, raw="A. Einstein, B. Podolsky, and N. Rosen, Phys. Rev. 47, 777 (1935).")
+        wrong_page = _entry(year=1935, raw="A. Einstein, B. Podolsky, and N. Rosen, Phys. Rev. 47, 778 (1935).")
+
+        resolved = check_reference(good, FakeCrossref(candidates=[epr]))
+        unmatched = check_reference(wrong_page, FakeCrossref(candidates=[epr]))
+
+        self.assertEqual((resolved.verdict, resolved.resolved_doi), ("PASS", epr.doi))
+        self.assertIn("no article title", resolved.reason)
+        self.assertEqual((unmatched.status, unmatched.error_code), ("UNVERIFIED", "REFERENCE_UNMATCHED"))
+
+    def test_a_different_title_is_not_excused_as_titleless(self):
+        # Right journal, volume, page, year, and author, but an invented title.
+        entry = _entry(
+            doi=BCS.doi,
+            year=1957,
+            raw="J. Bardeen, L. N. Cooper, and J. R. Schrieffer, Microscopic origin of magnetic flux pinning. "
+            "Phys. Rev. 108, 1175 (1957). doi:10.1103/physrev.108.1175",
+        )
+
+        result = check_reference(entry, FakeCrossref(works={BCS.doi: BCS}))
+
+        self.assertNotEqual(result.verdict, "PASS")
+
+
+class FirstAuthorPositionTests(unittest.TestCase):
+    RIESS = PaperRecord(
+        doi="10.1086/300499",
+        title="Observational Evidence from Supernovae for an Accelerating Universe and a Cosmological Constant",
+        authors=["Riess", "Filippenko", "Perlmutter"], year=1998, abstract=None, source="CrossRef",
+    )
+
+    def _check(self, record, raw):
+        return check_reference(_entry(doi=record.doi, year=record.year, raw=raw), FakeCrossref(works={record.doi: record}))
+
+    def test_second_author_in_first_position_is_not_passed(self):
+        result = self._check(
+            self.RIESS,
+            "Perlmutter S, Riess AG. Observational Evidence from Supernovae for an Accelerating Universe and a "
+            "Cosmological Constant. The Astronomical Journal. 1998;116(3):1009-1038. doi:10.1086/300499",
+        )
+
+        self.assertNotEqual(result.verdict, "PASS")
+
+    def test_initials_first_and_particle_names_still_pass(self):
+        title = self.RIESS.title
+        for raw in (
+            f"A. G. Riess et al., {title}, Astron. J. 116, 1009 (1998).",
+            f"Riess, A. G., Filippenko, A. V. (1998). {title}. AJ, 116, 1009.",
+            f"Adam G. Riess and Alexei V. Filippenko. {title}. 1998.",
+        ):
+            with self.subTest(raw=raw):
+                self.assertEqual(self._check(self.RIESS, raw).verdict, "PASS")
+        waals = PaperRecord(doi="10.1/w", title="Over de continuiteit", authors=["van der Waals"], year=1873,
+                            abstract=None, source="CrossRef")
+        lecunff = PaperRecord(doi="10.1/l", title="Ionic liquid actuators", authors=["Le Cunff"], year=2012,
+                              abstract=None, source="CrossRef")
+        self.assertEqual(self._check(waals, "J. D. van der Waals, Over de continuiteit, 1873.").verdict, "PASS")
+        self.assertEqual(self._check(lecunff, "Le Cunff, A., Ionic liquid actuators, 2012.").verdict, "PASS")
+
+    def test_group_author_opening_the_reference_passes(self):
+        jama = PaperRecord(
+            doi="10.1001/jama.288.3.321",
+            title="Risks and Benefits of Estrogen Plus Progestin in Healthy Postmenopausal Women",
+            authors=["Writing Group for the Women's Health Initiative Investigators"],
+            year=2002, abstract=None, source="CrossRef",
+        )
+        raw = (
+            "Writing Group for the Women's Health Initiative Investigators. Risks and Benefits of Estrogen Plus "
+            "Progestin in Healthy Postmenopausal Women. JAMA. 2002;288(3):321-333."
+        )
+
+        self.assertEqual(self._check(jama, raw).verdict, "PASS")
+
+
 class SearchReferenceTests(unittest.TestCase):
     def test_review_reports_and_notices_are_not_taken_as_the_paper(self):
         title = "A pneumonia outbreak associated with a new coronavirus of probable bat origin"

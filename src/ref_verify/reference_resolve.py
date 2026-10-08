@@ -13,6 +13,7 @@ from ref_verify.doi_check import (
     author_matches,
     author_tokens,
     hangul_surname_matches,
+    looks_like_group_author,
     record_titles,
     record_years,
     title_in_text,
@@ -22,7 +23,7 @@ from ref_verify.doi_check import (
 )
 from ref_verify.http import retry_after_seconds as _retry_after_seconds
 from ref_verify.models import CitationInput, PaperRecord
-from ref_verify.reference_parse import ReferenceEntry
+from ref_verify.reference_parse import DOI_PATTERN, ReferenceEntry
 
 UNMATCHED_REASON = "No matching CrossRef record was found; verify this reference manually."
 _INSUFFICIENT_REASON = (
@@ -32,9 +33,19 @@ _INSUFFICIENT_REASON = (
 _MIN_TEXT_TITLE_OVERLAP = 0.8
 # Below this share of the CrossRef title's words, plain reference text is about another paper.
 _MAX_SWAPPED_TITLE_OVERLAP = 0.5
-# Reference strings start with the author list, so the first author's family name should
-# appear among the first few name tokens ("Pelrine R", "R. Pelrine", "Ronald E. Pelrine").
-_FIRST_AUTHOR_TOKEN_WINDOW = 4
+# Reference strings start with the author list. The first author is the text before the
+# first separator ("Pelrine R, ...", "R. Pelrine, ...", "Pelrine, R., ...", "A. G. Riess et
+# al.", "Ronald E. Pelrine and ..."), and the family name sits within its first few words
+# ("J. D. van der Waals").
+_FIRST_AUTHOR_END = re.compile(r",|;|\(|\s(?:and|&)\s|\set\.?\s*al\b", re.IGNORECASE)
+_FIRST_AUTHOR_TOKEN_WINDOW = 6
+# Words that are neither title nor author in a citation such as
+# "J. Bardeen, L. N. Cooper, and J. R. Schrieffer, Phys. Rev. 108, 1175 (1957)".
+_CITATION_FILLER = {
+    "al", "and", "et", "vol", "no", "pp", "doi", "https", "http", "org", "dx", "art", "article",
+    "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "sept", "oct", "nov", "dec",
+}
+_JOURNAL_STOPWORDS = {"a", "an", "and", "de", "der", "des", "for", "in", "of", "on", "the", "und"}
 _DEFAULT_RATE_LIMIT_PAUSE_SECONDS = 15.0
 _MAX_RATE_LIMIT_PAUSE_SECONDS = 60.0
 _sleep = time.sleep
@@ -147,7 +158,25 @@ def _check_doi_reference(entry: ReferenceEntry, doi: str, client: ReferenceClien
     if metadata.verdict == "PASS":
         status, reason = "VERIFIED", metadata.reason
     elif metadata.verdict == "WARN" and "metadata" in metadata.mismatches:
-        if not entry.title and not text_title and _text_names_another_paper(entry.raw, fetched):
+        titleless = None if text_title else _titleless_differences(entry, fetched)
+        if titleless == []:
+            return ReferenceResult(
+                entry=entry,
+                status="VERIFIED",
+                verdict="PASS",
+                reason=(
+                    "The reference has no article title; it matches CrossRef's record for this DOI on "
+                    f"{_titleless_fields(fetched)}."
+                ),
+                fetched=fetched,
+            )
+        if titleless:
+            status = "MISMATCH"
+            reason = (
+                "The reference has no article title, and CrossRef's record for this DOI differs in "
+                f"{'; '.join(titleless)}."
+            )
+        elif not entry.title and not text_title and _text_names_another_paper(entry.raw, fetched):
             status = "MISMATCH"
             reason = (
                 f"This DOI belongs to {_describe(fetched)}, which this reference does not mention; "
@@ -216,7 +245,7 @@ def _insufficient_reason(provided: CitationInput, fetched: PaperRecord) -> str:
     if provided.title and not provided.first_author and fetched.authors:
         return (
             f"The DOI and title match CrossRef, but its first author ({fetched.authors[0]}) was not "
-            "found in the reference; check the author names manually."
+            "found in the reference's first-author position; check the author names manually."
         )
     if provided.first_author and not provided.title:
         return (
@@ -258,7 +287,22 @@ def _resolve_reference(entry: ReferenceEntry, client: ReferenceClient) -> Refere
     # top three results ahead of the paper itself.
     candidates = client.search_bibliographic(query, rows=5) if query else []
     for candidate in candidates:
-        if candidate.is_about_other_work or not _candidate_matches(entry, candidate):
+        if candidate.is_about_other_work:
+            continue
+        if not _candidate_matches(entry, candidate):
+            if _titleless_differences(entry, candidate) == []:
+                return ReferenceResult(
+                    entry=entry,
+                    status="RESOLVED",
+                    verdict="PASS",
+                    reason=(
+                        f"Matched CrossRef record {candidate.doi} by bibliographic search; the reference has "
+                        f"no article title, so it was matched on {_titleless_fields(candidate)}."
+                    ),
+                    error_code="REFERENCE_RESOLVED",
+                    resolved_doi=candidate.doi,
+                    fetched=candidate,
+                )
             continue
         if candidate.retraction_doi:
             return _retracted(entry, candidate, resolved_doi=candidate.doi)
@@ -326,11 +370,98 @@ def _first_author_matches(entry: ReferenceEntry, candidate: PaperRecord) -> bool
 def _first_author_in_text(text: str, record: PaperRecord) -> str | None:
     if not text or not record.authors:
         return None
-    if hangul_surname_matches(text, record.authors[0]):
-        return record.authors[0]
-    family = author_tokens(record.authors[0])
-    if family and family[-1] in author_tokens(text)[:_FIRST_AUTHOR_TOKEN_WINDOW]:
-        return record.authors[0]
+    first_author = record.authors[0]
+    if hangul_surname_matches(text, first_author):
+        return first_author
+    family = author_tokens(first_author)
+    if not family:
+        return None
+    if looks_like_group_author(family):
+        # A group author ("Writing Group for the ... Investigators") opens the reference whole.
+        group = [token for token in family if token != "the"]
+        opening = [token for token in author_tokens(text) if token != "the"][: len(group)]
+        return first_author if opening == group else None
+    # Only the first author's own name counts, so "Perlmutter S, Riess AG" does not pass for
+    # a paper whose first author is Riess.
+    first_name = _FIRST_AUTHOR_END.split(text, maxsplit=1)[0]
+    if family[-1] in author_tokens(first_name)[:_FIRST_AUTHOR_TOKEN_WINDOW]:
+        return first_author
+    return None
+
+
+def _titleless_differences(entry: ReferenceEntry, record: PaperRecord) -> list[str] | None:
+    # A citation without an article title ("Phys. Rev. 108, 1175 (1957)") is compared on the
+    # fields it does carry. None means it carries a title (words that are not authors,
+    # journal, or numbers) or the record has no volume or page to compare; otherwise the list
+    # names the fields that disagree, and an empty list means every field agrees.
+    if entry.title or not (record.volume or record.first_page):
+        return None
+    tokens = _plain_tokens(DOI_PATTERN.sub(" ", entry.raw))
+    journal_run = next(
+        (
+            run
+            for journal in (record.journal, *record.journal_abbreviations)
+            if journal and (run := _journal_run(journal, tokens))
+        ),
+        None,
+    )
+    author_words = {token for author in record.authors for token in author_tokens(author)}
+    leftover = [
+        token
+        for index, token in enumerate(tokens)
+        if not (journal_run and index in journal_run)
+        and token not in author_words
+        and token not in _CITATION_FILLER
+        and not token.isdigit()
+        and len(token) >= 3
+    ]
+    if len(leftover) >= 3:
+        return None
+    differences = []
+    if not journal_run:
+        differences.append(f"journal (CrossRef: {record.journal or 'none listed'})")
+    if record.volume and record.volume.casefold() not in tokens:
+        differences.append(f"volume (CrossRef: {record.volume})")
+    if record.first_page and record.first_page.casefold() not in tokens:
+        differences.append(f"first page (CrossRef: {record.first_page})")
+    years = record_years(record)
+    if entry.year is None or entry.year not in years:
+        reference = f"reference: {entry.year}; " if entry.year is not None else ""
+        crossref_years = "/".join(str(year) for year in years) or "none listed"
+        differences.append(f"year ({reference}CrossRef: {crossref_years})")
+    if _first_author_in_text(entry.raw, record) is None:
+        differences.append(f"first author (CrossRef: {record.authors[0] if record.authors else 'none listed'})")
+    return differences
+
+
+def _titleless_fields(record: PaperRecord) -> str:
+    fields = ["journal"]
+    if record.volume:
+        fields.append("volume")
+    if record.first_page:
+        fields.append("first page")
+    fields.extend(["year", "first author"])
+    return ", ".join(fields[:-1]) + f", and {fields[-1]}"
+
+
+def _plain_tokens(text: str) -> list[str]:
+    folded = "".join(
+        char for char in unicodedata.normalize("NFKD", text.casefold()) if not unicodedata.combining(char)
+    )
+    return re.findall(r"[a-z0-9]+", folded)
+
+
+def _journal_run(journal: str, tokens: list[str]) -> set[int] | None:
+    # Full name or a standard abbreviation: "Phys. Rev. Lett." matches "Physical Review
+    # Letters" word by word, each abbreviated word being the start of the full one.
+    words = [word for word in _plain_tokens(journal) if word not in _JOURNAL_STOPWORDS]
+    if not words:
+        return None
+    positions = [index for index, token in enumerate(tokens) if token not in _JOURNAL_STOPWORDS]
+    for start in range(len(positions) - len(words) + 1):
+        window = positions[start : start + len(words)]
+        if all(words[offset].startswith(tokens[index]) for offset, index in enumerate(window)):
+            return set(range(window[0], window[-1] + 1))
     return None
 
 

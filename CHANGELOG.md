@@ -9,6 +9,11 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+### Fixed
+
+- `check-bib` judges citations that omit the article title (common in physics and chemistry: `A. Author et al., Phys. Rev. Lett. 98, 123456 (2007)`) on the evidence they carry: journal (full name or abbreviation), volume, first page or article number, year, and first author. With a DOI they pass when all agree, instead of a `MISMATCH` saying "the DOI may point to a different paper"; when they disagree the reason names each differing field. Without a DOI the CrossRef search result is accepted on the same agreement and the reference stays `UNVERIFIED` otherwise. A citation that does carry a title that does not match keeps the old behaviour.
+- The first-author check reads only the first name in the author list, so a reference that lists a co-author first ("Perlmutter S, Riess AG" for a paper by Riess) no longer passes; initials-first names and particles ("A. G. Riess", "J. D. van der Waals", "Le Cunff, A.") still do. A group author ("Writing Group for the ... Investigators") that opens the reference is matched as a whole.
+
 ## [1.3.0] — 2026-10-08
 
 ### Added
