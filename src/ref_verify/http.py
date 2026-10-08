@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import time
 from email.message import Message
-from typing import Any, Callable
+from typing import Any, Callable, Protocol
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
@@ -13,6 +13,29 @@ from ref_verify.cache import ResponseCache
 USER_AGENT = f"ref-verify/{__version__} (+https://github.com/Moonweave-Research/ref-verify)"
 RETRY_STATUSES = frozenset({429, 500, 502, 503, 504})
 MAX_BACKOFF_SECONDS = 10.0
+
+
+class HttpBackend(Protocol):
+    # Returns the decoded body of a 2xx response. An HTTP error status raises
+    # urllib.error.HTTPError (with `code` and `headers`) so retries, Retry-After, and the
+    # 404 cache work the same for every backend; a network failure raises URLError.
+    def get(self, url: str, headers: dict[str, str], timeout: float) -> str:
+        ...
+
+
+class UrllibBackend:
+    def get(self, url: str, headers: dict[str, str], timeout: float) -> str:
+        with urlopen(Request(url, headers=headers), timeout=timeout) as response:
+            return response.read().decode("utf-8")
+
+
+_backend: HttpBackend = UrllibBackend()
+
+
+def set_backend(backend: HttpBackend | None) -> None:
+    # The browser build swaps in a transport that runs inside the page; None restores urllib.
+    global _backend
+    _backend = backend if backend is not None else UrllibBackend()
 
 
 def fetch_json(
@@ -54,8 +77,7 @@ def fetch_text(
     attempt = 0
     while True:
         try:
-            with urlopen(Request(url, headers=headers), timeout=timeout) as response:
-                body = response.read().decode("utf-8")
+            body = _backend.get(url, headers, timeout)
         except HTTPError as exc:
             if exc.code == 404 and cache is not None:
                 cache.put(url, 404, "")

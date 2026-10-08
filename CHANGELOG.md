@@ -9,6 +9,10 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+### Changed
+
+- `ref_verify.http` sends requests through a swappable backend (`set_backend`), so a browser build can supply its own transport. The default is still `urllib`; CLI requests, retries, `Retry-After`, and the cache are unchanged.
+
 ### Fixed
 
 - `check-bib` judges citations that omit the article title (common in physics and chemistry: `A. Author et al., Phys. Rev. Lett. 98, 123456 (2007)`) on the evidence they carry: journal (full name or abbreviation), volume, first page or article number, year, and first author. With a DOI they pass when all agree, instead of a `MISMATCH` saying "the DOI may point to a different paper"; when they disagree the reason names each differing field. Without a DOI the CrossRef search result is accepted on the same agreement and the reference stays `UNVERIFIED` otherwise. A citation that does carry a title that does not match keeps the old behaviour.
