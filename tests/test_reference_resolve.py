@@ -606,7 +606,10 @@ class OutputTests(unittest.TestCase):
     def test_failed_rows_tell_the_reader_to_rerun(self):
         failed = check_reference(_entry(doi=PELRINE_DOI), FakeCrossref(errors={PELRINE_DOI: RuntimeError("boom")}))
 
-        self.assertIn("(1 could not be checked; run the same command again)", render_reference_text([failed], width=100))
+        text = render_reference_text([failed], width=100)
+
+        self.assertTrue(text.startswith("1 reference: 0 PASS"))
+        self.assertIn("(1 could not be checked; run the same command again)", text)
 
 
 class CheckBibCliTests(unittest.TestCase):

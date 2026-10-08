@@ -153,7 +153,7 @@ class ReferenceFileTests(unittest.TestCase):
                 parse_reference_file(path, None)
 
     def test_missing_file_is_an_input_error(self):
-        with self.assertRaises(ReferenceInputError):
+        with self.assertRaisesRegex(ReferenceInputError, "File not found: .*missing.bib. Check the name"):
             parse_reference_file(FIXTURES / "missing.bib", None)
 
     def test_word_file_and_folder_get_a_next_step(self):

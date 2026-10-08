@@ -371,7 +371,8 @@ def render_reference_text(results: list[ReferenceResult], width: int | None = No
     # Counted by the label shown, so the numbers add up to the total (JSON `warn` also
     # counts the UNVERIFIED rows).
     counts = {label: sum(row[0] == label for row in rows) for label in ("PASS", "WARN", "REJECT", "UNVERIFIED")}
-    headline = f"{summary['total']} references: " + ", ".join(f"{count} {label}" for label, count in counts.items())
+    noun = "reference" if summary["total"] == 1 else "references"
+    headline = f"{summary['total']} {noun}: " + ", ".join(f"{count} {label}" for label, count in counts.items())
     if summary["failed"]:
         headline += f" ({summary['failed']} could not be checked; run the same command again)"
     lines = [headline, ""]

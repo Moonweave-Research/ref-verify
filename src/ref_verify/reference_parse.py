@@ -67,6 +67,10 @@ def parse_reference_file(path: Path, explicit_format: str | None) -> list[Refere
     reference_format = detect_reference_format(path, explicit_format)
     try:
         data = path.read_bytes()
+    except FileNotFoundError:
+        raise ReferenceInputError(
+            f"File not found: {path}. Check the name, or drag the file into the terminal to paste its full path"
+        ) from None
     except OSError as exc:
         raise ReferenceInputError(f"Could not read input file: {exc}") from exc
     try:
