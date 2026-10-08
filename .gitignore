@@ -21,3 +21,4 @@ __pycache__/
 dist/
 build/
 .worktrees/
+_site/

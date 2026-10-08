@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://api.crossref.org https://doi.org; style-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Check a reference list against CrossRef in your browser. Nothing is uploaded to us.">
+  <title>ref-verify: check references</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2324456b'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11.5' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="app.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+  <header class="top">
+    <div class="wrap top-inner">
+      <span class="brand">ref-verify</span>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="ko" aria-pressed="false">한국어</button>
+        <button type="button" data-lang="en" aria-pressed="false">English</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <section class="intro">
+      <h1 data-i18n="title">Check every reference in your list</h1>
+      <p class="lede" data-i18n="lede">Paste a reference list or choose a .bib, .ris, or .txt file. Each reference is compared with its CrossRef record: title, first author, and year.</p>
+    </section>
+
+    <form id="form" class="panel" novalidate>
+      <label for="refs" class="field-label" data-i18n="pasteLabel">Reference list</label>
+      <p id="refs-hint" class="hint" data-i18n="pasteHint">One reference per line or numbered item. BibTeX and RIS can be pasted too.</p>
+      <textarea id="refs" name="refs" rows="9" spellcheck="false" aria-describedby="refs-hint"
+        data-i18n-placeholder="pastePlaceholder"></textarea>
+
+      <div class="file-row">
+        <span class="or" data-i18n="or">or</span>
+        <label class="file-button" for="file">
+          <span data-i18n="chooseFile">Choose a file</span>
+        </label>
+        <input id="file" type="file" accept=".bib,.bibtex,.ris,.txt,.md,text/plain">
+        <span id="file-chip" class="file-chip" hidden>
+          <span id="file-name"></span>
+          <button type="button" id="file-clear" class="link-button" data-i18n="removeFile">Remove</button>
+        </span>
+        <span id="file-note" class="hint file-note" hidden data-i18n="fileInUse">This file is checked instead of the box above.</span>
+      </div>
+
+      <div class="actions">
+        <button type="submit" id="start" class="primary" data-i18n="start">Check references</button>
+        <button type="button" id="stop" class="secondary" hidden data-i18n="stop">Stop</button>
+      </div>
+      <p id="form-error" class="form-error" role="alert" hidden></p>
+
+      <p class="privacy">
+        <svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path d="M8 1.5l5 2v4c0 3.2-2.1 5.9-5 7-2.9-1.1-5-3.8-5-7v-4l5-2z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        <span data-i18n="privacy">Your references go from this browser straight to CrossRef and doi.org. There is no ref-verify server: nothing is uploaded to us or stored, and there are no analytics.</span>
+      </p>
+    </form>
+
+    <section id="status" class="status" aria-live="polite" hidden>
+      <p id="status-text" class="status-text"></p>
+      <progress id="status-bar" max="1" value="0" aria-labelledby="status-text"></progress>
+      <p id="status-note" class="hint"></p>
+    </section>
+
+    <section id="results" class="results" hidden>
+      <div class="results-head">
+        <h2 id="results-title" tabindex="-1" data-i18n="resultsTitle">Results</h2>
+        <button type="button" id="download" class="secondary" data-i18n="download">Download report (HTML)</button>
+      </div>
+      <div id="counts" class="counts"></div>
+      <p class="callout"><strong data-i18n="calloutLead">UNVERIFIED ≠ wrong.</strong> <span data-i18n="callout">It means the tool could not confirm the reference automatically. Look it up once yourself.</span></p>
+      <ul id="legend" class="legend"></ul>
+      <div id="tables"></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <p><span data-i18n="footCli">Prefer the terminal? The same checker runs as</span> <code>pip install ref-verify</code> · <a href="https://github.com/Moonweave-Research/ref-verify">GitHub</a> <span id="engine-version"></span></p>
+    </div>
+  </footer>
+</body>
+</html>
