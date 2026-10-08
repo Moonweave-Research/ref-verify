@@ -292,7 +292,10 @@ def _report_target(args: argparse.Namespace) -> tuple[Path, ReportFormat] | None
     if not args.report:
         return None
     path = Path(args.report)
-    return path, report_format(path)
+    fmt = report_format(path)
+    if not path.parent.is_dir():
+        raise ReportError(f"The folder for --report does not exist: {path.parent}")
+    return path, fmt
 
 
 def _write_report(

@@ -99,6 +99,9 @@ ref-verify로 점검해줘"라고 요청하면 됩니다.
    캐시 덕분에 몇 초면 끝납니다. `REF_VERIFY_MAILTO=내이메일@학교.ac.kr`를 앞에
    붙이면 CrossRef의 polite pool을 써서 약 3배 빨라집니다.
 
+   지도교수나 공동 저자에게 보낼 파일이 필요하면 `--report 점검결과.html`을 붙입니다.
+   브라우저로 열면 확인이 필요한 항목이 맨 위에 모여 있습니다.
+
 **결과 읽는 법**
 
 | 결과 | 뜻 | 할 일 |
@@ -393,11 +396,13 @@ ref-verify check-file claims.jsonl --report report.md
 ```
 
 HTML 파일은 그 자체로 완결됩니다(인라인 CSS, 스크립트 없음, `https://doi.org/`
-링크 외 외부 자원 없음). 요약 수치와 참고문헌·주장마다 색으로 구분한 행
-(`PASS`/`ACCEPT` 초록, `WARN` 호박색, `REJECT` 빨강, `UNVERIFIED` 회색), 이유,
-근거를 보여 줍니다. `UNVERIFIED`는 도구가 자동으로 확인하지 못했다는 표시이지
-참고문헌이 틀렸다는 판정이 아닙니다. Markdown 파일은 같은 내용을 표로 담습니다.
-콘솔 출력과 `--json` 출력은 바뀌지 않습니다.
+링크 외 외부 자원 없음). 맨 위에 합이 전체 개수와 맞는 판정별 개수, 각 판정의 뜻과
+할 일을 적은 설명이 있고, 그 아래 통과하지 못한 항목만 모은 "Needs a look" 표와
+통과한 항목의 "Passed" 표가 이어집니다. 각 행은 색으로 구분되며(`PASS`/`ACCEPT` 초록,
+`WARN` 호박색, `REJECT` 빨강, `UNVERIFIED` 회색) 이유와 근거를 보여 줍니다.
+`UNVERIFIED`는 도구가 자동으로 확인하지 못했다는 표시이지 참고문헌이 틀렸다는
+판정이 아닙니다. Markdown 파일도 같은 내용입니다. `--report` 경로의 폴더가 없으면
+조회를 시작하기 전에 알려 주므로 긴 실행이 헛되지 않습니다. `--json` 출력은 바뀌지 않습니다.
 
 > 핵심 규칙: 논문 내용에 대한 모든 설명은 claim에 필요한 깊이의
 > live-fetched source에서 나와야 합니다. topline claim에는 abstract,

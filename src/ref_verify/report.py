@@ -21,6 +21,25 @@ FOOTER_NOTE = (
 )
 _UNVERIFIED_STATUSES = {"UNVERIFIED", "UNVERIFIABLE"}
 _TONES = {"PASS": "pass", "ACCEPT": "pass", "WARN": "warn", "REJECT": "reject", "UNVERIFIED": "unverified"}
+# What each verdict asks the reader to do, shown above the tables in plain words.
+_LEGENDS = {
+    "check-bib": (
+        ("PASS", "Title, first author, and year match the CrossRef record for the DOI (or the record found by search)."),
+        ("WARN", "Found, but something differs; the reason says what. Compare that reference with the source."),
+        ("REJECT", "The DOI exists nowhere, belongs to a different paper, or the paper is retracted. Fix or remove the citation."),
+        (
+            "UNVERIFIED",
+            "Could not be confirmed automatically (theses, local conference abstracts, DOIs registered outside "
+            "CrossRef). This does not mean it is wrong; look it up once yourself.",
+        ),
+    ),
+    "check-file": (
+        ("ACCEPT", "The paper's abstract explicitly supports the claim."),
+        ("WARN", "The abstract was read but does not explicitly support this exact claim; check the full text."),
+        ("REJECT", "Dead DOI, a different paper, contradicting evidence, or a retracted paper."),
+        ("UNVERIFIED", "No abstract could be fetched, so the claim was not judged. This does not mean it is wrong."),
+    ),
+}
 
 
 class ReportError(ValueError):
@@ -130,30 +149,36 @@ def _doi_href(doi: str) -> str | None:
     return "https://doi.org/" + quote(normalized, safe="/:;()._-")
 
 
+def _display_counts(command: str, summary: dict[str, int], rows: list[ReportRow]) -> list[tuple[str, int]]:
+    # Counted by the label shown, so the boxes add up to the total; the JSON summary's
+    # `warn` also includes the UNVERIFIED rows.
+    labels = [label for label, _ in _LEGENDS.get(command, _LEGENDS["check-bib"])]
+    counts = [("total", len(rows))] + [(label, sum(row.label == label for row in rows)) for label in labels]
+    if summary.get("failed"):
+        counts.append(("not checked, rerun", summary["failed"]))
+    return counts
+
+
 def _render_html(command: str, source_name: str, summary: dict[str, int], rows: list[ReportRow], stamp: str) -> str:
     esc = html.escape
     counts = "\n".join(
         f'      <div class="count"><span class="n">{value}</span> <span class="label">{esc(name)}</span></div>'
-        for name, value in summary.items()
+        for name, value in _display_counts(command, summary, rows)
     )
-    body_rows = []
-    for row in rows:
-        href = _doi_href(row.doi) if row.doi else None
-        if row.doi and href:
-            doi_cell = f'<a href="{esc(href)}">{esc(row.doi)}</a>'
-        else:
-            doi_cell = esc(row.doi or "-")
-        if row.doi_note:
-            doi_cell += f" ({esc(row.doi_note)})"
-        body_rows.append(
-            f'        <tr class="{row.tone}">'
-            f'<td><span class="badge {row.tone}">{esc(row.label)}</span></td>'
-            f'<td><strong>{esc(row.key)}</strong><div class="detail">{esc(row.detail)}</div></td>'
-            f"<td>{doi_cell}</td>"
-            f"<td>{esc(row.reason)}</td>"
-            f'<td class="evidence">{esc(row.evidence)}</td></tr>'
-        )
-    tbody = "\n".join(body_rows)
+    legend = "\n".join(
+        f'      <li><span class="badge {_TONES[label]}">{esc(label)}</span> {esc(text)}</li>'
+        for label, text in _LEGENDS.get(command, _LEGENDS["check-bib"])
+    )
+    flagged = [row for row in rows if row.tone != "pass"]
+    passed = [row for row in rows if row.tone == "pass"]
+    sections = []
+    if flagged:
+        sections.append(_html_section(f"Needs a look ({len(flagged)})", flagged))
+    else:
+        sections.append(f"    <h2>Needs a look (0)</h2>\n    <p>Nothing to fix: every {_noun(command)} passed.</p>")
+    if passed:
+        sections.append(_html_section(f"Passed ({len(passed)})", passed))
+    body = "\n".join(sections)
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -173,11 +198,14 @@ def _render_html(command: str, source_name: str, summary: dict[str, int], rows: 
       font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }}
     main {{ max-width: 1100px; margin: 0 auto; padding: 32px 16px 48px; }}
     h1 {{ font-size: 22px; margin: 0 0 4px; }}
+    h2 {{ font-size: 17px; margin: 28px 0 8px; }}
     .meta {{ color: var(--muted); margin: 0 0 24px; }}
-    .summary {{ display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }}
+    .summary {{ display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }}
     .count {{ border: 1px solid var(--line); border-radius: 6px; padding: 8px 14px; min-width: 72px; }}
     .count .n {{ display: block; font-size: 22px; font-weight: 600; }}
     .count .label {{ color: var(--muted); font-size: 13px; }}
+    .legend {{ list-style: none; padding: 0; margin: 0 0 8px; color: var(--muted); font-size: 14px; }}
+    .legend li {{ margin: 4px 0; }}
     .table-wrap {{ overflow-x: auto; }}
     table {{ width: 100%; border-collapse: collapse; }}
     th, td {{ text-align: left; vertical-align: top; padding: 10px 8px; border-bottom: 1px solid var(--line); }}
@@ -199,14 +227,10 @@ def _render_html(command: str, source_name: str, summary: dict[str, int], rows: 
     <section class="summary">
 {counts}
     </section>
-    <div class="table-wrap">
-    <table>
-      <thead><tr><th>Status</th><th>Reference</th><th>DOI</th><th>Reason</th><th>Evidence</th></tr></thead>
-      <tbody>
-{tbody}
-      </tbody>
-    </table>
-    </div>
+    <ul class="legend">
+{legend}
+    </ul>
+{body}
     <footer>
       <p>{esc(FOOTER_NOTE)}</p>
       <p>{esc(stamp)}</p>
@@ -217,17 +241,66 @@ def _render_html(command: str, source_name: str, summary: dict[str, int], rows: 
 """
 
 
+def _noun(command: str) -> str:
+    return "claim" if command == "check-file" else "reference"
+
+
+def _html_section(heading: str, rows: list[ReportRow]) -> str:
+    esc = html.escape
+    body_rows = []
+    for row in rows:
+        href = _doi_href(row.doi) if row.doi else None
+        if row.doi and href:
+            doi_cell = f'<a href="{esc(href)}">{esc(row.doi)}</a>'
+        else:
+            doi_cell = esc(row.doi or "-")
+        if row.doi_note:
+            doi_cell += f" ({esc(row.doi_note)})"
+        body_rows.append(
+            f'        <tr class="{row.tone}">'
+            f'<td><span class="badge {row.tone}">{esc(row.label)}</span></td>'
+            f'<td><strong>{esc(row.key)}</strong><div class="detail">{esc(row.detail)}</div></td>'
+            f"<td>{doi_cell}</td>"
+            f"<td>{esc(row.reason)}</td>"
+            f'<td class="evidence">{esc(row.evidence)}</td></tr>'
+        )
+    tbody = "\n".join(body_rows)
+    return f"""    <h2>{esc(heading)}</h2>
+    <div class="table-wrap">
+    <table>
+      <thead><tr><th>Status</th><th>Reference</th><th>DOI</th><th>Reason</th><th>Evidence</th></tr></thead>
+      <tbody>
+{tbody}
+      </tbody>
+    </table>
+    </div>"""
+
+
 def _render_markdown(command: str, source_name: str, summary: dict[str, int], rows: list[ReportRow], stamp: str) -> str:
     lines = [
         f"# ref-verify report: {_md_cell(command)}",
         "",
         f"Input: {_md_cell(source_name)}",
         "",
-        "**Summary:** " + " · ".join(f"{name} {value}" for name, value in summary.items()),
+        "**Summary:** " + " · ".join(f"{name} {value}" for name, value in _display_counts(command, summary, rows)),
         "",
-        "| Status | Reference | DOI | Reason | Evidence |",
-        "|---|---|---|---|---|",
     ]
+    lines.extend(f"- **{label}**: {_md_cell(text)}" for label, text in _LEGENDS.get(command, _LEGENDS["check-bib"]))
+    flagged = [row for row in rows if row.tone != "pass"]
+    passed = [row for row in rows if row.tone == "pass"]
+    lines.extend(["", f"## Needs a look ({len(flagged)})", ""])
+    if flagged:
+        lines.extend(_md_table(flagged))
+    else:
+        lines.append(f"Nothing to fix: every {_noun(command)} passed.")
+    if passed:
+        lines.extend(["", f"## Passed ({len(passed)})", "", *_md_table(passed)])
+    lines.extend(["", f"> {FOOTER_NOTE}", "", stamp, ""])
+    return "\n".join(lines)
+
+
+def _md_table(rows: list[ReportRow]) -> list[str]:
+    lines = ["| Status | Reference | DOI | Reason | Evidence |", "|---|---|---|---|---|"]
     for row in rows:
         href = _doi_href(row.doi) if row.doi else None
         doi_cell = f"[{_md_cell(row.doi)}]({href})" if row.doi and href else _md_cell(row.doi or "-")
@@ -237,8 +310,7 @@ def _render_markdown(command: str, source_name: str, summary: dict[str, int], ro
         lines.append(
             f"| {row.label} | {reference} | {doi_cell} | {_md_cell(row.reason)} | {_md_cell(row.evidence)} |"
         )
-    lines.extend(["", f"> {FOOTER_NOTE}", "", stamp, ""])
-    return "\n".join(lines)
+    return lines
 
 
 def _md_cell(value: str) -> str:
