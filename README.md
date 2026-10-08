@@ -273,7 +273,10 @@ ref-verify check-file claims.csv
 
 Each row must include `doi` and `claim`. Optional fields are `id`, `source`,
 and `note`. Rows are checked 4 at a time by default (`--workers N`); output keeps
-the input order, and Semantic Scholar requests still go one at a time. Batch mode reuses the same conservative `check-claim` engine:
+the input order, and CrossRef and Semantic Scholar requests go one at a time
+because their public APIs reject parallel requests. In a terminal, a
+`Checking claims: N/M` counter on stderr shows progress (never with `--json`).
+Ctrl-C stops the run; finished lookups stay cached, so rerunning resumes quickly. Batch mode reuses the same conservative `check-claim` engine:
 `ACCEPT` means the abstract explicitly supports the numeric claim. `WARN`,
 `PARTIAL`, `REJECT`, or `UNVERIFIABLE` means the claim should not be treated as
 verified.

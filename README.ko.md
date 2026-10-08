@@ -281,7 +281,10 @@ ref-verify check-file claims.csv
 
 각 행에는 `doi`와 `claim`이 필요합니다. `id`, `source`, `note`는 선택
 필드입니다. 기본으로 4행씩 동시에 확인하며(`--workers N`), 출력 순서는 입력
-순서를 그대로 따르고 Semantic Scholar 요청은 여전히 한 번에 하나씩 보냅니다. 배치 모드는 기존의 보수적인 `check-claim` 엔진을 그대로
+순서를 그대로 따릅니다. CrossRef와 Semantic Scholar 공개 API는 동시 요청을 거절하므로
+이 두 곳에는 한 번에 하나씩 보냅니다. 터미널에서 실행하면 stderr에
+`Checking claims: N/M` 진행 표시가 나옵니다(`--json`일 때는 나오지 않음). Ctrl-C로
+멈출 수 있고, 끝난 조회는 캐시에 남으므로 같은 명령을 다시 실행하면 빠르게 이어집니다. 배치 모드는 기존의 보수적인 `check-claim` 엔진을 그대로
 사용합니다. `ACCEPT`는 abstract가 숫자 claim을 명시적으로 지지한다는
 뜻입니다. `WARN`, `PARTIAL`, `REJECT`, `UNVERIFIABLE`은 검증된 claim으로
 취급하면 안 됩니다.

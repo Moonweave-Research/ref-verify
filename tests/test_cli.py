@@ -2440,6 +2440,81 @@ class CliTests(unittest.TestCase):
         self.assertEqual(completed, dois)
         self.assertEqual([result["id"] for result in payload["results"]], dois)
 
+    def _run_check_file_with_stderr(self, extra_args, *, tty):
+        class FakeStderr(io.StringIO):
+            def isatty(self):
+                return tty
+
+        dois = [f"10.1000/progress-{index}" for index in range(3)]
+        client = MappingClient(
+            {
+                doi: PaperRecord(
+                    doi=doi,
+                    title="Progress paper",
+                    authors=["Lee"],
+                    year=2024,
+                    abstract="The model achieved 95% accuracy.",
+                    source="fixture",
+                )
+                for doi in dois
+            }
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "claims.jsonl"
+            path.write_text(
+                "".join(json.dumps({"doi": doi, "claim": "The model achieved 95% accuracy."}) + "\n" for doi in dois),
+                encoding="utf-8",
+            )
+            stdout, stderr = io.StringIO(), FakeStderr()
+            with redirect_stdout(stdout), redirect_stderr(stderr):
+                main(["check-file", str(path), *extra_args], client=client, abstract_clients=[])
+        return stdout.getvalue(), stderr.getvalue()
+
+    def test_check_file_shows_progress_on_a_terminal(self):
+        stdout, stderr = self._run_check_file_with_stderr([], tty=True)
+
+        self.assertIn("Checking claims: 3/3", stderr)
+        self.assertNotIn("Checking claims", stdout)
+
+    def test_check_file_hides_progress_for_json_and_pipes(self):
+        _, json_stderr = self._run_check_file_with_stderr(["--json"], tty=True)
+        _, piped_stderr = self._run_check_file_with_stderr([], tty=False)
+
+        self.assertEqual(json_stderr, "")
+        self.assertEqual(piped_stderr, "")
+
+    def test_ctrl_c_stops_queued_rows_and_exits_without_traceback(self):
+        class InterruptingClient:
+            def __init__(self):
+                self.calls = []
+
+            def fetch_work(self, doi):
+                self.calls.append(doi)
+                raise KeyboardInterrupt
+
+        client = InterruptingClient()
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "claims.jsonl"
+            path.write_text(
+                "".join(
+                    json.dumps({"doi": f"10.1000/stop-{index}", "claim": "The model achieved 95% accuracy."}) + "\n"
+                    for index in range(5)
+                ),
+                encoding="utf-8",
+            )
+            stdout, stderr = io.StringIO(), io.StringIO()
+            with redirect_stdout(stdout), redirect_stderr(stderr):
+                exit_code = main(
+                    ["--no-cache", "check-file", str(path), "--workers", "1"],
+                    client=client,
+                    abstract_clients=[],
+                )
+
+        self.assertEqual(exit_code, 130)
+        self.assertEqual(client.calls, ["10.1000/stop-0"])
+        self.assertEqual(stderr.getvalue().strip(), "Interrupted.")
+        self.assertEqual(stdout.getvalue(), "")
+
     def test_check_file_rejects_non_positive_workers(self):
         with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as context:
             main(["check-file", "claims.jsonl", "--workers", "0"])
