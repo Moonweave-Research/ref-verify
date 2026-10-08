@@ -183,12 +183,15 @@ th { background: var(--head); font-size: 13px; font-weight: 600; }
 tr:last-child td { border-bottom: 0; }
 td a { overflow-wrap: anywhere; }
 @media (min-width: 721px) {
-  td:nth-child(2) { width: 34%; }
-  td:nth-child(3) { min-width: 12em; }
+  td:nth-child(2) { width: 27%; }
+  td:nth-child(3) { min-width: 11em; }
+  td:nth-child(4) { min-width: 14em; }
+  td:nth-child(5) { min-width: 11em; overflow-wrap: break-word; }
 }
 .ref-key { font-weight: 600; }
 .detail, .evidence { color: var(--muted); font-size: 13px; }
 .empty { color: var(--muted); }
+.original { color: var(--muted); font-size: 12px; white-space: nowrap; }
 
 @media (max-width: 720px) {
   .intro { padding-top: 28px; }

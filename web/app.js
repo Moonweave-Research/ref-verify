@@ -1,3 +1,5 @@
+import { translateReason } from "./reasons.js";
+
 const TEXT = {
   en: {
     skip: "Skip to content",
@@ -18,7 +20,6 @@ const TEXT = {
     download: "Download report (HTML)",
     calloutLead: "UNVERIFIED ≠ wrong.",
     callout: "It means the tool could not confirm the reference automatically. Look it up once yourself.",
-    reasonsNote: "Reasons are written by the checker in English.",
     footCli: "Prefer the terminal? The same checker runs as",
     loading: "Loading the checker…",
     loadingNote: "The first visit downloads about 6 MB (a Python runtime). After that the browser keeps it, and loading takes a second or two.",
@@ -44,7 +45,7 @@ const TEXT = {
     headReason: "Reason",
     headEvidence: "Evidence",
     resolved: "found by search",
-    version: (v) => `ref-verify ${v}`,
+    version: (v) => `· ref-verify ${v}`,
     legend: {
       PASS: "Title, first author, and year match the CrossRef record for the DOI (or the record found by search).",
       WARN: "Found, but something differs; the reason says what. Compare that reference with the source.",
@@ -68,10 +69,11 @@ const TEXT = {
     stop: "중지",
     privacy: "참고문헌은 이 브라우저에서 CrossRef와 doi.org로만 바로 전송됩니다. ref-verify 서버는 없습니다. 저희에게 올라오거나 저장되는 것은 없고, 방문 분석 도구도 없습니다. 검사 프로그램은 jsDelivr CDN에서 내려받습니다.",
     resultsTitle: "결과",
-    download: "보고서 내려받기 (HTML)",
+    download: "보고서 내려받기 (HTML, 영어)",
     calloutLead: "UNVERIFIED는 ‘틀림’이 아닙니다.",
     callout: "자동으로 확인하지 못했다는 뜻입니다. 한 번 직접 찾아보세요.",
-    reasonsNote: "사유는 검사 프로그램이 영어로 적습니다.",
+    original: "원문",
+    originalTitle: "아직 번역하지 못한 사유라 영어 원문을 그대로 보여 줍니다.",
     footCli: "터미널이 편하다면 같은 검사기를 이렇게 설치할 수 있습니다:",
     loading: "검사 프로그램을 불러오는 중…",
     loadingNote: "처음 한 번은 약 6 MB(파이썬 실행 환경)를 내려받습니다. 그다음부터는 브라우저에 남아 있어 1~2초면 됩니다.",
@@ -97,7 +99,7 @@ const TEXT = {
     headReason: "사유",
     headEvidence: "근거",
     resolved: "검색으로 찾음",
-    version: (v) => `ref-verify ${v}`,
+    version: (v) => `· ref-verify ${v}`,
     legend: {
       PASS: "제목·제1저자·연도가 DOI(또는 검색으로 찾은 기록)의 CrossRef 기록과 일치합니다.",
       WARN: "찾았지만 다른 부분이 있습니다. 사유를 보고 원문과 비교하세요.",
@@ -402,12 +404,20 @@ function table(rows) {
           el("div", { class: "detail" }, row.detail),
         ),
         doiCell,
-        el("td", { "data-label": heads[3] }, row.reason),
+        el("td", { "data-label": heads[3] }, ...reasonContent(row.reason)),
         row.evidence ? el("td", { class: "evidence", "data-label": heads[4] }, row.evidence) : el("td", { class: "evidence" }),
       ),
     );
   }
   return el("div", { class: "table-wrap" }, el("table", {}, thead, tbody));
+}
+
+function reasonContent(reason) {
+  if (lang !== "ko") return [reason];
+  const korean = translateReason(reason);
+  if (korean !== null) return [korean];
+  // Never drop a reason the table cannot translate; show the English and say so.
+  return [reason, " ", el("span", { class: "original", title: t("originalTitle") }, `(${t("original")})`)];
 }
 
 function downloadReport() {

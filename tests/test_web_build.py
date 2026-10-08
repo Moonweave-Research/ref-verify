@@ -21,7 +21,7 @@ class WebBuildTests(unittest.TestCase):
                 check=True,
                 capture_output=True,
             )
-            for name in ("index.html", "app.js", "app.css", "worker.js", "engine.py", "ref_verify.zip"):
+            for name in ("index.html", "app.js", "app.css", "reasons.js", "worker.js", "engine.py", "ref_verify.zip"):
                 with self.subTest(name=name):
                     self.assertTrue((out / name).is_file())
             with zipfile.ZipFile(out / "ref_verify.zip") as archive:
