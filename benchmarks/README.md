@@ -37,7 +37,7 @@ README scorecard is generated from the newest file in [`results/`](results/).
 | `REAL` | Papers confirmed in CrossRef across materials science, chemistry, physics, biomedicine, machine learning, social science, and Korean journals, written in BibTeX (with and without DOI), APA, Vancouver, and RIS. | the verdict is `PASS`. `WARN` is reported as "needs a manual check", `REJECT` as "called wrong". |
 | `FABRICATED` | References that do not exist, built the way language models get them wrong: (a) invented DOI on a plausible title with real authors and journal, (b) plausible title without DOI, (c) a real DOI attached to another paper's title and authors, (d) a real title with the wrong first author or a year off by three or more, (e) hallucinated references reported publicly. | the verdict is anything except `PASS`. |
 | `RETRACTED` | Well-known retracted papers (Wakefield 1998, the STAP papers, Hwang, Schön, Surgisphere, Dias, ...), cited without the "RETRACTED" prefix. | the error code is `PAPER_RETRACTED`. Only items whose CrossRef record carries a retraction notice count; any others are reported separately as a data limitation. |
-| `NOT_IN_CROSSREF` | Legitimate references CrossRef does not index: NeurIPS/ICLR papers, arXiv preprints, JMLR papers, textbooks, a technical report. | the verdict is not `REJECT`. `WARN`/`UNVERIFIED` is the honest answer here. |
+| `NOT_IN_CROSSREF` | Legitimate references CrossRef does not index: NeurIPS/ICLR papers, arXiv preprints (one with a DataCite DOI), JMLR papers, textbooks, a technical report, Korean theses (one with a KISTI DOI), and KCI papers without DOIs. | the verdict is not `REJECT`. `WARN`/`UNVERIFIED` is the honest answer here. |
 
 Rates come with 95% Wilson score intervals; with n between 9 and 65 per category the
 intervals are wide, and the README prints them next to every rate.
@@ -59,8 +59,9 @@ such rows once, alone, after a 15-second pause, lists them under
   with that title.
 - Unindexed items: the source URL resolves to the work, and a CrossRef bibliographic
   search did not return it as a work with a matching title and year.
-- Publicly reported hallucinations: the exact reference string is copied from the
-  report linked in `source`.
+- Publicly reported hallucinations (GPTZero's NeurIPS 2025 and ICLR 2026
+  investigations, the May 2025 MAHA report, a 2024 expert declaration in Kohls v.
+  Ellison): the exact reference string is copied from the page linked in `source`.
 
 ## Rerun
 
@@ -72,9 +73,10 @@ python3 scripts/render_scorecard.py benchmarks/results/<date>-<sha>.json
 ```
 
 The runner checks every item twice with the same settings as `check-bib` (default 4
-workers): once with an empty HTTP cache in a temporary directory, then again from that
-cache, and reports both wall times. A cold run sends roughly one CrossRef request per
-reference (about 130 in total); the cached run sends none. It does not set
+workers, CrossRef calls taking turns and searches spaced one second apart): once with an
+empty HTTP cache in a temporary directory, then again from that cache, and reports both
+wall times. A cold run sends about one request per reference (roughly 155 for this set,
+counting the doi.org lookups for DOIs CrossRef lacks); the cached run sends none. It does not set
 `REF_VERIFY_MAILTO`; set it yourself to use CrossRef's polite pool.
 
 Live CrossRef data changes (new records, new retraction notices, edited titles), so a
@@ -84,8 +86,8 @@ rerun on the same commit can differ slightly from a stored result.
 
 - Whether a paper supports a claim (`check-claim`); only reference existence and
   metadata are scored here.
-- Non-English literature beyond a handful of Korean-journal papers with English
-  CrossRef titles, and references cited by their Korean title.
+- Non-English literature beyond a handful of Korean items (journal papers, theses, and
+  one paper cited by its Korean title).
 - Full text, page numbers, volume/issue, or journal names: `check-bib` compares title,
   first author, year, and DOI.
 - How often each failure appears in real reference lists; the mix of items here is
