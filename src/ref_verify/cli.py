@@ -3,9 +3,9 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Sequence
+from typing import Callable, Sequence, TypeVar
 from urllib.error import HTTPError
 
 from ref_verify.abstract_lookup import (
@@ -37,6 +37,9 @@ from ref_verify.reference_resolve import (
 )
 from ref_verify.semantic_scholar import SemanticScholarClient
 
+T = TypeVar("T")
+R = TypeVar("R")
+
 
 def main(
     argv: Sequence[str] | None = None,
@@ -61,6 +64,10 @@ def main(
             return _check_file(args, lookup_client, fallback_clients)
         if args.command == "check-bib":
             return _check_bib(args, lookup_client)
+    except KeyboardInterrupt:
+        resume = " Finished lookups are cached, so rerunning the same command resumes quickly." if cache else ""
+        print(f"\nInterrupted.{resume}", file=sys.stderr)
+        return 130
     except Exception as exc:
         _emit({"error": str(exc)}, as_json=getattr(args, "json", False))
         return 1
@@ -211,8 +218,7 @@ def _check_file(
             payload = _row_error_payload(row.claim, exc)
         return BatchRowResult(row=row, payload=payload)
 
-    with ThreadPoolExecutor(max_workers=args.workers) as executor:
-        results = list(executor.map(check_row, rows))
+    results = _run_parallel(check_row, rows, args.workers, progress=_progress_label(args, "claims"))
     payload = batch_payload(results)
     if args.json:
         _emit(payload, as_json=True)
@@ -241,6 +247,37 @@ def _check_bib(args: argparse.Namespace, client: CrossrefClient) -> int:
         print(render_reference_text(results))
     summary = payload["summary"]
     return 0 if summary["total"] == summary["pass"] else 2
+
+
+def _progress_label(args: argparse.Namespace, noun: str) -> str | None:
+    # Progress goes to stderr and only to a terminal, so JSON and piped output stay clean.
+    if args.json or not sys.stderr.isatty():
+        return None
+    return f"Checking {noun}"
+
+
+def _run_parallel(
+    function: Callable[[T], R],
+    items: Sequence[T],
+    workers: int,
+    *,
+    progress: str | None = None,
+) -> list[R]:
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        futures = [executor.submit(function, item) for item in items]
+        try:
+            if progress:
+                for done, _ in enumerate(as_completed(futures), start=1):
+                    sys.stderr.write(f"\r{progress}: {done}/{len(futures)}")
+                    sys.stderr.flush()
+                sys.stderr.write("\r\033[K")
+                sys.stderr.flush()
+            return [future.result() for future in futures]
+        except BaseException:
+            # Without this, Ctrl-C would wait for every queued item before exiting.
+            for future in futures:
+                future.cancel()
+            raise
 
 
 def _run_claim_check(
