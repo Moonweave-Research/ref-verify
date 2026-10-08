@@ -143,8 +143,12 @@ Route each result:
 - `WARN` with `REFERENCE_UNMATCHED` (`status: UNVERIFIED`): CrossRef search
   found no matching record. Report it as unverified and run the manual Quick
   Screen on it; do not call it fabricated from this result alone.
-- Other `WARN`: metadata partly differs or the reference text was too thin to
-  confirm; report the `mismatches` and check manually.
+- `WARN` with `DOI_NOT_IN_CROSSREF` (`status: UNVERIFIED`): the DOI is
+  registered with another agency (arXiv/Zenodo via DataCite, KISTI, JaLC), so
+  its metadata was not compared; confirm it at doi.org, never call it dead.
+- Other `WARN`: metadata partly differs, the reference text was too thin to
+  confirm, or (`status: MISMATCH`) a plain-text reference's DOI belongs to the
+  paper named in `reason`; report the `reason` and check manually.
 - `REJECT`: dead DOI (`DOI_NOT_FOUND`), retraction (`PAPER_RETRACTED`), or a
   DOI that points to a different paper. Stop using it as verified.
 
@@ -198,6 +202,8 @@ decide the next step:
   failed, timed out, was rate-limited, or could not be used.
 - `REFERENCE_RESOLVED`, `REFERENCE_UNMATCHED` (`check-bib` only): a reference
   without a DOI did or did not match a CrossRef record.
+- `DOI_NOT_IN_CROSSREF` (`check-bib` only): the DOI exists at another
+  registration agency, so it is unverified rather than dead.
 
 The CLI does not replace Layer 4 DOI landing-page resolution or two-source
 existence checks, and it only catches retractions that CrossRef records as a

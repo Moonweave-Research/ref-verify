@@ -42,11 +42,21 @@ class ReferenceEntry:
         return asdict(self)
 
 
+_DOCUMENT_SUFFIXES = {".doc", ".docx", ".hwp", ".hwpx", ".odt", ".pages", ".pdf", ".rtf"}
+
+
 def detect_reference_format(path: Path, explicit_format: str | None) -> ReferenceFormat:
     if explicit_format in ("bib", "ris", "txt"):
         return explicit_format
     if explicit_format is not None:
         raise ReferenceInputError(f"Unsupported reference format: {explicit_format}")
+    if path.is_dir():
+        raise ReferenceInputError(f"{path} is a folder; give the path of a .bib, .ris, .txt, or .md file")
+    if path.suffix.lower() in _DOCUMENT_SUFFIXES:
+        raise ReferenceInputError(
+            f"{path.suffix} files cannot be read directly. Copy the reference list into a plain-text "
+            ".txt file, or export .bib or .ris from Zotero, EndNote, or Mendeley, and check that file"
+        )
     detected = _SUFFIX_FORMATS.get(path.suffix.lower())
     if detected is None:
         raise ReferenceInputError("Unsupported reference format; use .bib, .ris, .txt, .md, or --format")
@@ -56,9 +66,20 @@ def detect_reference_format(path: Path, explicit_format: str | None) -> Referenc
 def parse_reference_file(path: Path, explicit_format: str | None) -> list[ReferenceEntry]:
     reference_format = detect_reference_format(path, explicit_format)
     try:
-        text = path.read_text(encoding="utf-8-sig")
+        data = path.read_bytes()
     except OSError as exc:
         raise ReferenceInputError(f"Could not read input file: {exc}") from exc
+    try:
+        text = data.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        # Notepad on Korean Windows used to save plain text as CP949 ("ANSI").
+        try:
+            text = data.decode("cp949")
+        except UnicodeDecodeError:
+            raise ReferenceInputError(
+                f"{path.name} is not plain text in UTF-8. If it is a Word or PDF file, copy the "
+                "reference list into a .txt file; otherwise save it again with UTF-8 encoding"
+            ) from None
     if reference_format == "bib":
         entries = parse_bibtex(text)
     elif reference_format == "ris":
@@ -66,7 +87,10 @@ def parse_reference_file(path: Path, explicit_format: str | None) -> list[Refere
     else:
         entries = parse_plain_text(text)
     if not entries:
-        raise ReferenceInputError("Input file does not contain any references")
+        raise ReferenceInputError(
+            "Input file does not contain any references; put one reference per line, per "
+            "paragraph, or per [1]/1. item, or use a .bib or .ris export"
+        )
     return entries
 
 
@@ -126,7 +150,8 @@ def parse_bibtex(text: str) -> list[ReferenceEntry]:
                 key=key or None,
                 raw=text[match.start() : body_end + 1],
                 title=_first_clean(fields, ("title",)),
-                first_author=_bib_first_author(fields.get("author")),
+                # Edited books carry `editor` instead of `author`; citations name the editors.
+                first_author=_bib_first_author(fields.get("author") or fields.get("editor")),
                 year=_first_year(fields.get("year") or fields.get("date") or ""),
                 doi=_find_doi(doi_source.replace("\\_", "_")),
                 journal=_first_clean(fields, ("journal", "journaltitle", "booktitle")),

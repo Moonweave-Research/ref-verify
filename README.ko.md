@@ -61,6 +61,58 @@ claim X를 뒷받침하는 논문 3개를 찾고, 각 인용을 검증해줘
 
 ---
 
+## 참고문헌 목록 전체 점검하기
+
+논문이나 학위논문의 참고문헌 중에 존재하지 않거나(ChatGPT가 지어낸 것 등), DOI가
+다른 논문을 가리키거나, 철회된 논문이 섞여 있는지 한 번에 확인합니다.
+
+**에이전트에게 맡길 때:** 스킬을 설치한 뒤 "references.bib 참고문헌 전체를
+ref-verify로 점검해줘"라고 요청하면 됩니다.
+
+**터미널에서 직접 할 때:**
+
+1. 목록을 파일로 준비합니다.
+   - Zotero: 컬렉션 우클릭 → 컬렉션 내보내기 → BibTeX → `references.bib`
+     (EndNote·Mendeley는 BibTeX이나 RIS로 내보내기)
+   - Word·한글 원고: 참고문헌 목록을 복사해 메모장 등에 붙여 넣고
+     `references.txt`로 저장합니다. `[1]`, `1.` 번호나 줄바꿈이 있어도 됩니다.
+     `.docx`, `.hwp`, `.pdf`는 직접 읽지 못합니다.
+2. 설치합니다(Python 3.10 이상). PyPI의 1.2.2에는 아직 `check-bib`가 없으므로
+   GitHub에서 설치합니다.
+
+   ```bash
+   pipx install "git+https://github.com/Moonweave-Research/ref-verify"
+   ```
+
+   `uv`가 있다면 설치 없이
+   `uvx --from "git+https://github.com/Moonweave-Research/ref-verify" ref-verify check-bib references.bib`
+   로 바로 실행해도 됩니다.
+
+3. 실행합니다.
+
+   ```bash
+   ref-verify check-bib references.bib
+   ```
+
+   처음 실행할 때는 참고문헌 하나에 1초 정도 걸립니다(150개면 2분 남짓,
+   `Checking references: 37/150`처럼 진행 상황이 보입니다). 같은 목록을 다시 돌리면
+   캐시 덕분에 몇 초면 끝납니다. `REF_VERIFY_MAILTO=내이메일@학교.ac.kr`를 앞에
+   붙이면 CrossRef의 polite pool을 써서 약 3배 빨라집니다.
+
+**결과 읽는 법**
+
+| 결과 | 뜻 | 할 일 |
+|---|---|---|
+| `PASS` | DOI(또는 검색으로 찾은 기록)의 제목·제1저자·연도가 CrossRef와 일치 | 없음 |
+| `WARN` | 찾았지만 무언가 다름. 바로 아래 줄에 무엇이 다른지 나옵니다(연도, 저자, DOI가 가리키는 다른 논문 제목 등) | 그 항목만 원문과 대조 |
+| `REJECT` | DOI가 어디에도 없음, 전혀 다른 논문을 가리킴, 또는 철회된 논문 | 인용을 고치거나 빼기 |
+| `UNVERIFIED` | 자동으로 확인하지 못함. 학위논문, 국내 학회 초록, 일부 책, CrossRef가 아닌 곳(arXiv, KISTI 등)에 등록된 DOI가 흔히 여기에 옵니다. 틀렸다는 뜻이 아닙니다 | 직접 확인 |
+
+DOI가 없는 가짜 참고문헌은 `REJECT`가 아니라 `UNVERIFIED`로만 나올 수 있습니다.
+`UNVERIFIED` 항목은 Google Scholar나 RISS에서 실제로 있는지 한 번씩 찾아보세요.
+
+---
+
 ## 선택적 CLI 엔진
 
 스킬이 에이전트 워크플로우입니다. Python CLI는 설치된 스킬이 터미널에서
@@ -282,7 +334,10 @@ ref-verify check-file claims.csv
 
 각 행에는 `doi`와 `claim`이 필요합니다. `id`, `source`, `note`는 선택
 필드입니다. 기본으로 4행씩 동시에 확인하며(`--workers N`), 출력 순서는 입력
-순서를 그대로 따르고 Semantic Scholar 요청은 여전히 한 번에 하나씩 보냅니다. 배치 모드는 기존의 보수적인 `check-claim` 엔진을 그대로
+순서를 그대로 따릅니다. CrossRef와 Semantic Scholar 공개 API는 동시 요청을 거절하므로
+이 두 곳에는 한 번에 하나씩 보냅니다. 터미널에서 실행하면 stderr에
+`Checking claims: N/M` 진행 표시가 나옵니다(`--json`일 때는 나오지 않음). Ctrl-C로
+멈출 수 있고, 끝난 조회는 캐시에 남으므로 같은 명령을 다시 실행하면 빠르게 이어집니다. 배치 모드는 기존의 보수적인 `check-claim` 엔진을 그대로
 사용합니다. `ACCEPT`는 abstract가 숫자 claim을 명시적으로 지지한다는
 뜻입니다. `WARN`, `PARTIAL`, `REJECT`, `UNVERIFIABLE`은 검증된 claim으로
 취급하면 안 됩니다.
@@ -311,15 +366,23 @@ BibTeX, RIS, 일반 텍스트·Markdown 목록(문단마다, 줄마다, 또는
 `verify-doi`처럼 CrossRef 기록과 대조하고, 일반 텍스트 항목은 본문에
 CrossRef 제목과 제1저자가 드러날 때만 통과합니다. DOI가 없는 항목은
 CrossRef 서지 검색으로 찾아 제목이 일치하고 연도 차이가 1년 이내일 때만
-받아들입니다. 출력은 표이며, `--json`이면 `summary`(`total`, `pass`, `warn`,
-`reject`, `unverified`, `failed`)와 `results`를 담은 객체입니다. 모든 항목이
+받아들입니다. 인쇄본 연도와 온라인 선공개 연도 모두, 부제를 뺀 제목, CrossRef에
+등록된 원어 제목(예: 『폴리머』 논문의 한글 제목), 한글 저자명과 CrossRef의 로마자
+표기(윤 → Yoon/Yun)를 같은 것으로 봅니다. CrossRef에 없는 DOI는 doi.org에 등록기관을
+물어보므로 arXiv, Zenodo, KISTI DOI를 없는 DOI로 판정하지 않습니다. 터미널 출력은
+`19 references: 11 PASS, 2 WARN, 5 REJECT, 1 UNVERIFIED` 같은 개수 줄로 시작하고,
+참고문헌마다 한 줄(인용 키, 붙여 넣은 목록이면 참고문헌 앞부분)을 보여 주며, `PASS`가
+아닌 줄 아래에는 이유를, 끝에는 판정 설명을 붙입니다. `--json`이면 `summary`(`total`, `pass`, `warn`,
+`reject`, `unverified`, `failed`; `warn`에는 `UNVERIFIED` 항목도 포함)와 `results`를 담은 객체입니다. 모든 항목이
 `PASS`일 때만 exit `0`입니다.
 
 `check-bib` error code:
 
 - `REFERENCE_RESOLVED`: DOI가 없던 항목을 CrossRef 검색으로 찾았고 `resolved_doi`에 기록함. 연도가 1년 다르거나 제1저자가 다르면 `WARN`
 - `REFERENCE_UNMATCHED`: DOI가 없고 일치하는 CrossRef 기록도 찾지 못함(`status: UNVERIFIED`, `verdict: WARN`). 도구가 자동으로 확인하지 못했다는 뜻이지 참고문헌이 틀렸다는 뜻은 아니므로 직접 확인합니다
-- `DOI_NOT_FOUND`, `PAPER_RETRACTED`, `ROW_CHECK_ERROR`: `check-claim`, `check-file`과 같음. 그 밖의 DOI 기반 결과는 `error_code: null`이며 `verdict`와 `mismatches`를 봅니다
+- `DOI_NOT_IN_CROSSREF`: DOI가 CrossRef가 아닌 다른 등록기관(arXiv·Zenodo의 DataCite, KISTI, JaLC 등)에 등록되어 있어 서지 정보를 비교하지 못함(`status: UNVERIFIED`, `verdict: WARN`). DOI를 직접 열어 확인합니다
+- `DOI_NOT_FOUND`: CrossRef와 doi.org 어디에도 없는 DOI(`REJECT`)
+- `PAPER_RETRACTED`, `ROW_CHECK_ERROR`: `check-claim`, `check-file`과 같음. 그 밖의 DOI 기반 결과는 `error_code: null`이며 `verdict`, `mismatches`, 그리고 무엇이 다른지 적힌 `reason`(예: `the year differs (reference: 2009; CrossRef: 2010)`)을 봅니다. 일반 텍스트 참고문헌의 DOI가 본문에 없는 다른 논문을 가리키면 `status: MISMATCH`, `verdict: WARN`이고 그 논문 제목이 `reason`에 나옵니다
 
 결과를 공동 저자나 지도교수에게 넘기려면 `check-bib` 또는 `check-file`에
 `--report`를 붙입니다. 파일 확장자가 형식을 정합니다.

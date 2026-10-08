@@ -156,6 +156,30 @@ class ReferenceFileTests(unittest.TestCase):
         with self.assertRaises(ReferenceInputError):
             parse_reference_file(FIXTURES / "missing.bib", None)
 
+    def test_word_file_and_folder_get_a_next_step(self):
+        with self.assertRaisesRegex(ReferenceInputError, r"\.docx files cannot be read directly. Copy the reference list"):
+            detect_reference_format(Path("thesis.docx"), None)
+        with self.assertRaisesRegex(ReferenceInputError, "is a folder"):
+            detect_reference_format(FIXTURES, None)
+
+    def test_cp949_text_from_korean_windows_is_read(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "refs.txt"
+            path.write_bytes("[1] 윤혜리, 이종휘, “리포익산을 함유한 PNIPAM 하이드로젤의 제조”, 폴리머, 2012.".encode("cp949"))
+
+            entries = parse_reference_file(path, None)
+
+        self.assertEqual(len(entries), 1)
+        self.assertIn("리포익산", entries[0].raw)
+
+    def test_binary_file_named_txt_is_an_input_error_not_a_crash(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "refs.txt"
+            path.write_bytes(b"PK\x03\x04\x14\x00\x06\x00\x80\xff\xfe\xfd binary")
+
+            with self.assertRaisesRegex(ReferenceInputError, "not plain text in UTF-8"):
+                parse_reference_file(path, None)
+
 
 if __name__ == "__main__":
     unittest.main()
