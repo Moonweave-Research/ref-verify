@@ -30,6 +30,10 @@ class PaperRecord:
     # a citation matching any of these still names this record.
     alt_titles: list[str] = field(default_factory=list)
     alt_years: list[int] = field(default_factory=list)
+    # CrossRef work type ("journal-article", "peer-review", ...) and whether the record is a
+    # review, recommendation, or notice about another work rather than the work itself.
+    work_type: str | None = None
+    is_about_other_work: bool = False
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

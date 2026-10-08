@@ -122,6 +122,8 @@ def parse_crossref_work(message: dict[str, Any]) -> PaperRecord:
         retraction_doi=_retraction_doi(message),
         alt_titles=alt_titles,
         alt_years=years[1:],
+        work_type=str(message["type"]) if message.get("type") else None,
+        is_about_other_work=_is_about_other_work(message, title),
     )
 
 
@@ -149,6 +151,25 @@ def _clean_title(value: str | None) -> str | None:
     # ("&lt;title&gt;...&lt;/title&gt;"); readers and citations see only the text.
     text = _TAG.sub("", html.unescape(_TAG.sub("", value)))
     return " ".join(text.split()) or None
+
+
+# Records that share a paper's title without being the paper: peer-review reports, Faculty
+# Opinions recommendations, and correction notices ("Addendum: <title>").
+_ABOUT_OTHER_WORK_RELATIONS = {"is-review-of", "is-comment-on"}
+_ABOUT_OTHER_WORK_TITLE = re.compile(
+    r"^\s*(?:review (?:of|for)\b|decision letter\b|author response\b|reviewer report\b|"
+    r"faculty opinions recommendation\b|(?:addendum|erratum|corrigendum|correction)\b\s*(?::|to\b|for\b))",
+    re.IGNORECASE,
+)
+
+
+def _is_about_other_work(message: dict[str, Any], title: str) -> bool:
+    if message.get("type") == "peer-review":
+        return True
+    relations = message.get("relation")
+    if isinstance(relations, dict) and _ABOUT_OTHER_WORK_RELATIONS & set(relations):
+        return True
+    return bool(_ABOUT_OTHER_WORK_TITLE.match(title))
 
 
 def _first_string(value: Any) -> str | None:

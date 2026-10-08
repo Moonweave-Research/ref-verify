@@ -129,6 +129,31 @@ class PlainTextParseTests(unittest.TestCase):
         self.assertEqual(entries[2].raw, "Gamma C. Third paper title. 2003.")
         self.assertEqual([entry.year for entry in entries], [2001, 2002, 2003])
 
+    def test_year_inside_the_title_is_not_the_publication_year(self):
+        entries = parse_plain_text(
+            "Huang C, Wang Y, Li X, et al. Clinical features of patients infected with 2019 novel coronavirus "
+            "in Wuhan, China. Lancet. 2020;395(10223):497-506."
+        )
+
+        self.assertEqual(entries[0].year, 2020)
+
+    def test_sici_doi_in_text_keeps_its_angle_brackets_but_not_a_wrapping_bracket(self):
+        entries = parse_plain_text(
+            "Kolb HC, Finn MG, Sharpless KB. Click chemistry. Angew Chem. 2001. "
+            "doi:10.1002/1521-3773(20010601)40:11<2004::AID-ANIE2004>3.0.CO;2-5\n"
+            "Geim AK, Novoselov KS. The rise of graphene. Nat Mater. 2007. <https://doi.org/10.1038/nmat1849>"
+        )
+
+        self.assertEqual(entries[0].doi, "10.1002/1521-3773(20010601)40:11<2004::aid-anie2004>3.0.co;2-5")
+        self.assertEqual(entries[1].doi, "10.1038/nmat1849")
+
+    def test_tex_math_and_greek_macros_become_plain_text(self):
+        entry = parse_bibtex(
+            "@article{m, title={Amyloid-$\\beta$ in 5 $\\mu$m films and \\textmu{}m pores costing \\$5}, year={2006}}"
+        )[0]
+
+        self.assertEqual(entry.title, "Amyloid-β in 5 μm films and μm pores costing $5")
+
     def test_year_ignores_digits_inside_doi(self):
         entries = parse_plain_text("Pelrine R. Elastomers. doi:10.1126/science.1999.5454.836 (2000)\n")
 

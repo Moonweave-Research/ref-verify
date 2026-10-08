@@ -32,6 +32,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- `check-bib` no longer rejects or flags legitimate references found by the labelled reference benchmark (128 items): a Wiley SICI DOI with `<...>` is read whole instead of being cut at `<` (was a dead-DOI `REJECT`); a citation that drops CrossRef's `- Subtitle` or `, Second Edition` matches (was `REJECT`); in plain text the publication year is the one followed by punctuation (`2020;395`), not a year inside the title (`2019 novel coronavirus`); search results that are peer-review reports, Faculty Opinions recommendations, or addenda/corrections of a paper are skipped and five results are read instead of three.
+- BibTeX TeX math becomes plain text (`amyloid-$\beta$` → `amyloid-β`, `$\mu$m` → `μm`) instead of an empty `$$`, so the retracted Lesné 2006 paper cited without a DOI is found and rejected as retracted.
+- A reference whose CrossRef lookup still hits HTTP 429 after the HTTP layer's retries is checked once more after the requested pause (`Retry-After`, at most 60 s; 15 s when none is given) before it is reported as not checked.
 - A CrossRef record whose first date field is `[[null]]` no longer fails the lookup; the year is read from the next date field.
 
 ## [1.2.2] — 2026-10-01
