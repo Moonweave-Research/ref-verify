@@ -237,7 +237,8 @@ def main(argv: list[str] | None = None) -> int:
         "results": results,
     }
     args.out_dir.mkdir(parents=True, exist_ok=True)
-    out = args.out_dir / f"{payload['date']}-{commit}.json"
+    set_name = args.dataset.stem.removeprefix("references-")
+    out = args.out_dir / f"{payload['date']}-{commit}-{set_name}.json"
     out.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(out)
     print(json.dumps(payload["aggregates"], indent=2))

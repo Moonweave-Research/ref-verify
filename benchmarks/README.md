@@ -80,15 +80,17 @@ such rows once, alone, after a 15-second pause, lists them under
 The benchmark makes live requests, so it is not part of CI.
 
 ```bash
-python3 scripts/benchmark_references.py           # writes benchmarks/results/<date>-<sha>.json
-python3 scripts/render_scorecard.py benchmarks/results/<date>-<sha>.json
+python3 scripts/benchmark_references.py --dataset benchmarks/references-holdout-v1.jsonl
+python3 scripts/benchmark_references.py --dataset benchmarks/references-v1.jsonl
+python3 scripts/render_scorecard.py benchmarks/results/<date>-<sha>-holdout-v1.json \
+  --dev benchmarks/results/<date>-<sha>-v1.json
 ```
 
 The runner checks every item twice with the same settings as `check-bib` (default 4
 workers, CrossRef calls taking turns and searches spaced one second apart): once with an
 empty HTTP cache in a temporary directory, then again from that cache, and reports both
-wall times. A cold run sends about one request per reference (roughly 155 for this set,
-counting the doi.org lookups for DOIs CrossRef lacks); the cached run sends none. It does not set
+wall times. A cold run sends about one request per reference (plus a doi.org lookup for each
+DOI CrossRef lacks); the cached run sends none. It does not set
 `REF_VERIFY_MAILTO`; set it yourself to use CrossRef's polite pool.
 
 Live CrossRef data changes (new records, new retraction notices, edited titles), so a

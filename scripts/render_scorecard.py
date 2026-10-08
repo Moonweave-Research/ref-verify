@@ -96,18 +96,29 @@ def _interval(aggregates: dict[str, Any], key: str) -> str:
     return f"95% CI {round(100 * low)}–{round(100 * high)}%"
 
 
-def render_svg(results: dict[str, Any], theme_name: str) -> str:
+def _dev_summary(dev: dict[str, Any]) -> str:
+    a = dev["aggregates"]
+    parts = (
+        f"real {a['real_clean_pass']['k']}/{a['real_clean_pass']['n']} PASS",
+        f"fabricated {a['fabricated_flagged']['k']}/{a['fabricated_flagged']['n']} flagged",
+        f"retracted {a['retracted_rejected']['k']}/{a['retracted_rejected']['n']} caught",
+        f"unindexed {a['unindexed_rejected']['k']}/{a['unindexed_rejected']['n']} rejected",
+    )
+    return f"Development set ({len(dev['results'])} refs, used while fixing the tool): " + " · ".join(parts)
+
+
+def render_svg(results: dict[str, Any], theme_name: str, dev: dict[str, Any] | None = None) -> str:
     theme = THEMES[theme_name]
     aggregates = results["aggregates"]
     composition = aggregates["composition"]
     total = len(results["results"])
-    height = TOP + ROW_PITCH * len(ROWS) + 40
+    height = TOP + ROW_PITCH * len(ROWS) + (62 if dev else 40)
     parts: list[str] = []
 
-    title = f"How check-bib judged {total} labelled references"
+    title = f"How check-bib judged {total} held-out references"
     subtitle = (
         f"ref-verify {results['tool_version']} · commit {results['commit']} · {results['date']} · "
-        "live CrossRef · in-sample"
+        "live CrossRef · set frozen before the run"
     )
     parts.append(_text(LABEL_X, 34, title, fill=theme["ink"], size=20, weight=600))
     parts.append(_text(LABEL_X, 58, subtitle, fill=theme["ink2"], size=14))
@@ -165,7 +176,10 @@ def render_svg(results: dict[str, Any], theme_name: str) -> str:
         f"Whole set: {timing['first_run_seconds']:.0f} s on a cold cache, "
         f"{timing['cached_run_seconds']:.1f} s cached · {results['workers']} workers"
     )
-    parts.append(_text(LABEL_X, height - 16, footer, fill=theme["muted"], size=13))
+    footer_y = height - (38 if dev else 16)
+    parts.append(_text(LABEL_X, footer_y, footer, fill=theme["muted"], size=13))
+    if dev:
+        parts.append(_text(LABEL_X, footer_y + 22, _dev_summary(dev), fill=theme["muted"], size=13))
 
     description = "; ".join(
         f"{label}: {composition.get(category, {}).get('pass', 0)} pass, "
@@ -185,15 +199,17 @@ def render_svg(results: dict[str, Any], theme_name: str) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("results", type=Path, help="benchmarks/results/<date>-<sha>.json")
+    parser.add_argument("results", type=Path, help="held-out results: benchmarks/results/<date>-<sha>-holdout-v1.json")
+    parser.add_argument("--dev", type=Path, help="development-set results, shown as a footnote")
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT_DIR)
     args = parser.parse_args(argv)
 
     results = json.loads(args.results.read_text(encoding="utf-8"))
+    dev = json.loads(args.dev.read_text(encoding="utf-8")) if args.dev else None
     args.out_dir.mkdir(parents=True, exist_ok=True)
     for theme in THEMES:
         path = args.out_dir / f"scorecard-{theme}.svg"
-        path.write_text(render_svg(results, theme), encoding="utf-8")
+        path.write_text(render_svg(results, theme, dev), encoding="utf-8")
         print(path)
     return 0
 
