@@ -94,3 +94,6 @@ def _retry_after_seconds(exc: HTTPError) -> float | None:
         return max(0.0, float(value))
     except ValueError:
         return None
+
+
+retry_after_seconds = _retry_after_seconds

@@ -3,6 +3,7 @@ import json
 import os
 import tempfile
 import unittest
+from email.message import Message
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from unittest.mock import patch
@@ -13,7 +14,7 @@ from ref_verify.cli import main
 from ref_verify.cache import ResponseCache
 from ref_verify.crossref import CrossrefClient, parse_crossref_work
 from ref_verify.models import PaperRecord
-from ref_verify.reference_parse import ReferenceEntry
+from ref_verify.reference_parse import ReferenceEntry, parse_bibtex
 from ref_verify.reference_resolve import (
     UNMATCHED_REASON,
     check_reference,
@@ -318,12 +319,72 @@ class DoiReferenceTests(unittest.TestCase):
         limited = HTTPError(url="https://api.crossref.org/works", code=429, msg="Too Many Requests", hdrs=None, fp=None)
         offline = URLError("nodename nor servname provided")
 
-        rate_limited = check_reference(_entry(doi=PELRINE_DOI), FakeCrossref(errors={PELRINE_DOI: limited}))
+        with patch("ref_verify.reference_resolve._sleep") as sleep:
+            rate_limited = check_reference(_entry(doi=PELRINE_DOI), FakeCrossref(errors={PELRINE_DOI: limited}))
         unreachable = check_reference(_entry(doi=PELRINE_DOI), FakeCrossref(errors={PELRINE_DOI: offline}))
 
         self.assertEqual(rate_limited.error_code, "ROW_CHECK_ERROR")
         self.assertIn("Run the same command again in a minute", rate_limited.reason)
+        # Re-checked once after a pause before giving up.
+        sleep.assert_called_once_with(15.0)
         self.assertIn("could not reach CrossRef (nodename nor servname provided)", unreachable.reason)
+
+    def test_rate_limited_reference_is_rechecked_once_after_retry_after(self):
+        headers = Message()
+        headers["Retry-After"] = "30"
+        limited = HTTPError(url="https://api.crossref.org/works", code=429, msg="Too Many Requests", hdrs=headers, fp=None)
+
+        class OnceLimited(FakeCrossref):
+            def fetch_work(self, doi):
+                if not self.queries:
+                    self.queries.append(doi)
+                    raise limited
+                return super().fetch_work(doi)
+
+        entry = _entry(doi=PELRINE_DOI, title=PELRINE.title, first_author="Pelrine", year=2000)
+        with patch("ref_verify.reference_resolve._sleep") as sleep:
+            result = check_reference(entry, OnceLimited(works={PELRINE_DOI: PELRINE}))
+
+        self.assertEqual(result.verdict, "PASS")
+        sleep.assert_called_once_with(30.0)
+
+    def test_sici_style_doi_with_angle_brackets_is_looked_up_whole(self):
+        doi = "10.1002/1521-3773(20010601)40:11<2004::aid-anie2004>3.0.co;2-5"
+        record = PaperRecord(doi=doi, title="Click Chemistry: Diverse Chemical Function from a Few Good Reactions",
+                             authors=["Kolb"], year=2001, abstract=None, source="CrossRef")
+        entry = parse_bibtex(
+            "@article{k, author={Kolb, Hartmuth C.}, title={Click Chemistry: Diverse Chemical Function from a "
+            "Few Good Reactions}, year={2001}, doi={" + doi + "}}"
+        )[0]
+
+        result = check_reference(entry, FakeCrossref(works={doi: record}))
+
+        self.assertEqual(entry.doi, doi)
+        self.assertEqual(result.verdict, "PASS")
+
+    def test_citation_without_subtitle_or_edition_note_passes(self):
+        cp2k = PaperRecord(
+            doi="10.1063/5.0007045",
+            title="CP2K: An electronic structure and molecular dynamics software package - Quickstep: "
+            "Efficient and accurate electronic structure calculations",
+            authors=["Kühne"], year=2020, abstract=None, source="CrossRef",
+        )
+        book = PaperRecord(
+            doi="10.1117/3.547465",
+            title="Electroactive Polymer (EAP) Actuators as Artificial Muscles: Reality, Potential, and Challenges, Second Edition",
+            authors=["Bar-Cohen"], year=2004, abstract=None, source="CrossRef",
+        )
+        client = FakeCrossref(works={cp2k.doi: cp2k, book.doi: book})
+
+        first = check_reference(_entry(doi=cp2k.doi, title="CP2K: An electronic structure and molecular dynamics software package",
+                                       first_author="Kühne", year=2020), client)
+        second = check_reference(_entry(doi=book.doi, title="Electroactive Polymer (EAP) Actuators as Artificial Muscles: "
+                                        "Reality, Potential, and Challenges", first_author="Bar-Cohen", year=2004), client)
+        different = check_reference(_entry(doi=cp2k.doi, title="CP2K: A general electronic structure program",
+                                           first_author="Kühne", year=2020), client)
+
+        self.assertEqual((first.verdict, second.verdict), ("PASS", "PASS"))
+        self.assertEqual(different.verdict, "REJECT")
 
     def test_lookup_failure_is_counted_as_failed(self):
         entry = _entry(doi=PELRINE_DOI)
@@ -337,6 +398,50 @@ class DoiReferenceTests(unittest.TestCase):
 
 
 class SearchReferenceTests(unittest.TestCase):
+    def test_review_reports_and_notices_are_not_taken_as_the_paper(self):
+        title = "A pneumonia outbreak associated with a new coronavirus of probable bat origin"
+        review = parse_crossref_work(
+            {"DOI": "10.14293/review", "type": "peer-review", "title": [f'Review of "{title}"'],
+             "relation": {"is-review-of": [{"id": "10.1038/s41586-020-2012-7"}]}}
+        )
+        opinion = parse_crossref_work(
+            {"DOI": "10.3410/f.1", "type": "dataset", "title": [f"Faculty Opinions recommendation of {title}"],
+             "author": [{"family": "Zhou"}], "issued": {"date-parts": [[2020]]}}
+        )
+        addendum = parse_crossref_work(
+            {"DOI": "10.1038/addendum", "type": "journal-article", "title": [f"Addendum: {title}"],
+             "author": [{"family": "Zhou"}], "issued": {"date-parts": [[2020]]}}
+        )
+        paper = parse_crossref_work(
+            {"DOI": "10.1038/s41586-020-2012-7", "type": "journal-article", "title": [title],
+             "author": [{"family": "Zhou"}], "issued": {"date-parts": [[2020]]}}
+        )
+        entry = _entry(year=2020, raw=f"Zhou, P., Yang, X.-L., et al. (2020). {title}. Nature, 579(7798), 270–273.")
+
+        result = check_reference(entry, FakeCrossref(candidates=[review, opinion, addendum, paper]))
+
+        self.assertTrue(review.is_about_other_work and opinion.is_about_other_work and addendum.is_about_other_work)
+        self.assertFalse(paper.is_about_other_work)
+        self.assertEqual(result.verdict, "PASS")
+        self.assertEqual(result.resolved_doi, paper.doi)
+
+    def test_tex_greek_in_bibtex_title_finds_the_retracted_paper(self):
+        retracted = PaperRecord(
+            doi="10.1038/nature04533",
+            title="A specific amyloid-β protein assembly in the brain impairs memory",
+            authors=["Lesné"], year=2006, abstract=None, source="CrossRef", retraction_doi="10.1038/s41586-024-07691-8",
+        )
+        entry = parse_bibtex(
+            "@article{l, author={Lesn{\\'e}, Sylvain}, title={A specific amyloid-$\\beta$ protein assembly "
+            "in the brain impairs memory}, journal={Nature}, year={2006}}"
+        )[0]
+        client = FakeCrossref(candidates=[retracted])
+
+        result = check_reference(entry, client)
+
+        self.assertEqual(entry.title, "A specific amyloid-β protein assembly in the brain impairs memory")
+        self.assertEqual(result.error_code, "PAPER_RETRACTED")
+
     def test_hangul_reference_resolves_through_original_title(self):
         candidate = PaperRecord(
             doi="10.7317/pk.2021.45.6.897",
@@ -374,7 +479,7 @@ class SearchReferenceTests(unittest.TestCase):
         self.assertEqual(result.status, "RESOLVED")
         self.assertEqual(result.error_code, "REFERENCE_RESOLVED")
         self.assertEqual(result.resolved_doi, "10.1039/gels")
-        self.assertEqual(client.queries, [("Self-healing ionic gels Müller 2019 Soft Matter", 3)])
+        self.assertEqual(client.queries, [("Self-healing ionic gels Müller 2019 Soft Matter", 5)])
 
     def test_year_off_by_one_warns(self):
         entry = _entry(title="Self-healing ionic gels", first_author="Müller", year=2018)
