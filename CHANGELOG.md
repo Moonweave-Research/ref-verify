@@ -9,6 +9,10 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+### Added
+
+- A browser page (`web/`) that runs `check-bib` on a pasted list or a `.bib`/`.ris`/`.txt` file with no server: the engine runs in Pyodide (pinned 314.0.7 from jsDelivr) inside a Web Worker and calls CrossRef and doi.org directly. It shows progress, the same verdict tables and legend as the HTML report, a Korean/English toggle, and downloads the same HTML report the CLI writes. Nothing is cached or stored in the browser. `scripts/build_web.py` builds the site; `.github/workflows/pages.yml` deploys it once Pages is enabled and the `PAGES_ENABLED` repository variable is `true`.
+
 ### Changed
 
 - `ref_verify.http` sends requests through a swappable backend (`set_backend`), so a browser build can supply its own transport. The default is still `urllib`; CLI requests, retries, `Retry-After`, and the cache are unchanged.
