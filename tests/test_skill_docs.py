@@ -236,8 +236,8 @@ class SkillDocsTests(unittest.TestCase):
             encoding="utf-8"
         )
 
-        self.assertIn('version = "1.3.0"', pyproject)
-        self.assertIn('__version__ = "1.3.0"', init)
+        self.assertIn('version = "1.3.1"', pyproject)
+        self.assertIn('__version__ = "1.3.1"', init)
 
     def test_skill_runs_bundled_engine_by_absolute_path(self):
         # npx skills add copies src/ next to SKILL.md but installs no console script, and the

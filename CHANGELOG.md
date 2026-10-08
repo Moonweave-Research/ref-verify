@@ -13,6 +13,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 - A browser page (`web/`) that runs `check-bib` on a pasted list or a `.bib`/`.ris`/`.txt` file with no server: the engine runs in Pyodide (pinned 314.0.7 from jsDelivr) inside a Web Worker and calls CrossRef and doi.org directly. It shows progress, the same verdict tables and legend as the HTML report, a Korean/English toggle, and downloads the same HTML report the CLI writes (in English). In Korean, the page shows each reason in Korean from a template table (`web/reasons.js`) with DOIs, years, and titles kept as written, and shows any reason it cannot translate in English marked "(원문)"; `tests/test_web_reasons.py` fails when the engine gains a `check-bib` reason without a Korean template. Nothing is cached or stored in the browser. `scripts/build_web.py` builds the site; `.github/workflows/pages.yml` deploys it once Pages is enabled and the `PAGES_ENABLED` repository variable is `true`.
 
+## [1.3.1] — 2026-10-08
+
 ### Changed
 
 - `ref_verify.http` sends requests through a swappable backend (`set_backend`), so a browser build can supply its own transport. The default is still `urllib`; CLI requests, retries, `Retry-After`, and the cache are unchanged.
@@ -23,6 +25,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - The first-author check reads only the first name in the author list, so a reference that lists a co-author first ("Perlmutter S, Riess AG" for a paper by Riess) no longer passes; initials-first names and particles ("A. G. Riess", "J. D. van der Waals", "Le Cunff, A.") still do. A group author ("Writing Group for the ... Investigators") that opens the reference is matched as a whole.
 - `verify-doi`, `check-claim`, and `check-file` no longer report DataCite (arXiv, Zenodo), KISTI, or JaLC DOIs as dead. When CrossRef has no record they ask doi.org for the registration agency, as `check-bib` does: `verify-doi` returns `verdict: WARN`, `status: UNVERIFIED`, `error_code: DOI_NOT_IN_CROSSREF`; `check-claim` looks for the abstract in OpenAlex, Semantic Scholar, and PubMed and judges the claim if one has it, otherwise returns `UNVERIFIABLE` with `DOI_NOT_IN_CROSSREF`. A DOI doi.org does not know is still `REJECT` / `DOI_NOT_FOUND`.
 - Semantic Scholar looks up an arXiv DOI (`10.48550/arXiv.<id>`) by its arXiv identifier, which it resolves while the DOI itself returns 404, and binds the record to that DOI only when the arXiv identifiers match.
+- A title-less citation without a DOI that CrossRef's plain search ranks out of reach (`A. G. Riess et al., Astron. J. 116, 1009 (1998).`: the paper is not in the top 20) gets a second search, sent only when the reference looks title-less (at most five non-author words before a volume and a page number) and carries a year, by first author (`query.author`), the rest of the citation without the bare year, and a publication-date filter for the cited year and the year before. It is accepted only on the same journal/volume/page/year/first-author agreement, so the reference otherwise stays `UNVERIFIED`. A title-less match to a retracted paper is now reported as `PAPER_RETRACTED` instead of `PASS`.
 
 ## [1.3.0] — 2026-10-08
 
