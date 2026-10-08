@@ -96,6 +96,9 @@ references.bib with ref-verify".
    `REF_VERIFY_MAILTO=you@university.edu` uses CrossRef's polite pool and is
    about three times faster.
 
+   Add `--report check.html` for a file to send to an advisor or co-author;
+   it opens in a browser with the items that need a look at the top.
+
 **Reading the result**
 
 | Result | Meaning | What to do |
@@ -381,6 +384,26 @@ when every reference is `PASS`.
 - `DOI_NOT_IN_CROSSREF`: the DOI is registered with another agency (DataCite for arXiv and Zenodo, KISTI, JaLC, ...), so its metadata was not compared (`status: UNVERIFIED`, `verdict: WARN`). Open the DOI to confirm it.
 - `DOI_NOT_FOUND`: neither CrossRef nor doi.org knows the DOI (`REJECT`).
 - `PAPER_RETRACTED`, `ROW_CHECK_ERROR`: as for `check-claim` and `check-file`. Other DOI-backed results carry `error_code: null`; read `verdict`, `mismatches`, and `reason`, which names what differs (for example `the year differs (reference: 2009; CrossRef: 2010)`). A plain-text reference whose DOI belongs to a paper it does not mention is `status: MISMATCH`, `verdict: WARN`, with that paper's title in `reason`.
+
+To hand the result to a co-author or supervisor, add `--report` to `check-bib`
+or `check-file`. The file extension picks the format:
+
+```bash
+ref-verify check-bib references.bib --report report.html
+ref-verify check-file claims.jsonl --report report.md
+```
+
+The HTML file is self-contained (inline CSS, no scripts, no external resources
+other than `https://doi.org/` links). It opens with counts that add up to the
+total (one box per verdict as shown), a plain-language line on what each
+verdict means and asks you to do, then a "Needs a look" table with every
+non-passing reference or claim and a "Passed" table below it. Each row is
+coloured (`PASS`/`ACCEPT` green, `WARN` amber, `REJECT` red, `UNVERIFIED`
+grey) and shows the reason and evidence. `UNVERIFIED` marks a result the tool
+could not confirm automatically; it is not a finding that the reference is
+wrong. The Markdown file has the same content. A `--report` path whose folder
+does not exist is rejected before any lookup, so a long run is never lost.
+`--json` output is unchanged.
 
 > Core rule: every content statement about a paper must come from a live-fetched
 > source at the depth the claim requires — abstract for topline claims, full

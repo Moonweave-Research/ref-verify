@@ -23,6 +23,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - `check-bib` asks doi.org for the registration agency when CrossRef has no record, and reports DataCite (arXiv, Zenodo), KISTI, or JaLC DOIs as `DOI_NOT_IN_CROSSREF` / `UNVERIFIED` instead of a dead-DOI `REJECT`.
 - `check-bib` reasons name what differs and the values (`the year differs (reference: 2009; CrossRef: 2010)`), and a plain-text reference whose DOI belongs to a paper it never mentions is shown as `MISMATCH` with that paper's title rather than "not enough text to confirm".
 - CrossRef searches are spaced one second apart and all CrossRef calls take turns (three at a time with `REF_VERIFY_MAILTO`), and `check-bib` shows `Checking references: N/M` on a terminal.
+- `--report <path.html|path.md>` on `check-bib` and `check-file` writes a self-contained HTML (inline CSS, no scripts, only `doi.org` links) or Markdown verdict report: counts per verdict that add up to the total, a plain-language legend of what each verdict asks the reader to do, a "Needs a look" table of every non-passing row ahead of a "Passed" table, a colour per verdict, reasons, and evidence. Any other extension, or a folder that does not exist, is rejected before lookups start.
 
 ### Changed
 

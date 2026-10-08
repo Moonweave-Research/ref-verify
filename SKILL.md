@@ -136,6 +136,11 @@ Bundled-engine form:
 PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli check-bib <references file> --json
 ```
 
+When the user wants something to read or share (an advisor, co-authors), add
+`--report <name>.html` (or `.md`) next to `--json`: the HTML lists the items
+that need a look first and explains each verdict in plain words. Give the user
+the report path.
+
 Route each result:
 
 - `PASS`: the reference matches a CrossRef record (by its DOI, or found by

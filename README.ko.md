@@ -99,6 +99,9 @@ ref-verify로 점검해줘"라고 요청하면 됩니다.
    캐시 덕분에 몇 초면 끝납니다. `REF_VERIFY_MAILTO=내이메일@학교.ac.kr`를 앞에
    붙이면 CrossRef의 polite pool을 써서 약 3배 빨라집니다.
 
+   지도교수나 공동 저자에게 보낼 파일이 필요하면 `--report 점검결과.html`을 붙입니다.
+   브라우저로 열면 확인이 필요한 항목이 맨 위에 모여 있습니다.
+
 **결과 읽는 법**
 
 | 결과 | 뜻 | 할 일 |
@@ -383,6 +386,23 @@ CrossRef 서지 검색으로 찾아 제목이 일치하고 연도 차이가 1년
 - `DOI_NOT_IN_CROSSREF`: DOI가 CrossRef가 아닌 다른 등록기관(arXiv·Zenodo의 DataCite, KISTI, JaLC 등)에 등록되어 있어 서지 정보를 비교하지 못함(`status: UNVERIFIED`, `verdict: WARN`). DOI를 직접 열어 확인합니다
 - `DOI_NOT_FOUND`: CrossRef와 doi.org 어디에도 없는 DOI(`REJECT`)
 - `PAPER_RETRACTED`, `ROW_CHECK_ERROR`: `check-claim`, `check-file`과 같음. 그 밖의 DOI 기반 결과는 `error_code: null`이며 `verdict`, `mismatches`, 그리고 무엇이 다른지 적힌 `reason`(예: `the year differs (reference: 2009; CrossRef: 2010)`)을 봅니다. 일반 텍스트 참고문헌의 DOI가 본문에 없는 다른 논문을 가리키면 `status: MISMATCH`, `verdict: WARN`이고 그 논문 제목이 `reason`에 나옵니다
+
+결과를 공동 저자나 지도교수에게 넘기려면 `check-bib` 또는 `check-file`에
+`--report`를 붙입니다. 파일 확장자가 형식을 정합니다.
+
+```bash
+ref-verify check-bib references.bib --report report.html
+ref-verify check-file claims.jsonl --report report.md
+```
+
+HTML 파일은 그 자체로 완결됩니다(인라인 CSS, 스크립트 없음, `https://doi.org/`
+링크 외 외부 자원 없음). 맨 위에 합이 전체 개수와 맞는 판정별 개수, 각 판정의 뜻과
+할 일을 적은 설명이 있고, 그 아래 통과하지 못한 항목만 모은 "Needs a look" 표와
+통과한 항목의 "Passed" 표가 이어집니다. 각 행은 색으로 구분되며(`PASS`/`ACCEPT` 초록,
+`WARN` 호박색, `REJECT` 빨강, `UNVERIFIED` 회색) 이유와 근거를 보여 줍니다.
+`UNVERIFIED`는 도구가 자동으로 확인하지 못했다는 표시이지 참고문헌이 틀렸다는
+판정이 아닙니다. Markdown 파일도 같은 내용입니다. `--report` 경로의 폴더가 없으면
+조회를 시작하기 전에 알려 주므로 긴 실행이 헛되지 않습니다. `--json` 출력은 바뀌지 않습니다.
 
 > 핵심 규칙: 논문 내용에 대한 모든 설명은 claim에 필요한 깊이의
 > live-fetched source에서 나와야 합니다. topline claim에는 abstract,
