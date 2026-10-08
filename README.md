@@ -57,6 +57,59 @@ formatting, and citation style questions.
 
 ---
 
+## Check a whole reference list
+
+Find references in a paper or thesis that do not exist (for example ones a
+chatbot made up), whose DOI points to a different paper, or that were
+retracted, in one run.
+
+**With the agent:** after installing the skill, ask "check every reference in
+references.bib with ref-verify".
+
+**From a terminal:**
+
+1. Put the list in a file.
+   - Zotero: right-click the collection → Export Collection → BibTeX →
+     `references.bib` (EndNote and Mendeley export BibTeX or RIS).
+   - A Word or other manuscript: copy the reference list into a plain-text
+     editor and save it as `references.txt`. `[1]` or `1.` numbering and
+     wrapped lines are fine. `.docx` and `.pdf` files are not read directly.
+2. Install (Python 3.10 or newer). PyPI 1.2.2 does not have `check-bib` yet,
+   so install from GitHub:
+
+   ```bash
+   pipx install "git+https://github.com/Moonweave-Research/ref-verify"
+   ```
+
+   With `uv`, skip the install:
+   `uvx --from "git+https://github.com/Moonweave-Research/ref-verify" ref-verify check-bib references.bib`.
+
+3. Run:
+
+   ```bash
+   ref-verify check-bib references.bib
+   ```
+
+   A first run takes about a second per reference (a little over two minutes
+   for 150, with a `Checking references: 37/150` counter). Running the same
+   list again takes seconds thanks to the cache. Prefixing
+   `REF_VERIFY_MAILTO=you@university.edu` uses CrossRef's polite pool and is
+   about three times faster.
+
+**Reading the result**
+
+| Result | Meaning | What to do |
+|---|---|---|
+| `PASS` | Title, first author, and year match the CrossRef record for the DOI (or the record found by search) | Nothing |
+| `WARN` | Found, but something differs; the line below says what (year, author, the title of the paper the DOI really points to) | Compare that one with the source |
+| `REJECT` | The DOI exists nowhere, points to a different paper, or the paper is retracted | Fix or drop the citation |
+| `UNVERIFIED` | Could not be confirmed automatically; theses, local conference abstracts, some books, and DOIs registered outside CrossRef (arXiv, KISTI) often land here. It does not mean the reference is wrong | Check it yourself |
+
+A made-up reference without a DOI can only show as `UNVERIFIED`, not `REJECT`,
+so look each `UNVERIFIED` item up once (for example in Google Scholar).
+
+---
+
 ## Optional CLI engine
 
 The skill is the agent workflow. The Python CLI is the skill-level execution engine that the installed skill can call from a terminal.

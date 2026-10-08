@@ -61,6 +61,58 @@ claim X를 뒷받침하는 논문 3개를 찾고, 각 인용을 검증해줘
 
 ---
 
+## 참고문헌 목록 전체 점검하기
+
+논문이나 학위논문의 참고문헌 중에 존재하지 않거나(ChatGPT가 지어낸 것 등), DOI가
+다른 논문을 가리키거나, 철회된 논문이 섞여 있는지 한 번에 확인합니다.
+
+**에이전트에게 맡길 때:** 스킬을 설치한 뒤 "references.bib 참고문헌 전체를
+ref-verify로 점검해줘"라고 요청하면 됩니다.
+
+**터미널에서 직접 할 때:**
+
+1. 목록을 파일로 준비합니다.
+   - Zotero: 컬렉션 우클릭 → 컬렉션 내보내기 → BibTeX → `references.bib`
+     (EndNote·Mendeley는 BibTeX이나 RIS로 내보내기)
+   - Word·한글 원고: 참고문헌 목록을 복사해 메모장 등에 붙여 넣고
+     `references.txt`로 저장합니다. `[1]`, `1.` 번호나 줄바꿈이 있어도 됩니다.
+     `.docx`, `.hwp`, `.pdf`는 직접 읽지 못합니다.
+2. 설치합니다(Python 3.10 이상). PyPI의 1.2.2에는 아직 `check-bib`가 없으므로
+   GitHub에서 설치합니다.
+
+   ```bash
+   pipx install "git+https://github.com/Moonweave-Research/ref-verify"
+   ```
+
+   `uv`가 있다면 설치 없이
+   `uvx --from "git+https://github.com/Moonweave-Research/ref-verify" ref-verify check-bib references.bib`
+   로 바로 실행해도 됩니다.
+
+3. 실행합니다.
+
+   ```bash
+   ref-verify check-bib references.bib
+   ```
+
+   처음 실행할 때는 참고문헌 하나에 1초 정도 걸립니다(150개면 2분 남짓,
+   `Checking references: 37/150`처럼 진행 상황이 보입니다). 같은 목록을 다시 돌리면
+   캐시 덕분에 몇 초면 끝납니다. `REF_VERIFY_MAILTO=내이메일@학교.ac.kr`를 앞에
+   붙이면 CrossRef의 polite pool을 써서 약 3배 빨라집니다.
+
+**결과 읽는 법**
+
+| 결과 | 뜻 | 할 일 |
+|---|---|---|
+| `PASS` | DOI(또는 검색으로 찾은 기록)의 제목·제1저자·연도가 CrossRef와 일치 | 없음 |
+| `WARN` | 찾았지만 무언가 다름. 바로 아래 줄에 무엇이 다른지 나옵니다(연도, 저자, DOI가 가리키는 다른 논문 제목 등) | 그 항목만 원문과 대조 |
+| `REJECT` | DOI가 어디에도 없음, 전혀 다른 논문을 가리킴, 또는 철회된 논문 | 인용을 고치거나 빼기 |
+| `UNVERIFIED` | 자동으로 확인하지 못함. 학위논문, 국내 학회 초록, 일부 책, CrossRef가 아닌 곳(arXiv, KISTI 등)에 등록된 DOI가 흔히 여기에 옵니다. 틀렸다는 뜻이 아닙니다 | 직접 확인 |
+
+DOI가 없는 가짜 참고문헌은 `REJECT`가 아니라 `UNVERIFIED`로만 나올 수 있습니다.
+`UNVERIFIED` 항목은 Google Scholar나 RISS에서 실제로 있는지 한 번씩 찾아보세요.
+
+---
+
 ## 선택적 CLI 엔진
 
 스킬이 에이전트 워크플로우입니다. Python CLI는 설치된 스킬이 터미널에서
