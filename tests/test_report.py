@@ -246,7 +246,7 @@ class FakeCrossref:
             source="CrossRef",
         )
 
-    def search_bibliographic(self, query, rows=3):
+    def search_bibliographic(self, query, rows=3, **filters):
         self.calls += 1
         return []
 
