@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+## [1.3.1] — 2026-10-08
+
 ### Changed
 
 - `ref_verify.http` sends requests through a swappable backend (`set_backend`), so a browser build can supply its own transport. The default is still `urllib`; CLI requests, retries, `Retry-After`, and the cache are unchanged.
