@@ -85,6 +85,62 @@ formatting, and citation style questions.
 
 ---
 
+## Check a whole reference list
+
+Find references in a paper or thesis that do not exist (for example ones a
+chatbot made up), whose DOI points to a different paper, or that were
+retracted, in one run.
+
+**With the agent:** after installing the skill, ask "check every reference in
+references.bib with ref-verify".
+
+**From a terminal:**
+
+1. Put the list in a file.
+   - Zotero: right-click the collection → Export Collection → BibTeX →
+     `references.bib` (EndNote and Mendeley export BibTeX or RIS).
+   - A Word or other manuscript: copy the reference list into a plain-text
+     editor and save it as `references.txt`. `[1]` or `1.` numbering and
+     wrapped lines are fine. `.docx` and `.pdf` files are not read directly.
+2. Install (Python 3.10 or newer). PyPI 1.2.2 does not have `check-bib` yet,
+   so install from GitHub:
+
+   ```bash
+   pipx install "git+https://github.com/Moonweave-Research/ref-verify"
+   ```
+
+   With `uv`, skip the install:
+   `uvx --from "git+https://github.com/Moonweave-Research/ref-verify" ref-verify check-bib references.bib`.
+
+3. Run:
+
+   ```bash
+   ref-verify check-bib references.bib
+   ```
+
+   A first run takes about a second per reference (a little over two minutes
+   for 150, with a `Checking references: 37/150` counter). Running the same
+   list again takes seconds thanks to the cache. Prefixing
+   `REF_VERIFY_MAILTO=you@university.edu` uses CrossRef's polite pool and is
+   about three times faster.
+
+   Add `--report check.html` for a file to send to an advisor or co-author;
+   it opens in a browser with the items that need a look at the top.
+
+**Reading the result**
+
+| Result | Meaning | What to do |
+|---|---|---|
+| `PASS` | Title, first author, and year match the CrossRef record for the DOI (or the record found by search) | Nothing |
+| `WARN` | Found, but something differs; the line below says what (year, author, the title of the paper the DOI really points to) | Compare that one with the source |
+| `REJECT` | The DOI exists nowhere, points to a different paper, or the paper is retracted | Fix or drop the citation |
+| `UNVERIFIED` | Could not be confirmed automatically; theses, local conference abstracts, some books, and DOIs registered outside CrossRef (arXiv, KISTI) often land here. It does not mean the reference is wrong | Check it yourself |
+
+A made-up reference without a DOI can only show as `UNVERIFIED`, not `REJECT`,
+so look each `UNVERIFIED` item up once (for example in Google Scholar).
+
+---
+
 ## Optional CLI engine
 
 The skill is the agent workflow. The Python CLI is the skill-level execution engine that the installed skill can call from a terminal.
@@ -302,7 +358,10 @@ ref-verify check-file claims.csv
 
 Each row must include `doi` and `claim`. Optional fields are `id`, `source`,
 and `note`. Rows are checked 4 at a time by default (`--workers N`); output keeps
-the input order, and Semantic Scholar requests still go one at a time. Batch mode reuses the same conservative `check-claim` engine:
+the input order, and CrossRef and Semantic Scholar requests go one at a time
+because their public APIs reject parallel requests. In a terminal, a
+`Checking claims: N/M` counter on stderr shows progress (never with `--json`).
+Ctrl-C stops the run; finished lookups stay cached, so rerunning resumes quickly. Batch mode reuses the same conservative `check-claim` engine:
 `ACCEPT` means the abstract explicitly supports the numeric claim. `WARN`,
 `PARTIAL`, `REJECT`, or `UNVERIFIABLE` means the claim should not be treated as
 verified.
@@ -331,16 +390,28 @@ paragraph, per line, or per `[1]`/`1.`/`1)` item). A reference with a DOI is
 compared with its CrossRef record like `verify-doi`; a plain-text reference
 passes only when its text shows the CrossRef title and first author. A
 reference without a DOI is looked up with CrossRef bibliographic search and
-accepted only when the title matches and the year is within one. The output is
-a table, or with `--json` an object with `summary` (`total`, `pass`, `warn`,
-`reject`, `unverified`, `failed`) and `results`. `check-bib` exits `0` only
+accepted only when the title matches and the year is within one. Matching
+accepts the print or the online-first year, a title with or without its
+subtitle, CrossRef's original-language title (for example the Korean title of
+a *Polymer Korea* paper), and Hangul author names against CrossRef's
+romanized ones (윤 → Yoon/Yun). When a DOI is unknown to CrossRef, doi.org is
+asked which agency registered it, so arXiv, Zenodo, or KISTI DOIs are not
+reported as dead. The terminal output starts with a count line
+(`19 references: 11 PASS, 2 WARN, 5 REJECT, 1 UNVERIFIED`), lists one row per
+reference (citation key, or the start of the reference for a pasted list), puts
+the reason under every row that is not `PASS`, and ends with a one-paragraph
+legend. With `--json` it is an object with `summary` (`total`, `pass`, `warn`,
+`reject`, `unverified`, `failed`; `warn` includes the `UNVERIFIED` rows) and
+`results`. `check-bib` exits `0` only
 when every reference is `PASS`.
 
 `check-bib` error codes:
 
 - `REFERENCE_RESOLVED`: the reference had no DOI; CrossRef search found a matching record, reported as `resolved_doi`. `WARN` when the year differs by one or the first author differs.
 - `REFERENCE_UNMATCHED`: the reference had no DOI and no CrossRef record matched (`status: UNVERIFIED`, `verdict: WARN`). The tool could not confirm it automatically; that does not mean the reference is wrong. Verify it manually.
-- `DOI_NOT_FOUND`, `PAPER_RETRACTED`, `ROW_CHECK_ERROR`: as for `check-claim` and `check-file`. Other DOI-backed results carry `error_code: null`; read `verdict` and `mismatches`.
+- `DOI_NOT_IN_CROSSREF`: the DOI is registered with another agency (DataCite for arXiv and Zenodo, KISTI, JaLC, ...), so its metadata was not compared (`status: UNVERIFIED`, `verdict: WARN`). Open the DOI to confirm it.
+- `DOI_NOT_FOUND`: neither CrossRef nor doi.org knows the DOI (`REJECT`).
+- `PAPER_RETRACTED`, `ROW_CHECK_ERROR`: as for `check-claim` and `check-file`. Other DOI-backed results carry `error_code: null`; read `verdict`, `mismatches`, and `reason`, which names what differs (for example `the year differs (reference: 2009; CrossRef: 2010)`). A plain-text reference whose DOI belongs to a paper it does not mention is `status: MISMATCH`, `verdict: WARN`, with that paper's title in `reason`.
 
 To hand the result to a co-author or supervisor, add `--report` to `check-bib`
 or `check-file`. The file extension picks the format:
@@ -351,12 +422,16 @@ ref-verify check-file claims.jsonl --report report.md
 ```
 
 The HTML file is self-contained (inline CSS, no scripts, no external resources
-other than `https://doi.org/` links) and shows the summary counts, one coloured
-row per reference or claim (`PASS`/`ACCEPT` green, `WARN` amber, `REJECT` red,
-`UNVERIFIED` grey), the reason, and the evidence. `UNVERIFIED` marks a result
-the tool could not confirm automatically; it is not a finding that the
-reference is wrong. The Markdown file has the same content as a table. Console
-and `--json` output are unchanged.
+other than `https://doi.org/` links). It opens with counts that add up to the
+total (one box per verdict as shown), a plain-language line on what each
+verdict means and asks you to do, then a "Needs a look" table with every
+non-passing reference or claim and a "Passed" table below it. Each row is
+coloured (`PASS`/`ACCEPT` green, `WARN` amber, `REJECT` red, `UNVERIFIED`
+grey) and shows the reason and evidence. `UNVERIFIED` marks a result the tool
+could not confirm automatically; it is not a finding that the reference is
+wrong. The Markdown file has the same content. A `--report` path whose folder
+does not exist is rejected before any lookup, so a long run is never lost.
+`--json` output is unchanged.
 
 > Core rule: every content statement about a paper must come from a live-fetched
 > source at the depth the claim requires — abstract for topline claims, full

@@ -1,12 +1,19 @@
 from __future__ import annotations
 
+import re
+import shutil
+import textwrap
+import unicodedata
 from dataclasses import dataclass, field
 from typing import Any, Protocol
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 
 from ref_verify.doi_check import (
     author_matches,
     author_tokens,
+    hangul_surname_matches,
+    record_titles,
+    record_years,
     title_in_text,
     title_token_overlap,
     titles_match,
@@ -21,10 +28,12 @@ _INSUFFICIENT_REASON = (
     "text to confirm it is this paper; verify this reference manually."
 )
 _MIN_TEXT_TITLE_OVERLAP = 0.8
+# Below this share of the CrossRef title's words, plain reference text is about another paper.
+_MAX_SWAPPED_TITLE_OVERLAP = 0.5
 # Reference strings start with the author list, so the first author's family name should
 # appear among the first few name tokens ("Pelrine R", "R. Pelrine", "Ronald E. Pelrine").
 _FIRST_AUTHOR_TOKEN_WINDOW = 4
-_MISMATCH_LABELS = {"year": "the year", "first_author": "the first author"}
+_HANGUL = re.compile(r"[\uac00-\ud7a3]")
 
 
 class ReferenceClient(Protocol):
@@ -32,6 +41,9 @@ class ReferenceClient(Protocol):
         ...
 
     def search_bibliographic(self, query: str, rows: int = 3) -> list[PaperRecord]:
+        ...
+
+    def registration_agency(self, doi: str) -> str | None:
         ...
 
 
@@ -72,9 +84,20 @@ def check_reference(entry: ReferenceEntry, client: ReferenceClient) -> Reference
             entry=entry,
             status="UNVERIFIED",
             verdict="WARN",
-            reason=f"Reference could not be checked: {exc}",
+            reason=_check_error_reason(exc),
             error_code="ROW_CHECK_ERROR",
         )
+
+
+def _check_error_reason(exc: Exception) -> str:
+    if isinstance(exc, HTTPError) and exc.code == 429:
+        return (
+            "Not checked: CrossRef asked ref-verify to slow down (HTTP 429). Run the same command "
+            "again in a minute; references already checked are cached."
+        )
+    if isinstance(exc, URLError) and not isinstance(exc, HTTPError):
+        return f"Not checked: could not reach CrossRef ({exc.reason}). Check the internet connection and run again."
+    return f"Reference could not be checked: {exc}"
 
 
 def _check_doi_reference(entry: ReferenceEntry, doi: str, client: ReferenceClient) -> ReferenceResult:
@@ -83,22 +106,16 @@ def _check_doi_reference(entry: ReferenceEntry, doi: str, client: ReferenceClien
     except HTTPError as exc:
         if exc.code != 404:
             raise
-        return ReferenceResult(
-            entry=entry,
-            status="NOT_FOUND",
-            verdict="REJECT",
-            reason="CrossRef has no record for this DOI (HTTP 404).",
-            error_code="DOI_NOT_FOUND",
-            mismatches=["doi"],
-        )
+        return _missing_from_crossref(entry, doi, client)
     if fetched.retraction_doi:
         return _retracted(entry, fetched, resolved_doi=None)
 
     # Plain-text references carry no parsed title or author; accept them only when the
     # reference text itself shows the CrossRef title and first author for this DOI.
+    text_title = next((title for title in record_titles(fetched) if title_in_text(title, entry.raw)), None)
     provided = CitationInput(
         doi=doi,
-        title=entry.title or (fetched.title if title_in_text(fetched.title, entry.raw) else None),
+        title=entry.title or text_title,
         first_author=entry.first_author or _first_author_in_text(entry.raw, fetched),
         year=entry.year,
     )
@@ -106,9 +123,24 @@ def _check_doi_reference(entry: ReferenceEntry, doi: str, client: ReferenceClien
     if metadata.verdict == "PASS":
         status, reason = "VERIFIED", metadata.reason
     elif metadata.verdict == "WARN" and "metadata" in metadata.mismatches:
-        status, reason = "UNVERIFIED", _INSUFFICIENT_REASON
+        if not entry.title and not text_title and _text_names_another_paper(entry.raw, fetched):
+            status = "MISMATCH"
+            reason = (
+                f"This DOI belongs to {_describe(fetched)}, which this reference does not mention; "
+                "the DOI may point to a different paper."
+            )
+        else:
+            status, reason = "UNVERIFIED", _insufficient_reason(provided, fetched)
     else:
-        status, reason = "MISMATCH", metadata.reason
+        status = "MISMATCH"
+        lead = (
+            "DOI resolves to a materially different paper than provided"
+            if metadata.verdict == "REJECT"
+            else "DOI matches, but"
+        )
+        separator = ": " if metadata.verdict == "REJECT" else " "
+        details = _differences(metadata.mismatches, provided.year, provided.first_author, fetched)
+        reason = f"{lead}{separator}{details}." if details else metadata.reason
     return ReferenceResult(
         entry=entry,
         status=status,
@@ -117,6 +149,83 @@ def _check_doi_reference(entry: ReferenceEntry, doi: str, client: ReferenceClien
         mismatches=metadata.mismatches,
         fetched=fetched,
     )
+
+
+def _missing_from_crossref(entry: ReferenceEntry, doi: str, client: ReferenceClient) -> ReferenceResult:
+    try:
+        agency = client.registration_agency(doi)
+    except Exception:
+        agency = None
+    # arXiv, Zenodo, and many Korean (KISTI) or Japanese (JaLC) DOIs are registered with
+    # another agency, so a CrossRef 404 alone does not make them dead.
+    if agency and agency.casefold() != "crossref":
+        return ReferenceResult(
+            entry=entry,
+            status="UNVERIFIED",
+            verdict="WARN",
+            reason=(
+                f"This DOI is registered with {agency}, not CrossRef, so its title and authors "
+                f"were not compared; open https://doi.org/{doi} to confirm it is this work."
+            ),
+            error_code="DOI_NOT_IN_CROSSREF",
+        )
+    return ReferenceResult(
+        entry=entry,
+        status="NOT_FOUND",
+        verdict="REJECT",
+        reason="CrossRef has no record for this DOI (HTTP 404), and doi.org does not list it either.",
+        error_code="DOI_NOT_FOUND",
+        mismatches=["doi"],
+    )
+
+
+def _text_names_another_paper(text: str, record: PaperRecord) -> bool:
+    # Hangul text cannot be compared word-for-word with a romanized English record, so it
+    # stays "could not confirm" rather than "different paper".
+    if not text or _HANGUL.search(text):
+        return False
+    overlap = max(title_token_overlap(title, text) for title in record_titles(record))
+    return overlap < _MAX_SWAPPED_TITLE_OVERLAP
+
+
+def _insufficient_reason(provided: CitationInput, fetched: PaperRecord) -> str:
+    if provided.title and not provided.first_author and fetched.authors:
+        return (
+            f"The DOI and title match CrossRef, but its first author ({fetched.authors[0]}) was not "
+            "found in the reference; check the author names manually."
+        )
+    if provided.first_author and not provided.title:
+        return (
+            f'The DOI and first author match CrossRef, but its title ("{fetched.title}") was not '
+            "found in the reference; check the title manually."
+        )
+    return _INSUFFICIENT_REASON
+
+
+def _describe(record: PaperRecord) -> str:
+    details = [part for part in (record.authors[0] if record.authors else None, record.year) if part]
+    suffix = f" ({', '.join(str(part) for part in details)})" if details else ""
+    return f'"{record.title}"{suffix}'
+
+
+def _differences(
+    mismatches: list[str],
+    year: int | None,
+    first_author: str | None,
+    record: PaperRecord,
+) -> str:
+    parts = []
+    if "title" in mismatches:
+        parts.append(f'the title differs (CrossRef: "{record.title}")')
+    if "first_author" in mismatches:
+        crossref_author = record.authors[0] if record.authors else "none listed"
+        reference = f"reference: {first_author}; " if first_author else ""
+        parts.append(f"the first author differs ({reference}CrossRef: {crossref_author})")
+    if "year" in mismatches:
+        crossref_years = "/".join(str(value) for value in record_years(record)) or "none listed"
+        reference = f"reference: {year}; " if year is not None else ""
+        parts.append(f"the year differs ({reference}CrossRef: {crossref_years})")
+    return " and ".join(parts)
 
 
 def _resolve_reference(entry: ReferenceEntry, client: ReferenceClient) -> ReferenceResult:
@@ -128,18 +237,15 @@ def _resolve_reference(entry: ReferenceEntry, client: ReferenceClient) -> Refere
         if candidate.retraction_doi:
             return _retracted(entry, candidate, resolved_doi=candidate.doi)
         mismatches = []
-        if entry.year is not None and candidate.year is not None and entry.year != candidate.year:
+        candidate_years = record_years(candidate)
+        if entry.year is not None and candidate_years and entry.year not in candidate_years:
             mismatches.append("year")
         if not _first_author_matches(entry, candidate):
             mismatches.append("first_author")
         reason = f"Matched CrossRef record {candidate.doi} by bibliographic search."
         if mismatches:
-            labels = [_MISMATCH_LABELS[name] for name in mismatches]
-            verb = "differ" if len(labels) > 1 else "differs"
-            reason = (
-                f"Matched CrossRef record {candidate.doi} by bibliographic search, but "
-                f"{' and '.join(labels)} {verb} from the reference."
-            )
+            details = _differences(mismatches, entry.year, entry.first_author, candidate)
+            reason = f"Matched CrossRef record {candidate.doi} by bibliographic search, but {details}."
         return ReferenceResult(
             entry=entry,
             status="RESOLVED",
@@ -167,13 +273,18 @@ def _bibliographic_query(entry: ReferenceEntry) -> str:
 
 
 def _candidate_matches(entry: ReferenceEntry, candidate: PaperRecord) -> bool:
+    titles = record_titles(candidate)
     if entry.title:
-        if not titles_match(entry.title, candidate.title):
+        if not any(titles_match(entry.title, title) for title in titles):
             return False
-    elif title_token_overlap(candidate.title, entry.raw) < _MIN_TEXT_TITLE_OVERLAP:
+    elif not any(
+        title_in_text(title, entry.raw) or title_token_overlap(title, entry.raw) >= _MIN_TEXT_TITLE_OVERLAP
+        for title in titles
+    ):
         return False
-    if entry.year is not None and candidate.year is not None:
-        return abs(entry.year - candidate.year) <= 1
+    candidate_years = record_years(candidate)
+    if entry.year is not None and candidate_years:
+        return min(abs(entry.year - year) for year in candidate_years) <= 1
     return True
 
 
@@ -189,6 +300,8 @@ def _first_author_matches(entry: ReferenceEntry, candidate: PaperRecord) -> bool
 def _first_author_in_text(text: str, record: PaperRecord) -> str | None:
     if not text or not record.authors:
         return None
+    if hangul_surname_matches(text, record.authors[0]):
+        return record.authors[0]
     family = author_tokens(record.authors[0])
     if family and family[-1] in author_tokens(text)[:_FIRST_AUTHOR_TOKEN_WINDOW]:
         return record.authors[0]
@@ -229,9 +342,18 @@ def reference_payload(results: list[ReferenceResult]) -> dict[str, Any]:
     }
 
 
-def render_reference_text(results: list[ReferenceResult]) -> str:
+TEXT_LEGEND = (
+    "PASS: matches CrossRef. WARN: check the difference named under it. REJECT: dead DOI, "
+    "a different paper, or retracted. UNVERIFIED: could not be confirmed automatically; "
+    "that alone does not mean the reference is wrong."
+)
+_REFERENCE_COLUMN = 42
+
+
+def render_reference_text(results: list[ReferenceResult], width: int | None = None) -> str:
+    width = width or shutil.get_terminal_size((100, 24)).columns
     summary = summarize_references(results)
-    rows = [("VERDICT", "KEY", "DOI", "REASON")]
+    rows = []
     for result in results:
         if result.entry.doi:
             doi = result.entry.doi
@@ -239,9 +361,47 @@ def render_reference_text(results: list[ReferenceResult]) -> str:
             doi = f"{result.resolved_doi} (resolved)"
         else:
             doi = "-"
-        rows.append((result.verdict, result.entry.key or f"ref-{result.entry.index}", doi, result.reason))
-    widths = [max(len(row[column]) for row in rows) for column in range(3)]
-    lines = ["Summary: " + " ".join(f"{name}={count}" for name, count in summary.items()), ""]
-    for row in rows:
-        lines.append("  ".join(cell.ljust(width) for cell, width in zip(row[:3], widths)) + "  " + row[3])
+        # Same label as the report: a WARN that only means "could not confirm" reads apart
+        # from a WARN about a real difference.
+        label = "UNVERIFIED" if result.verdict == "WARN" and result.status == "UNVERIFIED" else result.verdict
+        rows.append((label, _reference_label(result.entry), doi, result))
+    label_width = max(len("VERDICT"), *(len(row[0]) for row in rows))
+    reference_width = min(_REFERENCE_COLUMN, max(_display_width("REFERENCE"), *(_display_width(row[1]) for row in rows)))
+    indent = " " * (label_width + 2)
+    # Counted by the label shown, so the numbers add up to the total (JSON `warn` also
+    # counts the UNVERIFIED rows).
+    counts = {label: sum(row[0] == label for row in rows) for label in ("PASS", "WARN", "REJECT", "UNVERIFIED")}
+    noun = "reference" if summary["total"] == 1 else "references"
+    headline = f"{summary['total']} {noun}: " + ", ".join(f"{count} {label}" for label, count in counts.items())
+    if summary["failed"]:
+        headline += f" ({summary['failed']} could not be checked; run the same command again)"
+    lines = [headline, ""]
+    lines.append(f"{'VERDICT'.ljust(label_width)}  {_fit('REFERENCE', reference_width)}  DOI")
+    for label, reference, doi, result in rows:
+        lines.append(f"{label.ljust(label_width)}  {_fit(reference, reference_width)}  {doi}")
+        # PASS reasons are boilerplate; everything else needs its reason to be acted on.
+        if result.verdict != "PASS":
+            lines.extend(textwrap.wrap(result.reason, width=max(width, 60), initial_indent=indent, subsequent_indent=indent))
+    lines.append("")
+    lines.extend(textwrap.wrap(TEXT_LEGEND, width=max(width, 60)))
     return "\n".join(lines)
+
+
+def _reference_label(entry: ReferenceEntry) -> str:
+    if entry.key and not entry.key.isdigit():
+        return entry.key
+    # Pasted lists have no citation keys, so show where the reference starts.
+    number = f"[{entry.key}]" if entry.key else f"{entry.index}."
+    return f"{number} {' '.join(entry.raw.split())}"
+
+
+def _display_width(text: str) -> int:
+    return sum(2 if unicodedata.east_asian_width(char) in ("W", "F") else 1 for char in text)
+
+
+def _fit(text: str, width: int) -> str:
+    if _display_width(text) > width:
+        while _display_width(text) > width - 1:
+            text = text[:-1]
+        text = text.rstrip() + "…"
+    return text + " " * (width - _display_width(text))

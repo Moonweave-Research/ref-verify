@@ -110,15 +110,42 @@ class HtmlReportTests(unittest.TestCase):
             with self.subTest(url=url):
                 self.assertTrue(url.startswith("https://doi.org/"), url)
 
-    def test_summary_counts_are_rendered(self):
-        for name, value in (("total", 4), ("pass", 1), ("warn", 2), ("reject", 1), ("unverified", 1), ("failed", 0)):
+    def test_summary_counts_add_up_to_the_total(self):
+        # Counted by the label shown: the JSON summary's warn=2 includes the UNVERIFIED row.
+        for name, value in (("total", 4), ("PASS", 1), ("WARN", 1), ("REJECT", 1), ("UNVERIFIED", 1)):
             with self.subTest(name=name):
                 self.assertRegex(self.html, rf'<span class="n">{value}</span>\s*<span class="label">{name}</span>')
+        self.assertNotIn("not checked", self.html)
 
     def test_one_table_row_per_result(self):
-        body = self.html.split("<tbody>", 1)[1].split("</tbody>", 1)[0]
+        self.assertEqual(self.html.count("<tr class="), 4)
 
-        self.assertEqual(body.count("<tr"), 4)
+    def test_legend_explains_each_verdict_above_the_tables(self):
+        legend = self.html.index('<ul class="legend">')
+
+        self.assertLess(legend, self.html.index("<table>"))
+        self.assertIn("This does not mean it is wrong; look it up once yourself.", self.html)
+
+    def test_problems_come_before_passed_references(self):
+        needs_look = self.html.index("Needs a look (3)")
+        passed = self.html.index("Passed (1)")
+
+        self.assertLess(needs_look, passed)
+        self.assertLess(self.html.index('<span class="badge reject">REJECT</span></td>'), passed)
+        self.assertGreater(self.html.index('<span class="badge pass">PASS</span></td>'), passed)
+
+    def test_all_passing_report_says_nothing_to_fix_and_failed_rows_are_counted(self):
+        passing = _render("html", _reference_results()[:1])
+        failed = ReferenceResult(
+            entry=_entry(5, "later"),
+            status="UNVERIFIED",
+            verdict="WARN",
+            reason="Not checked: CrossRef asked ref-verify to slow down (HTTP 429).",
+            error_code="ROW_CHECK_ERROR",
+        )
+
+        self.assertIn("Nothing to fix: every reference passed.", passing)
+        self.assertRegex(_render("html", [failed]), r'<span class="n">1</span>\s*<span class="label">not checked, rerun</span>')
 
     def test_verdict_badges_and_doi_links(self):
         self.assertIn('<span class="badge pass">PASS</span>', self.html)
@@ -149,10 +176,12 @@ class MarkdownReportTests(unittest.TestCase):
     def test_table_rows_and_summary(self):
         table_rows = [line for line in self.markdown.splitlines() if line.startswith("| ")]
 
-        # Header row plus one row per result.
-        self.assertEqual(len(table_rows), 5)
+        # A header row for each of the two tables plus one row per result.
+        self.assertEqual(len(table_rows), 6)
         self.assertIn("total 4", self.markdown)
-        self.assertIn("unverified 1", self.markdown)
+        self.assertIn("UNVERIFIED 1", self.markdown)
+        self.assertLess(self.markdown.index("## Needs a look (3)"), self.markdown.index("## Passed (1)"))
+        self.assertIn("- **UNVERIFIED**: Could not be confirmed automatically", self.markdown)
         self.assertIn("[10.1000/good](https://doi.org/10.1000/good)", self.markdown)
 
     def test_escapes_pipes_and_html(self):
@@ -239,7 +268,7 @@ class CliReportTests(unittest.TestCase):
         self.assertEqual(json.loads(output.getvalue())["summary"]["total"], 3)
         self.assertIn("check-bib", html)
         self.assertIn("refs.bib", html)
-        self.assertEqual(html.split("<tbody>", 1)[1].count("<tr"), 3)
+        self.assertEqual(html.count("<tr class="), 3)
 
     def test_check_file_writes_markdown_report(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -274,18 +303,21 @@ class CliReportTests(unittest.TestCase):
         self.assertIn(".html", json.loads(output.getvalue())["error"])
         self.assertEqual(client.calls, 0)
 
-    def test_unwritable_report_path_is_an_error(self):
+    def test_missing_report_folder_fails_before_any_lookup(self):
+        client = FakeCrossref()
         with tempfile.TemporaryDirectory() as tmp:
             output = io.StringIO()
             with redirect_stdout(output):
                 exit_code = main(
                     ["check-bib", str(FIXTURES / "refs.bib"), "--report", str(Path(tmp) / "missing" / "r.html"), "--json"],
-                    client=FakeCrossref(),
+                    client=client,
                     abstract_clients=[],
                 )
 
         self.assertEqual(exit_code, 1)
-        self.assertIn("Could not write report", json.loads(output.getvalue())["error"])
+        self.assertIn("folder for --report does not exist", json.loads(output.getvalue())["error"])
+        # A long run is not wasted on a report that could never be written.
+        self.assertEqual(client.calls, 0)
 
 
 if __name__ == "__main__":

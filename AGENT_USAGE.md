@@ -32,7 +32,9 @@ ref-verify check-bib references.bib --json
 Use `--format txt` for a pasted list saved under another extension. Treat only
 `verdict == "PASS"` as a confirmed reference. `REFERENCE_UNMATCHED` means
 CrossRef search found no matching record: report it as unverified and ask the
-user to check it; never call it fabricated. For a `REFERENCE_RESOLVED` result,
+user to check it; never call it fabricated. `DOI_NOT_IN_CROSSREF` means the DOI
+exists at another registration agency (DataCite, KISTI, ...); it is unverified,
+not dead. For a `REFERENCE_RESOLVED` result,
 use `resolved_doi` as the DOI in the claim checks below. Then extract claims
 for the confirmed references and run `check-file`.
 
@@ -149,6 +151,7 @@ Common routing:
 - `ROW_CHECK_ERROR`: one row could not be checked, but other rows may still have results.
 - `REFERENCE_RESOLVED` (`check-bib`): a reference without a DOI matched a CrossRef record; use `resolved_doi`.
 - `REFERENCE_UNMATCHED` (`check-bib`): no CrossRef record matched; unverified, not proven wrong.
+- `DOI_NOT_IN_CROSSREF` (`check-bib`): the DOI is registered outside CrossRef (DataCite, KISTI, JaLC); its metadata was not compared.
 
 ## Agent Must Not
 
