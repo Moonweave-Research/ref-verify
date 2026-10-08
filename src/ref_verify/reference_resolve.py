@@ -21,6 +21,7 @@ from ref_verify.doi_check import (
     titles_match,
     verify_doi_metadata,
 )
+from ref_verify.crossref import not_in_crossref_reason, other_registration_agency
 from ref_verify.http import retry_after_seconds as _retry_after_seconds
 from ref_verify.models import CitationInput, PaperRecord
 from ref_verify.reference_parse import DOI_PATTERN, ReferenceEntry
@@ -205,21 +206,13 @@ def _check_doi_reference(entry: ReferenceEntry, doi: str, client: ReferenceClien
 
 
 def _missing_from_crossref(entry: ReferenceEntry, doi: str, client: ReferenceClient) -> ReferenceResult:
-    try:
-        agency = client.registration_agency(doi)
-    except Exception:
-        agency = None
-    # arXiv, Zenodo, and many Korean (KISTI) or Japanese (JaLC) DOIs are registered with
-    # another agency, so a CrossRef 404 alone does not make them dead.
-    if agency and agency.casefold() != "crossref":
+    agency = other_registration_agency(client, doi)
+    if agency:
         return ReferenceResult(
             entry=entry,
             status="UNVERIFIED",
             verdict="WARN",
-            reason=(
-                f"This DOI is registered with {agency}, not CrossRef, so its title and authors "
-                f"were not compared; open https://doi.org/{doi} to confirm it is this work."
-            ),
+            reason=not_in_crossref_reason(agency, doi),
             error_code="DOI_NOT_IN_CROSSREF",
         )
     return ReferenceResult(

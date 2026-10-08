@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 import threading
 from typing import Any
 from urllib.error import HTTPError
@@ -32,7 +33,10 @@ class SemanticScholarClient:
         self.cache = cache
 
     def fetch_record(self, doi: str) -> PaperRecord | None:
-        paper_id = quote(f"DOI:{normalize_doi(doi)}", safe=":")
+        arxiv_id = _arxiv_id(doi)
+        # Semantic Scholar does not resolve arXiv's DataCite DOIs, but finds the same paper by
+        # its arXiv identifier, which the DOI carries.
+        paper_id = f"ARXIV:{quote(arxiv_id)}" if arxiv_id else quote(f"DOI:{normalize_doi(doi)}", safe=":")
         fields = "title,authors,year,abstract,externalIds,url,venue"
         headers = {"User-Agent": USER_AGENT}
         api_key = os.environ.get("SEMANTIC_SCHOLAR_API_KEY")
@@ -53,10 +57,10 @@ class SemanticScholarClient:
             if exc.code == 429:
                 raise AbstractSourceError("RATE_LIMITED", "Semantic Scholar rate limit exceeded.") from exc
             raise
-        return parse_semantic_scholar_paper(payload)
+        return parse_semantic_scholar_paper(payload, arxiv_doi=normalize_doi(doi) if arxiv_id else None)
 
 
-def parse_semantic_scholar_paper(payload: dict[str, Any]) -> PaperRecord | None:
+def parse_semantic_scholar_paper(payload: dict[str, Any], *, arxiv_doi: str | None = None) -> PaperRecord | None:
     abstract = _string_or_none(payload.get("abstract"))
     if abstract is None:
         return None
@@ -64,6 +68,11 @@ def parse_semantic_scholar_paper(payload: dict[str, Any]) -> PaperRecord | None:
     doi = ""
     if isinstance(external_ids, dict):
         doi = _string_or_none(external_ids.get("DOI")) or ""
+        # Looked up by arXiv identifier: the record is bound to the arXiv DOI when its arXiv
+        # identifier is the one in that DOI, even if it also lists a later journal DOI.
+        arxiv = _string_or_none(external_ids.get("ArXiv"))
+        if arxiv_doi and arxiv and _arxiv_id(arxiv_doi) == arxiv.casefold():
+            doi = arxiv_doi
     if not doi:
         return None
 
@@ -82,6 +91,11 @@ def parse_semantic_scholar_paper(payload: dict[str, Any]) -> PaperRecord | None:
         journal=_string_or_none(payload.get("venue")),
         url=_string_or_none(payload.get("url")),
     )
+
+
+def _arxiv_id(doi: str) -> str | None:
+    match = re.fullmatch(r"10\.48550/arxiv\.(.+)", normalize_doi(doi))
+    return match.group(1) if match else None
 
 
 def _string_or_none(value: Any) -> str | None:

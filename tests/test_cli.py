@@ -43,6 +43,16 @@ class FailingClient:
         raise self.error
 
 
+class AgencyClient(FailingClient):
+    # CrossRef returns 404; doi.org names the agency that registered the DOI.
+    def __init__(self, agency):
+        super().__init__(HTTPError("https://api.crossref.org/works/x", 404, "Not Found", None, None))
+        self.agency = agency
+
+    def registration_agency(self, doi):
+        return self.agency
+
+
 class MappingClient:
     def __init__(self, records, errors=None):
         self.records = records
@@ -335,6 +345,70 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["verdict"], "REJECT")
         self.assertEqual(payload["error_code"], "DOI_NOT_FOUND")
         self.assertNotIn("error", payload)
+
+    def test_verify_doi_reports_doi_registered_outside_crossref_as_unverified(self):
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                ["--no-cache", "verify-doi", "10.48550/arXiv.1706.03762", "--title", "Attention Is All You Need", "--json"],
+                client=AgencyClient("DataCite"),
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual((payload["verdict"], payload["status"]), ("WARN", "UNVERIFIED"))
+        self.assertEqual(payload["error_code"], "DOI_NOT_IN_CROSSREF")
+        self.assertIn("registered with DataCite, not CrossRef", payload["reason"])
+
+    def test_verify_doi_unknown_to_doi_org_is_still_rejected(self):
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            main(["--no-cache", "verify-doi", "10.9999/dead", "--json"], client=AgencyClient(None))
+
+        self.assertEqual(json.loads(output.getvalue())["error_code"], "DOI_NOT_FOUND")
+
+    def test_check_claim_on_non_crossref_doi_uses_fallback_abstract(self):
+        doi = "10.48550/arxiv.1706.03762"
+        record = PaperRecord(
+            doi=doi,
+            title="Attention Is All You Need",
+            authors=["Vaswani"],
+            year=2017,
+            abstract="Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task.",
+            source="Semantic Scholar",
+        )
+        fallback = FakeAbstractSourceClient("semantic_scholar", record=record)
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                ["--no-cache", "check-claim", doi, "--claim", "28.4 BLEU on the WMT 2014 English-to-German translation task", "--json"],
+                client=AgencyClient("DataCite"),
+                abstract_clients=[fallback],
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["verdict"], "ACCEPT")
+        self.assertEqual(payload["abstract_source"], "semantic_scholar")
+
+    def test_check_claim_on_non_crossref_doi_without_abstract_is_unverifiable_not_rejected(self):
+        fallback = FakeAbstractSourceClient("openalex", raises=AbstractSourceError("NOT_FOUND", "OpenAlex had no work."))
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            main(
+                ["--no-cache", "check-claim", "10.5281/zenodo.1", "--claim", "accuracy reached 95%", "--json"],
+                client=AgencyClient("DataCite"),
+                abstract_clients=[fallback],
+            )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual((payload["verdict"], payload["status"]), ("WARN", "UNVERIFIABLE"))
+        self.assertEqual(payload["error_code"], "DOI_NOT_IN_CROSSREF")
+        self.assertEqual([attempt["source"] for attempt in payload["source_attempts"]], ["openalex"])
 
     def test_verify_doi_still_surfaces_non_404_http_errors(self):
         error = HTTPError("https://api.crossref.org/works/x", 503, "Unavailable", None, None)
