@@ -266,6 +266,8 @@ def _run_parallel(
         futures = [executor.submit(function, item) for item in items]
         try:
             if progress:
+                sys.stderr.write(f"{progress}: 0/{len(futures)}")
+                sys.stderr.flush()
                 for done, _ in enumerate(as_completed(futures), start=1):
                     sys.stderr.write(f"\r{progress}: {done}/{len(futures)}")
                     sys.stderr.flush()
