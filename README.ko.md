@@ -314,7 +314,10 @@ BibTeX, RIS, 일반 텍스트·Markdown 목록(문단마다, 줄마다, 또는
 `verify-doi`처럼 CrossRef 기록과 대조하고, 일반 텍스트 항목은 본문에
 CrossRef 제목과 제1저자가 드러날 때만 통과합니다. DOI가 없는 항목은
 CrossRef 서지 검색으로 찾아 제목이 일치하고 연도 차이가 1년 이내일 때만
-받아들입니다. 출력은 표이며, `--json`이면 `summary`(`total`, `pass`, `warn`,
+받아들입니다. 인쇄본 연도와 온라인 선공개 연도 모두, 부제를 뺀 제목, CrossRef에
+등록된 원어 제목(예: 『폴리머』 논문의 한글 제목), 한글 저자명과 CrossRef의 로마자
+표기(윤 → Yoon/Yun)를 같은 것으로 봅니다. CrossRef에 없는 DOI는 doi.org에 등록기관을
+물어보므로 arXiv, Zenodo, KISTI DOI를 없는 DOI로 판정하지 않습니다. 출력은 표이며, `--json`이면 `summary`(`total`, `pass`, `warn`,
 `reject`, `unverified`, `failed`)와 `results`를 담은 객체입니다. 모든 항목이
 `PASS`일 때만 exit `0`입니다.
 
@@ -322,7 +325,9 @@ CrossRef 서지 검색으로 찾아 제목이 일치하고 연도 차이가 1년
 
 - `REFERENCE_RESOLVED`: DOI가 없던 항목을 CrossRef 검색으로 찾았고 `resolved_doi`에 기록함. 연도가 1년 다르거나 제1저자가 다르면 `WARN`
 - `REFERENCE_UNMATCHED`: DOI가 없고 일치하는 CrossRef 기록도 찾지 못함(`status: UNVERIFIED`, `verdict: WARN`). 도구가 자동으로 확인하지 못했다는 뜻이지 참고문헌이 틀렸다는 뜻은 아니므로 직접 확인합니다
-- `DOI_NOT_FOUND`, `PAPER_RETRACTED`, `ROW_CHECK_ERROR`: `check-claim`, `check-file`과 같음. 그 밖의 DOI 기반 결과는 `error_code: null`이며 `verdict`와 `mismatches`를 봅니다
+- `DOI_NOT_IN_CROSSREF`: DOI가 CrossRef가 아닌 다른 등록기관(arXiv·Zenodo의 DataCite, KISTI, JaLC 등)에 등록되어 있어 서지 정보를 비교하지 못함(`status: UNVERIFIED`, `verdict: WARN`). DOI를 직접 열어 확인합니다
+- `DOI_NOT_FOUND`: CrossRef와 doi.org 어디에도 없는 DOI(`REJECT`)
+- `PAPER_RETRACTED`, `ROW_CHECK_ERROR`: `check-claim`, `check-file`과 같음. 그 밖의 DOI 기반 결과는 `error_code: null`이며 `verdict`, `mismatches`, 그리고 무엇이 다른지 적힌 `reason`(예: `the year differs (reference: 2009; CrossRef: 2010)`)을 봅니다. 일반 텍스트 참고문헌의 DOI가 본문에 없는 다른 논문을 가리키면 `status: MISMATCH`, `verdict: WARN`이고 그 논문 제목이 `reason`에 나옵니다
 
 > 핵심 규칙: 논문 내용에 대한 모든 설명은 claim에 필요한 깊이의
 > live-fetched source에서 나와야 합니다. topline claim에는 abstract,

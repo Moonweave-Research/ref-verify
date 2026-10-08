@@ -306,7 +306,13 @@ paragraph, per line, or per `[1]`/`1.`/`1)` item). A reference with a DOI is
 compared with its CrossRef record like `verify-doi`; a plain-text reference
 passes only when its text shows the CrossRef title and first author. A
 reference without a DOI is looked up with CrossRef bibliographic search and
-accepted only when the title matches and the year is within one. The output is
+accepted only when the title matches and the year is within one. Matching
+accepts the print or the online-first year, a title with or without its
+subtitle, CrossRef's original-language title (for example the Korean title of
+a *Polymer Korea* paper), and Hangul author names against CrossRef's
+romanized ones (윤 → Yoon/Yun). When a DOI is unknown to CrossRef, doi.org is
+asked which agency registered it, so arXiv, Zenodo, or KISTI DOIs are not
+reported as dead. The output is
 a table, or with `--json` an object with `summary` (`total`, `pass`, `warn`,
 `reject`, `unverified`, `failed`) and `results`. `check-bib` exits `0` only
 when every reference is `PASS`.
@@ -315,7 +321,9 @@ when every reference is `PASS`.
 
 - `REFERENCE_RESOLVED`: the reference had no DOI; CrossRef search found a matching record, reported as `resolved_doi`. `WARN` when the year differs by one or the first author differs.
 - `REFERENCE_UNMATCHED`: the reference had no DOI and no CrossRef record matched (`status: UNVERIFIED`, `verdict: WARN`). The tool could not confirm it automatically; that does not mean the reference is wrong. Verify it manually.
-- `DOI_NOT_FOUND`, `PAPER_RETRACTED`, `ROW_CHECK_ERROR`: as for `check-claim` and `check-file`. Other DOI-backed results carry `error_code: null`; read `verdict` and `mismatches`.
+- `DOI_NOT_IN_CROSSREF`: the DOI is registered with another agency (DataCite for arXiv and Zenodo, KISTI, JaLC, ...), so its metadata was not compared (`status: UNVERIFIED`, `verdict: WARN`). Open the DOI to confirm it.
+- `DOI_NOT_FOUND`: neither CrossRef nor doi.org knows the DOI (`REJECT`).
+- `PAPER_RETRACTED`, `ROW_CHECK_ERROR`: as for `check-claim` and `check-file`. Other DOI-backed results carry `error_code: null`; read `verdict`, `mismatches`, and `reason`, which names what differs (for example `the year differs (reference: 2009; CrossRef: 2010)`). A plain-text reference whose DOI belongs to a paper it does not mention is `status: MISMATCH`, `verdict: WARN`, with that paper's title in `reason`.
 
 > Core rule: every content statement about a paper must come from a live-fetched
 > source at the depth the claim requires — abstract for topline claims, full

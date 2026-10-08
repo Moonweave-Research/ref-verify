@@ -126,7 +126,8 @@ def parse_bibtex(text: str) -> list[ReferenceEntry]:
                 key=key or None,
                 raw=text[match.start() : body_end + 1],
                 title=_first_clean(fields, ("title",)),
-                first_author=_bib_first_author(fields.get("author")),
+                # Edited books carry `editor` instead of `author`; citations name the editors.
+                first_author=_bib_first_author(fields.get("author") or fields.get("editor")),
                 year=_first_year(fields.get("year") or fields.get("date") or ""),
                 doi=_find_doi(doi_source.replace("\\_", "_")),
                 journal=_first_clean(fields, ("journal", "journaltitle", "booktitle")),

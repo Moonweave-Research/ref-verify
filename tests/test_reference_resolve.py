@@ -10,7 +10,8 @@ from urllib.error import HTTPError
 from urllib.parse import parse_qs, urlparse
 
 from ref_verify.cli import main
-from ref_verify.crossref import CrossrefClient
+from ref_verify.cache import ResponseCache
+from ref_verify.crossref import CrossrefClient, parse_crossref_work
 from ref_verify.models import PaperRecord
 from ref_verify.reference_parse import ReferenceEntry
 from ref_verify.reference_resolve import (
@@ -53,12 +54,16 @@ def _not_found(doi):
 
 
 class FakeCrossref:
-    def __init__(self, works=None, candidates=None, errors=None, search_error=None):
+    def __init__(self, works=None, candidates=None, errors=None, search_error=None, agencies=None):
         self.works = works or {}
         self.candidates = candidates or []
         self.errors = errors or {}
         self.search_error = search_error
+        self.agencies = agencies or {}
         self.queries = []
+
+    def registration_agency(self, doi):
+        return self.agencies.get(doi)
 
     def fetch_work(self, doi):
         if doi in self.errors:
@@ -158,14 +163,142 @@ class DoiReferenceTests(unittest.TestCase):
         self.assertEqual(result.verdict, "PASS")
         self.assertEqual(result.status, "VERIFIED")
 
-    def test_plain_text_doi_pointing_at_another_paper_is_not_passed(self):
+    def test_plain_text_doi_pointing_at_another_paper_is_a_mismatch(self):
         entry = _entry(doi=PELRINE_DOI, raw="Smith J. A study of imaginary results. 2021.")
 
         result = check_reference(entry, FakeCrossref(works={PELRINE_DOI: PELRINE}))
 
+        # Shown as a mismatch with the paper the DOI really names, not as "could not confirm".
+        self.assertEqual(result.verdict, "WARN")
+        self.assertEqual(result.status, "MISMATCH")
+        self.assertIsNone(result.error_code)
+        self.assertIn(f'"{PELRINE.title}" (Pelrine, 2000)', result.reason)
+
+    def test_plain_text_doi_swap_with_the_same_first_author_is_a_mismatch(self):
+        entry = _entry(
+            doi=PELRINE_DOI,
+            raw="Pelrine, R. (2001). Silicone actuators for underwater swimming robots. Soft Matter, 3, 1-9.",
+        )
+
+        result = check_reference(entry, FakeCrossref(works={PELRINE_DOI: PELRINE}))
+
+        self.assertEqual(result.status, "MISMATCH")
+        self.assertEqual(result.verdict, "WARN")
+
+    def test_markup_in_crossref_title_does_not_reject_the_reference(self):
+        record = parse_crossref_work(
+            {
+                "DOI": "10.1002/adma.201102306",
+                "title": ["Two\u2010Dimensional Nanocrystals Produced by Exfoliation of Ti <sub>3</sub> AlC <sub>2</sub>"],
+                "author": [{"family": "Naguib"}],
+                "published-print": {"date-parts": [[2011]]},
+            }
+        )
+        bib = _entry(doi=record.doi, title="Two-Dimensional Nanocrystals Produced by Exfoliation of Ti3AlC2",
+                     first_author="Naguib", year=2011)
+        text = _entry(doi=record.doi, raw="Naguib, M. et al. Two-Dimensional Nanocrystals Produced by Exfoliation of Ti3AlC2. Adv. Mater. 2011.")
+        client = FakeCrossref(works={record.doi: record})
+
+        self.assertEqual(record.title, "Two\u2010Dimensional Nanocrystals Produced by Exfoliation of Ti 3 AlC 2")
+        self.assertEqual(check_reference(bib, client).verdict, "PASS")
+        self.assertEqual(check_reference(text, client).verdict, "PASS")
+
+    def test_escaped_title_tags_are_removed(self):
+        record = parse_crossref_work(
+            {"DOI": "10.1117/12.349672", "title": ["&lt;title&gt;High-field electrostriction&lt;/title&gt;"]}
+        )
+
+        self.assertEqual(record.title, "High-field electrostriction")
+
+    def test_korean_title_and_hangul_author_match_crossref_original_title(self):
+        record = parse_crossref_work(
+            {
+                "DOI": "10.7317/pk.2012.36.4.455",
+                "title": ["Preparation of PNIPAM Hydrogel Containing Lipoic Acid"],
+                "original-title": ["리포익산을 함유한 PNIPAM 하이드로젤의 제조"],
+                "author": [{"family": "Yoon", "given": "Hye-Ri"}, {"family": "Lee", "given": "Jong-Hwi"}],
+                "published-print": {"date-parts": [[2012]]},
+            }
+        )
+        client = FakeCrossref(works={record.doi: record})
+        bib = _entry(doi=record.doi, title="리포익산을 함유한 PNIPAM 하이드로젤의 제조", first_author="윤혜리", year=2012)
+        text = _entry(
+            doi=record.doi,
+            year=2012,
+            raw="윤혜리, 이종휘, “리포익산을 함유한 PNIPAM 하이드로젤의 제조”, 폴리머, 36권, 4호, pp. 455–460, 2012.",
+        )
+
+        self.assertEqual(check_reference(bib, client).verdict, "PASS")
+        self.assertEqual(check_reference(text, client).verdict, "PASS")
+
+    def test_hangul_author_with_another_surname_is_not_passed(self):
+        record = PaperRecord(
+            doi="10.7317/pk.x", title="Hydrogel study", authors=["Yoon"], year=2012, abstract=None,
+            source="CrossRef", alt_titles=["하이드로젤 연구"],
+        )
+        client = FakeCrossref(works={record.doi: record})
+
+        bib = check_reference(_entry(doi=record.doi, title="하이드로젤 연구", first_author="김철수", year=2012), client)
+        text = check_reference(_entry(doi=record.doi, year=2012, raw="김철수, “하이드로젤 연구”, 폴리머, 2012."), client)
+
+        self.assertEqual(bib.verdict, "REJECT")
+        self.assertIn("reference: 김철수; CrossRef: Yoon", bib.reason)
+        self.assertEqual(text.verdict, "WARN")
+        self.assertEqual(text.status, "UNVERIFIED")
+        self.assertIn("first author (Yoon) was not found", text.reason)
+
+    def test_online_first_year_and_dropped_subtitle_still_pass(self):
+        record = parse_crossref_work(
+            {
+                "DOI": "10.1007/book",
+                "title": ["Electroactive Polymers for Robotic Applications"],
+                "editor": [{"family": "Kim", "given": "Kwang J."}],
+                "published-print": {"date-parts": [[2010, 1]]},
+                "published-online": {"date-parts": [[2009, 12]]},
+            }
+        )
+        entry = _entry(
+            doi=record.doi,
+            title="Electroactive Polymers for Robotic Applications: Artificial Muscles and Sensors",
+            first_author="Kim",
+            year=2009,
+        )
+
+        result = check_reference(entry, FakeCrossref(works={record.doi: record}))
+
+        self.assertEqual(record.alt_years, [2009])
+        self.assertEqual(result.verdict, "PASS")
+
+    def test_year_mismatch_reason_names_both_years(self):
+        entry = _entry(doi=PELRINE_DOI, title=PELRINE.title, first_author="Pelrine", year=2001)
+
+        result = check_reference(entry, FakeCrossref(works={PELRINE_DOI: PELRINE}))
+
+        self.assertEqual(result.reason, "DOI matches, but the year differs (reference: 2001; CrossRef: 2000).")
+
+    def test_title_mismatch_reason_shows_the_crossref_title(self):
+        entry = _entry(doi=PELRINE_DOI, title="A different title", first_author="Pelrine", year=2000)
+
+        result = check_reference(entry, FakeCrossref(works={PELRINE_DOI: PELRINE}))
+
+        self.assertIn(f'the title differs (CrossRef: "{PELRINE.title}")', result.reason)
+
+    def test_doi_registered_outside_crossref_is_unverified_not_rejected(self):
+        doi = "10.48550/arxiv.1706.03762"
+        client = FakeCrossref(agencies={doi: "DataCite"})
+
+        result = check_reference(_entry(doi=doi, title="Attention Is All You Need"), client)
+
         self.assertEqual(result.verdict, "WARN")
         self.assertEqual(result.status, "UNVERIFIED")
-        self.assertIsNone(result.error_code)
+        self.assertEqual(result.error_code, "DOI_NOT_IN_CROSSREF")
+        self.assertIn("registered with DataCite", result.reason)
+
+    def test_doi_unknown_to_every_registry_is_still_rejected(self):
+        result = check_reference(_entry(doi="10.9999/dead"), FakeCrossref(agencies={"10.9999/dead": None}))
+
+        self.assertEqual(result.verdict, "REJECT")
+        self.assertEqual(result.error_code, "DOI_NOT_FOUND")
 
     def test_plain_text_doi_with_other_first_author_is_not_passed(self):
         entry = _entry(
@@ -193,6 +326,33 @@ class DoiReferenceTests(unittest.TestCase):
 
 
 class SearchReferenceTests(unittest.TestCase):
+    def test_hangul_reference_resolves_through_original_title(self):
+        candidate = PaperRecord(
+            doi="10.7317/pk.2021.45.6.897",
+            title="Evaporative Crystallization System Based on Temperature-Responsive Hydrogel",
+            authors=["Kim", "Lee"],
+            year=2021,
+            abstract=None,
+            source="CrossRef",
+            alt_titles=["온도감응성 하이드로젤 기반 증발 결정화 시스템"],
+        )
+        entry = _entry(
+            year=2021,
+            raw="김호연, 이종휘, “온도감응성 하이드로젤 기반 증발 결정화 시스템”, 폴리머, 45권, 6호, pp. 897–903, 2021.",
+        )
+
+        result = check_reference(entry, FakeCrossref(candidates=[candidate]))
+
+        self.assertEqual(result.verdict, "PASS")
+        self.assertEqual(result.resolved_doi, candidate.doi)
+
+    def test_resolved_year_difference_names_both_years(self):
+        entry = _entry(title="Self-healing ionic gels", first_author="Müller", year=2020)
+
+        result = check_reference(entry, FakeCrossref(candidates=[GELS]))
+
+        self.assertIn("the year differs (reference: 2020; CrossRef: 2019)", result.reason)
+
     def test_title_match_resolves_and_passes(self):
         entry = _entry(title="Self-healing ionic gels", first_author="Müller", year=2019, journal="Soft Matter")
         client = FakeCrossref(candidates=[OTHER, GELS])
@@ -323,6 +483,64 @@ class SearchBibliographicTests(unittest.TestCase):
         self.assertIn("ref-verify/", request.get_header("User-agent"))
         self.assertEqual([record.doi for record in records], ["10.1039/gels", "10.1000/other"])
         self.assertEqual(records[0].year, 2019)
+
+
+class SearchPacingTests(unittest.TestCase):
+    def test_uncached_searches_are_spaced_and_cached_ones_are_not(self):
+        body = json.dumps({"message": {"items": []}})
+
+        class Response:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def read(self):
+                return body.encode("utf-8")
+
+        clock = [100.0]
+        sleeps = []
+
+        def sleep(seconds):
+            sleeps.append(round(seconds, 2))
+            clock[0] += seconds
+
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("REF_VERIFY_MAILTO", None)
+            client = CrossrefClient(timeout=1.0, cache=ResponseCache(Path(tmp), ttl_seconds=100))
+            with patch("ref_verify.crossref._last_search_started", [float("-inf")]), patch(
+                "ref_verify.crossref.time.monotonic", side_effect=lambda: clock[0]
+            ), patch("ref_verify.crossref.time.sleep", side_effect=sleep), patch(
+                "ref_verify.http.urlopen", side_effect=lambda *args, **kwargs: Response()
+            ):
+                client.search_bibliographic("first")
+                clock[0] += 0.25
+                client.search_bibliographic("second")
+                client.search_bibliographic("first")
+
+        self.assertEqual(sleeps, [0.75])
+
+
+class RegistrationAgencyTests(unittest.TestCase):
+    def test_reads_agency_from_doi_org(self):
+        body = json.dumps([{"DOI": "10.48550/arXiv.1706.03762", "RA": "DataCite"}])
+
+        class Response:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def read(self):
+                return body.encode("utf-8")
+
+        with patch("ref_verify.http.urlopen", return_value=Response()) as urlopen:
+            agency = CrossrefClient(timeout=1.0).registration_agency("10.48550/arXiv.1706.03762")
+
+        self.assertEqual(agency, "DataCite")
+        self.assertEqual(urlopen.call_args.args[0].full_url, "https://doi.org/ra/10.48550/arxiv.1706.03762")
 
 
 class OutputTests(unittest.TestCase):
