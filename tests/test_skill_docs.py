@@ -27,7 +27,8 @@ CHECK_CLAIM_ERROR_CODES = (
     "SOURCE_UNSUPPORTED",
     "PAPER_RETRACTED",
 )
-AGENT_USAGE_ERROR_CODES = CHECK_CLAIM_ERROR_CODES + ("ROW_CHECK_ERROR",)
+CHECK_BIB_ERROR_CODES = ("REFERENCE_RESOLVED", "REFERENCE_UNMATCHED", "DOI_NOT_IN_CROSSREF")
+AGENT_USAGE_ERROR_CODES = CHECK_CLAIM_ERROR_CODES + ("ROW_CHECK_ERROR",) + CHECK_BIB_ERROR_CODES
 
 
 class SkillDocsTests(unittest.TestCase):
@@ -72,9 +73,10 @@ class SkillDocsTests(unittest.TestCase):
         self.assertNotIn("CrossRef-abstract claim checks", skill)
         self.assertNotIn("CrossRef did not expose enough abstract evidence", skill)
         self.assertIn("CrossRef/OpenAlex/S2/Unpaywall/arXiv/PubMed", skill)
-        for code in CHECK_CLAIM_ERROR_CODES:
+        for code in CHECK_CLAIM_ERROR_CODES + CHECK_BIB_ERROR_CODES:
             with self.subTest(error_code=code):
                 self.assertIn(code, skill)
+        self.assertIn('PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli check-bib', skill)
 
     def test_skill_requires_source_depth_for_mechanism_claims(self):
         skill = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
@@ -117,9 +119,10 @@ class SkillDocsTests(unittest.TestCase):
         self.assertIn("Current `check-claim` error codes", readme)
         self.assertIn("CLAIM_NOT_EXPLICIT", readme)
         self.assertIn("SOURCE_TIMEOUT", readme)
-        for code in CHECK_CLAIM_ERROR_CODES:
+        for code in CHECK_CLAIM_ERROR_CODES + CHECK_BIB_ERROR_CODES:
             with self.subTest(error_code=code):
                 self.assertIn(code, readme)
+        self.assertIn("ref-verify check-bib", readme)
         self.assertIn("literal text claims", readme)
         self.assertIn("subject-matched percentage claims", readme)
         self.assertIn("simple unit/count claims", readme)
@@ -148,9 +151,10 @@ class SkillDocsTests(unittest.TestCase):
         self.assertIn("현재 `check-claim` error code", readme_ko)
         self.assertIn("CLAIM_NOT_EXPLICIT", readme_ko)
         self.assertIn("SOURCE_TIMEOUT", readme_ko)
-        for code in CHECK_CLAIM_ERROR_CODES:
+        for code in CHECK_CLAIM_ERROR_CODES + CHECK_BIB_ERROR_CODES:
             with self.subTest(error_code=code):
                 self.assertIn(code, readme_ko)
+        self.assertIn("ref-verify check-bib", readme_ko)
         self.assertIn("ref-verify verify-doi", readme_ko)
         self.assertIn("ref-verify check-claim", readme_ko)
         self.assertIn("README.ko.md", readme_ko)
@@ -199,6 +203,8 @@ class SkillDocsTests(unittest.TestCase):
             "CSV is supported for user-created files, but agents should prefer JSONL",
             "ROW_CHECK_ERROR",
             "failed > 0",
+            "ref-verify check-bib references.bib --json",
+            "never call it fabricated",
         )
 
         for phrase in required_phrases:
@@ -320,6 +326,7 @@ class SkillDocsTests(unittest.TestCase):
         commands = (
             [sys.executable, "-m", "ref_verify.cli", "verify-doi", "--help"],
             [sys.executable, "-m", "ref_verify.cli", "check-claim", "--help"],
+            [sys.executable, "-m", "ref_verify.cli", "check-bib", "--help"],
         )
 
         for command in commands:

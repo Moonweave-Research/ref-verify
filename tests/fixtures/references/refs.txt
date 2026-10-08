@@ -1,0 +1,5 @@
+References
+
+[1] Pelrine R, Kornbluh R, Pei Q, Joseph J. High-speed electrically actuated elastomers with strain greater than 100%. Science. 2000;287(5454):836-839. doi:10.1126/science.287.5454.836.
+[2] Smith J. A study of imaginary results. J. Imag. Res. 2021. https://doi.org/10.9999/dead.doi.
+[3] Müller J, García A. Self-healing ionic gels. Soft Matter (2019).

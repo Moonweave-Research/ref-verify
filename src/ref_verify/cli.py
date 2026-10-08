@@ -28,6 +28,13 @@ from ref_verify.doi_check import normalize_doi, verify_doi_metadata
 from ref_verify.models import CitationInput, ClaimSupportResult
 from ref_verify.openalex import OpenAlexClient
 from ref_verify.pubmed import PubMedClient
+from ref_verify.reference_parse import ReferenceEntry, ReferenceInputError, parse_reference_file
+from ref_verify.reference_resolve import (
+    ReferenceResult,
+    check_reference,
+    reference_payload,
+    render_reference_text,
+)
 from ref_verify.semantic_scholar import SemanticScholarClient
 
 T = TypeVar("T")
@@ -55,6 +62,8 @@ def main(
             return _check_claim(args, lookup_client, fallback_clients)
         if args.command == "check-file":
             return _check_file(args, lookup_client, fallback_clients)
+        if args.command == "check-bib":
+            return _check_bib(args, lookup_client)
     except KeyboardInterrupt:
         resume = " Finished lookups are cached, so rerunning the same command resumes quickly." if cache else ""
         print(f"\nInterrupted.{resume}", file=sys.stderr)
@@ -116,6 +125,25 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Rows checked in parallel (default 4); output keeps input order.",
     )
     check_file.add_argument("--json", action="store_true")
+
+    check_bib = subparsers.add_parser(
+        "check-bib",
+        help="Check a BibTeX, RIS, or plain-text reference list against CrossRef",
+        parents=[common],
+    )
+    check_bib.add_argument("path")
+    check_bib.add_argument(
+        "--format",
+        choices=("bib", "ris", "txt"),
+        help="Input format; default is inferred from .bib, .ris, .txt, or .md.",
+    )
+    check_bib.add_argument(
+        "--workers",
+        type=_positive_int,
+        default=4,
+        help="References checked in parallel (default 4); output keeps input order.",
+    )
+    check_bib.add_argument("--json", action="store_true")
 
     return parser
 
@@ -198,6 +226,26 @@ def _check_file(
         print(render_batch_text(results))
     summary = payload["summary"]
     return 0 if summary["total"] == summary["accept"] else 2
+
+
+def _check_bib(args: argparse.Namespace, client: CrossrefClient) -> int:
+    try:
+        entries = parse_reference_file(Path(args.path), args.format)
+    except ReferenceInputError as exc:
+        _emit({"error": str(exc)}, as_json=args.json)
+        return 1
+
+    def check_entry(entry: ReferenceEntry) -> ReferenceResult:
+        return check_reference(entry, client)
+
+    results = _run_parallel(check_entry, entries, args.workers, progress=_progress_label(args, "references"))
+    payload = reference_payload(results)
+    if args.json:
+        _emit(payload, as_json=True)
+    else:
+        print(render_reference_text(results))
+    summary = payload["summary"]
+    return 0 if summary["total"] == summary["pass"] else 2
 
 
 def _progress_label(args: argparse.Namespace, noun: str) -> str | None:

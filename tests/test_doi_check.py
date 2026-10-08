@@ -1,6 +1,6 @@
 import unittest
 
-from ref_verify.doi_check import normalize_doi, verify_doi_metadata
+from ref_verify.doi_check import normalize_doi, title_in_text, titles_match, verify_doi_metadata
 from ref_verify.models import CitationInput, PaperRecord
 
 
@@ -360,6 +360,27 @@ class DoiCheckTests(unittest.TestCase):
         self.assertEqual(result.verdict, "REJECT")
         self.assertEqual(result.mismatches, ["retracted"])
 
+
+
+class TitleMatchingTests(unittest.TestCase):
+    def test_title_in_text_matches_whole_words_only(self):
+        self.assertTrue(title_in_text("Ion gels", "Lee, A. (2020). Ion gels. Soft Matter."))
+        self.assertFalse(title_in_text("Ion gels", "Lee, A. (2020). Fusion gels. Soft Matter."))
+
+    def test_retracted_article_prefix_is_not_a_title_difference(self):
+        self.assertTrue(
+            titles_match(
+                "Room-temperature superconductivity in a carbonaceous sulfur hydride",
+                "RETRACTED ARTICLE: Room-temperature superconductivity in a carbonaceous sulfur hydride",
+            )
+        )
+
+    def test_subtitle_rule_needs_a_specific_main_title(self):
+        self.assertTrue(titles_match("Soft robotic grippers", "Soft robotic grippers: a review"))
+        self.assertFalse(titles_match("Soft robotics", "Soft robotics: a review"))
+        self.assertFalse(
+            titles_match("Ionic polymer-metal composites: II. Manufacturing", "Ionic polymer-metal composites: I. Fundamentals")
+        )
 
 if __name__ == "__main__":
     unittest.main()

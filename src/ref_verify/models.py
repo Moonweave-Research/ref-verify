@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from typing import Any
 
 
@@ -26,6 +26,10 @@ class PaperRecord:
     journal: str | None = None
     url: str | None = None
     retraction_doi: str | None = None
+    # Original-language title, a dropped subtitle, or the other of print/online years:
+    # a citation matching any of these still names this record.
+    alt_titles: list[str] = field(default_factory=list)
+    alt_years: list[int] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
