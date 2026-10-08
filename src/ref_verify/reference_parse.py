@@ -18,9 +18,14 @@ _SUFFIX_FORMATS: dict[str, ReferenceFormat] = {
     ".md": "txt",
     ".markdown": "txt",
 }
-_DOI_PATTERN = re.compile(r"10\.\d{4,9}/[^\s\"<>{}]+", re.IGNORECASE)
+# Old Wiley DOIs are SICIs with an angle-bracketed part ("...40:11<2004::aid-anie2004>3.0.co;2-5");
+# a bracketed run without spaces stays in the DOI, while a DOI wrapped as <...> ends at ">".
+_DOI_PATTERN = re.compile(r"10\.\d{4,9}/(?:[^\s\"<>{}]|<[^\s\"<>{}]*>)+", re.IGNORECASE)
 _YEAR_PATTERN = re.compile(r"\b(?:1[89]|20)\d{2}\b")
 _PARENTHESISED_YEAR_PATTERN = re.compile(r"\(((?:1[89]|20)\d{2})[a-z]?\)")
+# A publication year is followed by punctuation or the end ("2020;395", "2020.", "2020)"),
+# unlike a year inside a title ("infected with 2019 novel coronavirus").
+_CITATION_YEAR_PATTERN = re.compile(r"\b((?:1[89]|20)\d{2})[a-z]?(?=\s*(?:[;.,:)\]]|$))")
 
 
 class ReferenceInputError(ValueError):
@@ -131,6 +136,21 @@ _LATEX_LETTERS = {
     "L": "Ł",
     "i": "i",
     "j": "j",
+}
+
+
+_LATEX_GREEK = {
+    name: char
+    for names, chars in (
+        (
+            "alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu nu xi pi rho sigma tau "
+            "upsilon phi chi psi omega",
+            "αβγδεζηθικλμνξπρστυφχψω",
+        ),
+        ("varepsilon vartheta varpi varrho varsigma varphi", "εθπρςφ"),
+        ("Gamma Delta Theta Lambda Xi Pi Sigma Upsilon Phi Psi Omega", "ΓΔΘΛΞΠΣΥΦΨΩ"),
+    )
+    for name, char in zip(names.split(), chars)
 }
 
 
@@ -278,6 +298,13 @@ def _clean_latex(value: str) -> str:
         lambda match: unicodedata.normalize("NFC", match.group(2) + _LATEX_ACCENTS[match.group(1)]),
         text,
     )
+    text = re.sub(
+        r"\\(?:text)?(" + "|".join(_LATEX_GREEK) + r")(?![A-Za-z])\s*",
+        lambda match: _LATEX_GREEK[match.group(1)],
+        text,
+    )
+    # Math delimiters carry no text ("amyloid-$\beta$" is "amyloid-β"); "\$" stays a dollar sign.
+    text = re.sub(r"(?<!\\)\$", "", text)
     text = re.sub(r"\\([%&$#_{}])", r"\1", text)
     text = re.sub(r"\\[,;:! ]", " ", text)
     text = re.sub(r"\\[A-Za-z]+\*?\s*", "", text)
@@ -406,6 +433,9 @@ def _plain_text_year(text: str) -> int | None:
     parenthesised = _PARENTHESISED_YEAR_PATTERN.search(text)
     if parenthesised:
         return int(parenthesised.group(1))
+    cited = _CITATION_YEAR_PATTERN.search(text)
+    if cited:
+        return int(cited.group(1))
     return _first_year(text)
 
 

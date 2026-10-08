@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 import shutil
 import textwrap
+import time
 import unicodedata
 from dataclasses import dataclass, field
 from typing import Any, Protocol
@@ -19,6 +20,7 @@ from ref_verify.doi_check import (
     titles_match,
     verify_doi_metadata,
 )
+from ref_verify.http import retry_after_seconds as _retry_after_seconds
 from ref_verify.models import CitationInput, PaperRecord
 from ref_verify.reference_parse import ReferenceEntry
 
@@ -33,6 +35,9 @@ _MAX_SWAPPED_TITLE_OVERLAP = 0.5
 # Reference strings start with the author list, so the first author's family name should
 # appear among the first few name tokens ("Pelrine R", "R. Pelrine", "Ronald E. Pelrine").
 _FIRST_AUTHOR_TOKEN_WINDOW = 4
+_DEFAULT_RATE_LIMIT_PAUSE_SECONDS = 15.0
+_MAX_RATE_LIMIT_PAUSE_SECONDS = 60.0
+_sleep = time.sleep
 _HANGUL = re.compile(r"[\uac00-\ud7a3]")
 
 
@@ -76,9 +81,15 @@ class ReferenceResult:
 
 def check_reference(entry: ReferenceEntry, client: ReferenceClient) -> ReferenceResult:
     try:
-        if entry.doi:
-            return _check_doi_reference(entry, entry.doi, client)
-        return _resolve_reference(entry, client)
+        try:
+            return _check_once(entry, client)
+        except HTTPError as exc:
+            if exc.code != 429:
+                raise
+            # The HTTP layer gives up when CrossRef asks for a long pause; take that pause
+            # once for this reference instead of reporting it unchecked.
+            _sleep(_rate_limit_pause(exc))
+            return _check_once(entry, client)
     except Exception as exc:
         return ReferenceResult(
             entry=entry,
@@ -87,6 +98,19 @@ def check_reference(entry: ReferenceEntry, client: ReferenceClient) -> Reference
             reason=_check_error_reason(exc),
             error_code="ROW_CHECK_ERROR",
         )
+
+
+def _check_once(entry: ReferenceEntry, client: ReferenceClient) -> ReferenceResult:
+    if entry.doi:
+        return _check_doi_reference(entry, entry.doi, client)
+    return _resolve_reference(entry, client)
+
+
+def _rate_limit_pause(exc: HTTPError) -> float:
+    retry_after = _retry_after_seconds(exc)
+    if retry_after is None:
+        return _DEFAULT_RATE_LIMIT_PAUSE_SECONDS
+    return min(retry_after, _MAX_RATE_LIMIT_PAUSE_SECONDS)
 
 
 def _check_error_reason(exc: Exception) -> str:
@@ -230,9 +254,11 @@ def _differences(
 
 def _resolve_reference(entry: ReferenceEntry, client: ReferenceClient) -> ReferenceResult:
     query = _bibliographic_query(entry)
-    candidates = client.search_bibliographic(query, rows=3) if query else []
+    # Five rows, because review reports and notices about a well-known paper can fill the
+    # top three results ahead of the paper itself.
+    candidates = client.search_bibliographic(query, rows=5) if query else []
     for candidate in candidates:
-        if not _candidate_matches(entry, candidate):
+        if candidate.is_about_other_work or not _candidate_matches(entry, candidate):
             continue
         if candidate.retraction_doi:
             return _retracted(entry, candidate, resolved_doi=candidate.doi)

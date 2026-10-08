@@ -393,11 +393,14 @@ passes only when its text shows the CrossRef title and first author. A
 reference without a DOI is looked up with CrossRef bibliographic search and
 accepted only when the title matches and the year is within one. Matching
 accepts the print or the online-first year, a title with or without its
-subtitle, CrossRef's original-language title (for example the Korean title of
+subtitle or edition note, TeX math in BibTeX titles (`$\beta$` reads as β),
+CrossRef's original-language title (for example the Korean title of
 a *Polymer Korea* paper), and Hangul author names against CrossRef's
 romanized ones (윤 → Yoon/Yun). When a DOI is unknown to CrossRef, doi.org is
 asked which agency registered it, so arXiv, Zenodo, or KISTI DOIs are not
-reported as dead. The terminal output starts with a count line
+reported as dead. Search results that are about the paper rather than the
+paper itself (peer-review reports, Faculty Opinions recommendations,
+addenda and corrections) are skipped. The terminal output starts with a count line
 (`19 references: 11 PASS, 2 WARN, 5 REJECT, 1 UNVERIFIED`), lists one row per
 reference (citation key, or the start of the reference for a pasted list), puts
 the reason under every row that is not `PASS`, and ends with a one-paragraph

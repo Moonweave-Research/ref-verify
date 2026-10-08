@@ -173,8 +173,11 @@ def _titles_match(provided: str, fetched: str) -> bool:
     fetched = _strip_retraction_prefix(fetched)
     if _same_title(provided, fetched):
         return True
-    # A citation or a registry record may drop the subtitle ("Main title: Subtitle").
-    return _same_title(_main_title(provided), fetched) or _same_title(provided, _main_title(fetched))
+    # A citation or a registry record may drop a subtitle or an edition note ("Main title:
+    # Subtitle", "Title - Part two", "Title, Second Edition").
+    return any(_same_title(provided, prefix) for prefix in _title_prefixes(fetched)) or any(
+        _same_title(prefix, fetched) for prefix in _title_prefixes(provided)
+    )
 
 
 def _same_title(provided: str, fetched: str) -> bool:
@@ -184,12 +187,13 @@ def _same_title(provided: str, fetched: str) -> bool:
     return "".join(_title_tokens(provided)) == "".join(_title_tokens(fetched))
 
 
-def _main_title(title: str) -> str:
-    main, separator, _ = title.partition(":")
-    # A one- or two-word lead-in ("Review: ...") is too generic to stand for the paper.
-    if not separator or len(_title_tokens(main)) < 3:
-        return title
-    return main
+_TITLE_SEPARATOR = re.compile(r"\s*(?::|\s[-\u2013\u2014]|[.?!,](?=\s))\s")
+
+
+def _title_prefixes(title: str) -> list[str]:
+    # A one- or two-word lead-in ("Review: ...", "CP2K: ...") is too generic to stand for the paper.
+    prefixes = [title[: match.start()] for match in _TITLE_SEPARATOR.finditer(title)]
+    return [prefix for prefix in prefixes if len(_title_tokens(prefix)) >= 3]
 
 
 def _strip_retraction_prefix(title: str) -> str:
