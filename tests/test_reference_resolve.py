@@ -55,9 +55,14 @@ def _not_found(doi):
 
 
 class FakeCrossref:
-    def __init__(self, works=None, candidates=None, errors=None, search_error=None, agencies=None):
+    def __init__(
+        self, works=None, candidates=None, errors=None, search_error=None, agencies=None, filtered_candidates=None
+    ):
         self.works = works or {}
         self.candidates = candidates or []
+        # Returned by a search with author/year filters, like CrossRef's structured search.
+        self.filtered_candidates = filtered_candidates or []
+        self.filtered_queries = []
         self.errors = errors or {}
         self.search_error = search_error
         self.agencies = agencies or {}
@@ -73,7 +78,10 @@ class FakeCrossref:
             raise _not_found(doi)
         return self.works[doi]
 
-    def search_bibliographic(self, query, rows=3):
+    def search_bibliographic(self, query, rows=3, **filters):
+        if filters:
+            self.filtered_queries.append((query, filters))
+            return list(self.filtered_candidates)
         self.queries.append((query, rows))
         if self.search_error:
             raise self.search_error
@@ -467,6 +475,56 @@ class TitlelessCitationTests(unittest.TestCase):
         self.assertIn("no article title", resolved.reason)
         self.assertEqual((unmatched.status, unmatched.error_code), ("UNVERIFIED", "REFERENCE_UNMATCHED"))
 
+    def test_titleless_citation_missing_from_first_search_is_found_by_author_and_year(self):
+        riess = PaperRecord(
+            doi="10.1086/300499",
+            title="Observational Evidence from Supernovae for an Accelerating Universe and a Cosmological Constant",
+            authors=["Riess", "Filippenko"], year=1998, abstract=None, source="CrossRef",
+            journal="The Astronomical Journal", journal_abbreviations=["AJ"], volume="116", first_page="1009",
+        )
+        entry = _entry(year=1998, raw="A. G. Riess et al., Astron. J. 116, 1009 (1998).")
+        client = FakeCrossref(candidates=[OTHER], filtered_candidates=[OTHER, riess])
+
+        result = check_reference(entry, client)
+
+        self.assertEqual((result.verdict, result.resolved_doi), ("PASS", riess.doi))
+        # No bare year in the query text: it matches far too many records.
+        self.assertEqual(
+            client.filtered_queries,
+            [("Astron. J. 116, 1009", {"author": "Riess", "year_range": (1997, 1998)})],
+        )
+
+    def test_second_search_accepts_only_full_agreement_and_reports_retraction(self):
+        riess = PaperRecord(
+            doi="10.1086/300499", title="Observational Evidence", authors=["Riess"], year=1998, abstract=None,
+            source="CrossRef", journal="The Astronomical Journal", volume="116", first_page="1009",
+        )
+        retracted = PaperRecord(
+            doi="10.1000/retracted", title="Retracted letter", authors=["Lee"], year=2010, abstract=None,
+            source="CrossRef", journal="Physical Review Letters", volume="104", first_page="1",
+            retraction_doi="10.1000/notice",
+        )
+        titled = _entry(year=1998, raw="A. G. Riess et al., Supernovae prefer open universes. Astron. J. 116, 1009 (1998).")
+        wrong_volume = _entry(year=1998, raw="A. G. Riess et al., Astron. J. 117, 1009 (1998).")
+        withdrawn = _entry(year=2010, raw="J. Lee et al., Phys. Rev. Lett. 104, 1 (2010).")
+
+        titled_result = check_reference(titled, FakeCrossref(filtered_candidates=[riess]))
+        wrong_result = check_reference(wrong_volume, FakeCrossref(filtered_candidates=[riess]))
+        withdrawn_result = check_reference(withdrawn, FakeCrossref(filtered_candidates=[retracted]))
+
+        self.assertEqual(titled_result.error_code, "REFERENCE_UNMATCHED")
+        self.assertEqual(wrong_result.error_code, "REFERENCE_UNMATCHED")
+        self.assertEqual(withdrawn_result.error_code, "PAPER_RETRACTED")
+
+    def test_no_second_search_for_structured_entries_or_without_a_year(self):
+        bib = FakeCrossref()
+        no_year = FakeCrossref()
+
+        check_reference(_entry(title="Some title", first_author="Riess", year=1998), bib)
+        check_reference(_entry(raw="A. G. Riess et al., Astron. J. 116, 1009."), no_year)
+
+        self.assertEqual((bib.filtered_queries, no_year.filtered_queries), ([], []))
+
     def test_a_different_title_is_not_excused_as_titleless(self):
         # Right journal, volume, page, year, and author, but an invented title.
         entry = _entry(
@@ -730,6 +788,7 @@ class SearchBibliographicTests(unittest.TestCase):
         self.assertEqual(query["query.bibliographic"], ["Self-healing ionic gels 2019"])
         self.assertEqual(query["rows"], ["3"])
         self.assertEqual(query["mailto"], ["me@example.org"])
+        self.assertNotIn("filter", query)
         self.assertIn("ref-verify/", request.get_header("User-agent"))
         self.assertEqual([record.doi for record in records], ["10.1039/gels", "10.1000/other"])
         self.assertEqual(records[0].year, 2019)
@@ -770,6 +829,33 @@ class SearchPacingTests(unittest.TestCase):
                 client.search_bibliographic("first")
 
         self.assertEqual(sleeps, [0.75])
+
+
+class StructuredSearchTests(unittest.TestCase):
+    def test_author_and_year_range_become_crossref_parameters(self):
+        body = json.dumps({"message": {"items": []}})
+
+        class Response:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def read(self):
+                return body.encode("utf-8")
+
+        with patch("ref_verify.http.urlopen", return_value=Response()) as urlopen, patch(
+            "ref_verify.crossref._pace_search"
+        ):
+            CrossrefClient(timeout=1.0).search_bibliographic(
+                "Astron. J. 116, 1009", rows=5, author="Riess", year_range=(1997, 1998)
+            )
+
+        query = parse_qs(urlparse(urlopen.call_args.args[0].full_url).query)
+        self.assertEqual(query["query.author"], ["Riess"])
+        self.assertEqual(query["filter"], ["from-pub-date:1997,until-pub-date:1998"])
+        self.assertEqual(query["query.bibliographic"], ["Astron. J. 116, 1009"])
 
 
 class RegistrationAgencyTests(unittest.TestCase):

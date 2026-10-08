@@ -56,7 +56,14 @@ class ReferenceClient(Protocol):
     def fetch_work(self, doi: str) -> PaperRecord:
         ...
 
-    def search_bibliographic(self, query: str, rows: int = 3) -> list[PaperRecord]:
+    def search_bibliographic(
+        self,
+        query: str,
+        rows: int = 3,
+        *,
+        author: str | None = None,
+        year_range: tuple[int, int] | None = None,
+    ) -> list[PaperRecord]:
         ...
 
     def registration_agency(self, doi: str) -> str | None:
@@ -291,18 +298,7 @@ def _resolve_reference(entry: ReferenceEntry, client: ReferenceClient) -> Refere
             continue
         if not _candidate_matches(entry, candidate):
             if _titleless_differences(entry, candidate) == []:
-                return ReferenceResult(
-                    entry=entry,
-                    status="RESOLVED",
-                    verdict="PASS",
-                    reason=(
-                        f"Matched CrossRef record {candidate.doi} by bibliographic search; the reference has "
-                        f"no article title, so it was matched on {_titleless_fields(candidate)}."
-                    ),
-                    error_code="REFERENCE_RESOLVED",
-                    resolved_doi=candidate.doi,
-                    fetched=candidate,
-                )
+                return _titleless_resolved(entry, candidate)
             continue
         if candidate.retraction_doi:
             return _retracted(entry, candidate, resolved_doi=candidate.doi)
@@ -326,6 +322,16 @@ def _resolve_reference(entry: ReferenceEntry, client: ReferenceClient) -> Refere
             resolved_doi=candidate.doi,
             fetched=candidate,
         )
+    structured = _structured_query(entry)
+    if structured:
+        # A short title-less citation ("A. G. Riess et al., Astron. J. 116, 1009 (1998).") can
+        # rank below unrelated records with similar numbers; a second search by first author,
+        # journal, volume, and page within the cited year finds it. Only full field agreement
+        # is accepted from it.
+        query, author, year_range = structured
+        for candidate in client.search_bibliographic(query, rows=5, author=author, year_range=year_range):
+            if not candidate.is_about_other_work and _titleless_differences(entry, candidate) == []:
+                return _titleless_resolved(entry, candidate)
     return ReferenceResult(
         entry=entry,
         status="UNVERIFIED",
@@ -333,6 +339,40 @@ def _resolve_reference(entry: ReferenceEntry, client: ReferenceClient) -> Refere
         reason=UNMATCHED_REASON,
         error_code="REFERENCE_UNMATCHED",
     )
+
+
+def _titleless_resolved(entry: ReferenceEntry, candidate: PaperRecord) -> ReferenceResult:
+    if candidate.retraction_doi:
+        return _retracted(entry, candidate, resolved_doi=candidate.doi)
+    return ReferenceResult(
+        entry=entry,
+        status="RESOLVED",
+        verdict="PASS",
+        reason=(
+            f"Matched CrossRef record {candidate.doi} by bibliographic search; the reference has "
+            f"no article title, so it was matched on {_titleless_fields(candidate)}."
+        ),
+        error_code="REFERENCE_RESOLVED",
+        resolved_doi=candidate.doi,
+        fetched=candidate,
+    )
+
+
+def _structured_query(entry: ReferenceEntry) -> tuple[str, str, tuple[int, int]] | None:
+    # The first author goes to `query.author`, the rest of the citation without the year (a
+    # bare year matches far too many records) to `query.bibliographic`, and the year (or the
+    # year before, for online-first papers) to a publication-date filter.
+    if entry.title or entry.year is None:
+        return None
+    parts = _FIRST_AUTHOR_END.split(DOI_PATTERN.sub(" ", entry.raw), maxsplit=1)
+    names = re.findall(r"[^\W\d_]{2,}", parts[0])
+    if len(parts) < 2 or not names:
+        return None
+    rest = re.sub(r"\bet\.?\s*al\b\.?|\(?\b(?:1[89]|20)\d{2}[a-z]?\b\)?", " ", parts[1])
+    rest = " ".join(rest.split()).strip(" .,;")
+    if not rest:
+        return None
+    return rest, names[-1], (entry.year - 1, entry.year)
 
 
 def _bibliographic_query(entry: ReferenceEntry) -> str:

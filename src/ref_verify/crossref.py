@@ -46,8 +46,19 @@ class CrossrefClient:
             )
         return parse_crossref_work(payload["message"])
 
-    def search_bibliographic(self, query: str, rows: int = 3) -> list[PaperRecord]:
+    def search_bibliographic(
+        self,
+        query: str,
+        rows: int = 3,
+        *,
+        author: str | None = None,
+        year_range: tuple[int, int] | None = None,
+    ) -> list[PaperRecord]:
         params = {"query.bibliographic": query, "rows": str(rows)}
+        if author:
+            params["query.author"] = author
+        if year_range:
+            params["filter"] = f"from-pub-date:{year_range[0]},until-pub-date:{year_range[1]}"
         mailto = os.environ.get("REF_VERIFY_MAILTO")
         if mailto:
             params["mailto"] = mailto
