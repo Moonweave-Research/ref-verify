@@ -24,6 +24,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - `check-bib` reasons name what differs and the values (`the year differs (reference: 2009; CrossRef: 2010)`), and a plain-text reference whose DOI belongs to a paper it never mentions is shown as `MISMATCH` with that paper's title rather than "not enough text to confirm".
 - CrossRef searches are spaced one second apart and all CrossRef calls take turns (three at a time with `REF_VERIFY_MAILTO`), and `check-bib` shows `Checking references: N/M` on a terminal.
 - `--report <path.html|path.md>` on `check-bib` and `check-file` writes a self-contained HTML (inline CSS, no scripts, only `doi.org` links) or Markdown verdict report: counts per verdict that add up to the total, a plain-language legend of what each verdict asks the reader to do, a "Needs a look" table of every non-passing row ahead of a "Passed" table, a colour per verdict, reasons, and evidence. Any other extension, or a folder that does not exist, is rejected before lookups start.
+- A labelled reference benchmark (`benchmarks/references-holdout-v1.jsonl`, a held-out set frozen before any run, and `benchmarks/references-v1.jsonl`, the development set used while fixing the tool: real, fabricated, retracted, and CrossRef-unindexed references), a stdlib runner (`scripts/benchmark_references.py`) that checks it against live CrossRef with and without the HTTP cache, and a scorecard chart (`scripts/render_scorecard.py`) shown near the top of both READMEs. The benchmark needs the network and is not run in CI.
 
 ### Changed
 

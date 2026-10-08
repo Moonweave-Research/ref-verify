@@ -19,6 +19,42 @@ Cursor, Codex 같은 스킬 지원 에이전트가 초안에 참고문헌을 넣
 
 ---
 
+## 채점표
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Moonweave-Research/ref-verify/main/.github/assets/scorecard-dark.svg">
+  <img src="https://raw.githubusercontent.com/Moonweave-Research/ref-verify/main/.github/assets/scorecard-light.svg" alt="보류 세트 참고문헌 86개에 대한 check-bib 판정 막대 그래프: 진짜 80% 깨끗이 통과, 가짜 96% 잡음, 철회 100% 잡음, CrossRef 미등재 정상 문헌 10개 중 0개 REJECT." width="830">
+</picture>
+
+보류(held-out) 세트: 도구를 돌리기 전에 작성하고 커밋해 둔 참고문헌 86개이며, 개발 세트와 겹치는 논문이
+없습니다.
+
+| 측정 항목 (보류 세트) | 결과 | n | 95% 신뢰구간 |
+|---|---|---|---|
+| 진짜 논문을 깨끗이 통과시킨 비율 | **80%** | 40 | 65–90% |
+| 진짜 논문을 "확인 필요"(WARN)로 보낸 비율 | 20% | 40 | 10–35% |
+| 진짜 논문을 틀렸다고(REJECT) 판정한 비율 | 0% | 40 | 0–9% |
+| 가짜 참고문헌을 잡은 비율 (WARN 또는 REJECT) | **96%** | 26 | 81–99% |
+| 철회 논문을 `PAPER_RETRACTED`로 잡은 비율 | **100%** | 10 | 72–100% |
+| CrossRef에 없는 정상 문헌을 REJECT한 수 | 0/10 | 10 | 0–28% |
+
+- 가짜 유형별: 가짜 DOI 5/5 · DOI 없음 5/5 · DOI 바꿔치기 4/4 · 저자·연도 틀림 4/5 · 공개 보고 사례 7/7.
+- 통과하지 못한 진짜 논문 8개 중 7개는 논문 제목을 생략하는 물리·화학 인용 형식이라 CrossRef와
+  비교할 제목이 없었습니다.
+- 86개 전체 시간: 캐시 없이 79초(참고문헌당 중앙값 1.1초), 캐시 사용 시 0.1초.
+
+개발 세트(참고문헌 142개, [#27](https://github.com/Moonweave-Research/ref-verify/pull/27)에서 도구를 고칠 때
+사용했으므로 표본 내 점수): 진짜 66/66 통과(94–100%), 가짜 43/43 잡음, 철회 16/16 잡음,
+CrossRef 미등재 정상 문헌 17개 중 1개 REJECT.
+
+2026-10-08에 ref-verify 1.2.2(커밋 `01c7a37`)로 실제 CrossRef에 조회해 측정했습니다. 두 세트 모두 BibTeX, RIS,
+일반 텍스트 목록으로 `check-bib`에 넣었습니다. 측정하지 않은 것: 논문이 주장을 뒷받침하는지(작은 수치
+fixture 외), 한국어 몇 건을 제외한 영어 외 문헌, 본문. 놓친 항목은 결과 파일([보류](https://github.com/Moonweave-Research/ref-verify/blob/main/benchmarks/results/2026-10-08-01c7a37-holdout-v1.json),
+[개발](https://github.com/Moonweave-Research/ref-verify/blob/main/benchmarks/results/2026-10-08-01c7a37-v1.json))에 항목별로 있고, 데이터셋, 방법, 재실행 방법은
+[benchmarks/README.md](https://github.com/Moonweave-Research/ref-verify/blob/main/benchmarks/README.md)에 있습니다.
+
+---
+
 ## 스킬 설치
 
 ```bash

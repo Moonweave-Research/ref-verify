@@ -19,6 +19,44 @@ supports a specific claim, or audit references before submission. No server setu
 
 ---
 
+## Scorecard
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Moonweave-Research/ref-verify/main/.github/assets/scorecard-dark.svg">
+  <img src="https://raw.githubusercontent.com/Moonweave-Research/ref-verify/main/.github/assets/scorecard-light.svg" alt="Bar chart of check-bib verdicts on 86 held-out references: real 80% passed cleanly, fabricated 96% flagged, retracted 100% caught, 0 of 10 unindexed references rejected." width="830">
+</picture>
+
+Held-out set: 86 references written and committed before the tool was run on them, with no paper
+shared with the development set.
+
+| What was measured (held-out set) | Result | n | 95% CI |
+|---|---|---|---|
+| Real papers passed cleanly | **80%** | 40 | 65–90% |
+| Real papers sent for a manual check (WARN) | 20% | 40 | 10–35% |
+| Real papers wrongly rejected | 0% | 40 | 0–9% |
+| Fabricated references flagged (WARN or REJECT) | **96%** | 26 | 81–99% |
+| Retracted papers caught as `PAPER_RETRACTED` | **100%** | 10 | 72–100% |
+| Legitimate references missing from CrossRef that were rejected | 0 of 10 | 10 | 0–28% |
+
+- Fabricated, by type: invented DOI 5/5 · no DOI 5/5 · DOI swap 4/4 · wrong author/year 4/5 · publicly reported cases 7/7.
+- 7 of the 8 real papers that did not pass are cited in the physics/chemistry style that omits the
+  article title, which leaves nothing to compare against CrossRef.
+- Time for all 86 references: 79 s on a cold cache (1.1 s median per reference), 0.1 s cached.
+
+Development set (142 references, used while fixing the tool in
+[#27](https://github.com/Moonweave-Research/ref-verify/pull/27), so these are in-sample scores): real
+66/66 passed (94–100%), fabricated 43/43 flagged, retracted 16/16 caught, 1 of
+17 unindexed references rejected.
+
+Measured 2026-10-08 with ref-verify 1.2.2 (commit `01c7a37`) against live CrossRef, checking each set with
+`check-bib` as BibTeX, RIS, and plain-text lists. Not measured: whether a paper supports a claim
+(beyond a small numeric fixture), non-English literature beyond a few Korean items, and full text.
+Every miss is listed per item in the results files ([held-out](https://github.com/Moonweave-Research/ref-verify/blob/main/benchmarks/results/2026-10-08-01c7a37-holdout-v1.json),
+[development](https://github.com/Moonweave-Research/ref-verify/blob/main/benchmarks/results/2026-10-08-01c7a37-v1.json)); dataset, method, and how to rerun:
+[benchmarks/README.md](https://github.com/Moonweave-Research/ref-verify/blob/main/benchmarks/README.md).
+
+---
+
 ## Install the skill
 
 ```bash
