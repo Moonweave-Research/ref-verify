@@ -6,7 +6,7 @@ import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from unittest.mock import patch
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from urllib.parse import parse_qs, urlparse
 
 from ref_verify.cli import main
@@ -314,6 +314,17 @@ class DoiReferenceTests(unittest.TestCase):
         self.assertEqual(result.verdict, "WARN")
         self.assertEqual(result.status, "UNVERIFIED")
 
+    def test_rate_limit_and_offline_failures_say_what_to_do(self):
+        limited = HTTPError(url="https://api.crossref.org/works", code=429, msg="Too Many Requests", hdrs=None, fp=None)
+        offline = URLError("nodename nor servname provided")
+
+        rate_limited = check_reference(_entry(doi=PELRINE_DOI), FakeCrossref(errors={PELRINE_DOI: limited}))
+        unreachable = check_reference(_entry(doi=PELRINE_DOI), FakeCrossref(errors={PELRINE_DOI: offline}))
+
+        self.assertEqual(rate_limited.error_code, "ROW_CHECK_ERROR")
+        self.assertIn("Run the same command again in a minute", rate_limited.reason)
+        self.assertIn("could not reach CrossRef (nodename nor servname provided)", unreachable.reason)
+
     def test_lookup_failure_is_counted_as_failed(self):
         entry = _entry(doi=PELRINE_DOI)
         client = FakeCrossref(errors={PELRINE_DOI: RuntimeError("upstream failed")})
@@ -568,13 +579,34 @@ class OutputTests(unittest.TestCase):
             self.assertNotIn(word, dumped)
 
     def test_text_table_lists_every_reference(self):
-        text = render_reference_text(self.results)
+        text = render_reference_text(self.results, width=100)
 
-        self.assertIn("Summary: total=4 pass=2 warn=1 reject=1 unverified=1 failed=0", text)
+        self.assertTrue(text.startswith("4 references: 2 PASS, 0 WARN, 1 REJECT, 1 UNVERIFIED\n"))
         self.assertIn("VERDICT", text)
         self.assertIn("10.1039/gels (resolved)", text)
-        for key in ("a", "b", "c", "d"):
-            self.assertRegex(text, rf"\n(PASS|WARN|REJECT) +{key} ")
+        for label, key in (("PASS", "a"), ("PASS", "b"), ("UNVERIFIED", "c"), ("REJECT", "d")):
+            self.assertRegex(text, rf"\n{label} +{key} ")
+        self.assertIn("does not mean the reference is wrong", " ".join(text.split()))
+
+    def test_text_output_fits_a_100_column_terminal(self):
+        long_key = _entry(index=5, key="kornbluhHighfieldElectrostrictionElastomericPolymerDielectrics1999",
+                          doi="10.9999/dead")
+        pasted = _entry(index=6, key=None, raw="Keplinger, C., & Suo, Z. (2016). Self-healing ionic conductors. Nat. Mater.")
+        results = self.results + [check_reference(long_key, FakeCrossref()), check_reference(pasted, FakeCrossref())]
+
+        text = render_reference_text(results, width=100)
+
+        self.assertLessEqual(max(len(line) for line in text.splitlines()), 100)
+        # A pasted list has no keys, so the row shows the start of the reference itself.
+        self.assertIn("6. Keplinger, C., & Suo, Z. (2016).", text)
+        # PASS rows carry no reason line; others are followed by an indented reason.
+        self.assertNotIn("Provided citation metadata matches", text)
+        self.assertIn("\n            No matching CrossRef record was found", text)
+
+    def test_failed_rows_tell_the_reader_to_rerun(self):
+        failed = check_reference(_entry(doi=PELRINE_DOI), FakeCrossref(errors={PELRINE_DOI: RuntimeError("boom")}))
+
+        self.assertIn("(1 could not be checked; run the same command again)", render_reference_text([failed], width=100))
 
 
 class CheckBibCliTests(unittest.TestCase):
@@ -625,7 +657,7 @@ class CheckBibCliTests(unittest.TestCase):
             exit_code, output = self._run(["check-bib", str(path), "--format", "ris"], client)
 
         self.assertEqual(exit_code, 2)
-        self.assertIn("Summary: total=2", output)
+        self.assertIn("2 references:", output)
 
     def test_all_pass_exits_zero(self):
         client = FakeCrossref(candidates=[GELS])

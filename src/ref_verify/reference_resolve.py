@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import re
+import shutil
+import textwrap
+import unicodedata
 from dataclasses import dataclass, field
 from typing import Any, Protocol
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 
 from ref_verify.doi_check import (
     author_matches,
@@ -81,9 +84,20 @@ def check_reference(entry: ReferenceEntry, client: ReferenceClient) -> Reference
             entry=entry,
             status="UNVERIFIED",
             verdict="WARN",
-            reason=f"Reference could not be checked: {exc}",
+            reason=_check_error_reason(exc),
             error_code="ROW_CHECK_ERROR",
         )
+
+
+def _check_error_reason(exc: Exception) -> str:
+    if isinstance(exc, HTTPError) and exc.code == 429:
+        return (
+            "Not checked: CrossRef asked ref-verify to slow down (HTTP 429). Run the same command "
+            "again in a minute; references already checked are cached."
+        )
+    if isinstance(exc, URLError) and not isinstance(exc, HTTPError):
+        return f"Not checked: could not reach CrossRef ({exc.reason}). Check the internet connection and run again."
+    return f"Reference could not be checked: {exc}"
 
 
 def _check_doi_reference(entry: ReferenceEntry, doi: str, client: ReferenceClient) -> ReferenceResult:
@@ -328,9 +342,18 @@ def reference_payload(results: list[ReferenceResult]) -> dict[str, Any]:
     }
 
 
-def render_reference_text(results: list[ReferenceResult]) -> str:
+TEXT_LEGEND = (
+    "PASS: matches CrossRef. WARN: check the difference named under it. REJECT: dead DOI, "
+    "a different paper, or retracted. UNVERIFIED: could not be confirmed automatically; "
+    "that alone does not mean the reference is wrong."
+)
+_REFERENCE_COLUMN = 42
+
+
+def render_reference_text(results: list[ReferenceResult], width: int | None = None) -> str:
+    width = width or shutil.get_terminal_size((100, 24)).columns
     summary = summarize_references(results)
-    rows = [("VERDICT", "KEY", "DOI", "REASON")]
+    rows = []
     for result in results:
         if result.entry.doi:
             doi = result.entry.doi
@@ -338,9 +361,46 @@ def render_reference_text(results: list[ReferenceResult]) -> str:
             doi = f"{result.resolved_doi} (resolved)"
         else:
             doi = "-"
-        rows.append((result.verdict, result.entry.key or f"ref-{result.entry.index}", doi, result.reason))
-    widths = [max(len(row[column]) for row in rows) for column in range(3)]
-    lines = ["Summary: " + " ".join(f"{name}={count}" for name, count in summary.items()), ""]
-    for row in rows:
-        lines.append("  ".join(cell.ljust(width) for cell, width in zip(row[:3], widths)) + "  " + row[3])
+        # Same label as the report: a WARN that only means "could not confirm" reads apart
+        # from a WARN about a real difference.
+        label = "UNVERIFIED" if result.verdict == "WARN" and result.status == "UNVERIFIED" else result.verdict
+        rows.append((label, _reference_label(result.entry), doi, result))
+    label_width = max(len("VERDICT"), *(len(row[0]) for row in rows))
+    reference_width = min(_REFERENCE_COLUMN, max(_display_width("REFERENCE"), *(_display_width(row[1]) for row in rows)))
+    indent = " " * (label_width + 2)
+    # Counted by the label shown, so the numbers add up to the total (JSON `warn` also
+    # counts the UNVERIFIED rows).
+    counts = {label: sum(row[0] == label for row in rows) for label in ("PASS", "WARN", "REJECT", "UNVERIFIED")}
+    headline = f"{summary['total']} references: " + ", ".join(f"{count} {label}" for label, count in counts.items())
+    if summary["failed"]:
+        headline += f" ({summary['failed']} could not be checked; run the same command again)"
+    lines = [headline, ""]
+    lines.append(f"{'VERDICT'.ljust(label_width)}  {_fit('REFERENCE', reference_width)}  DOI")
+    for label, reference, doi, result in rows:
+        lines.append(f"{label.ljust(label_width)}  {_fit(reference, reference_width)}  {doi}")
+        # PASS reasons are boilerplate; everything else needs its reason to be acted on.
+        if result.verdict != "PASS":
+            lines.extend(textwrap.wrap(result.reason, width=max(width, 60), initial_indent=indent, subsequent_indent=indent))
+    lines.append("")
+    lines.extend(textwrap.wrap(TEXT_LEGEND, width=max(width, 60)))
     return "\n".join(lines)
+
+
+def _reference_label(entry: ReferenceEntry) -> str:
+    if entry.key and not entry.key.isdigit():
+        return entry.key
+    # Pasted lists have no citation keys, so show where the reference starts.
+    number = f"[{entry.key}]" if entry.key else f"{entry.index}."
+    return f"{number} {' '.join(entry.raw.split())}"
+
+
+def _display_width(text: str) -> int:
+    return sum(2 if unicodedata.east_asian_width(char) in ("W", "F") else 1 for char in text)
+
+
+def _fit(text: str, width: int) -> str:
+    if _display_width(text) > width:
+        while _display_width(text) > width - 1:
+            text = text[:-1]
+        text = text.rstrip() + "…"
+    return text + " " * (width - _display_width(text))

@@ -312,9 +312,13 @@ subtitle, CrossRef's original-language title (for example the Korean title of
 a *Polymer Korea* paper), and Hangul author names against CrossRef's
 romanized ones (윤 → Yoon/Yun). When a DOI is unknown to CrossRef, doi.org is
 asked which agency registered it, so arXiv, Zenodo, or KISTI DOIs are not
-reported as dead. The output is
-a table, or with `--json` an object with `summary` (`total`, `pass`, `warn`,
-`reject`, `unverified`, `failed`) and `results`. `check-bib` exits `0` only
+reported as dead. The terminal output starts with a count line
+(`19 references: 11 PASS, 2 WARN, 5 REJECT, 1 UNVERIFIED`), lists one row per
+reference (citation key, or the start of the reference for a pasted list), puts
+the reason under every row that is not `PASS`, and ends with a one-paragraph
+legend. With `--json` it is an object with `summary` (`total`, `pass`, `warn`,
+`reject`, `unverified`, `failed`; `warn` includes the `UNVERIFIED` rows) and
+`results`. `check-bib` exits `0` only
 when every reference is `PASS`.
 
 `check-bib` error codes:

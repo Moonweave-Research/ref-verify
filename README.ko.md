@@ -317,8 +317,11 @@ CrossRef 서지 검색으로 찾아 제목이 일치하고 연도 차이가 1년
 받아들입니다. 인쇄본 연도와 온라인 선공개 연도 모두, 부제를 뺀 제목, CrossRef에
 등록된 원어 제목(예: 『폴리머』 논문의 한글 제목), 한글 저자명과 CrossRef의 로마자
 표기(윤 → Yoon/Yun)를 같은 것으로 봅니다. CrossRef에 없는 DOI는 doi.org에 등록기관을
-물어보므로 arXiv, Zenodo, KISTI DOI를 없는 DOI로 판정하지 않습니다. 출력은 표이며, `--json`이면 `summary`(`total`, `pass`, `warn`,
-`reject`, `unverified`, `failed`)와 `results`를 담은 객체입니다. 모든 항목이
+물어보므로 arXiv, Zenodo, KISTI DOI를 없는 DOI로 판정하지 않습니다. 터미널 출력은
+`19 references: 11 PASS, 2 WARN, 5 REJECT, 1 UNVERIFIED` 같은 개수 줄로 시작하고,
+참고문헌마다 한 줄(인용 키, 붙여 넣은 목록이면 참고문헌 앞부분)을 보여 주며, `PASS`가
+아닌 줄 아래에는 이유를, 끝에는 판정 설명을 붙입니다. `--json`이면 `summary`(`total`, `pass`, `warn`,
+`reject`, `unverified`, `failed`; `warn`에는 `UNVERIFIED` 항목도 포함)와 `results`를 담은 객체입니다. 모든 항목이
 `PASS`일 때만 exit `0`입니다.
 
 `check-bib` error code:
