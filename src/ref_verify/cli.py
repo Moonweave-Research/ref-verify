@@ -3,8 +3,9 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Sequence
+from typing import Callable, Sequence, TypeVar
 from urllib.error import HTTPError
 
 from ref_verify.abstract_lookup import (
@@ -15,10 +16,12 @@ from ref_verify.abstract_lookup import (
 from ref_verify.batch import (
     BatchInputError,
     BatchRowResult,
+    ClaimInputRow,
     batch_payload,
     parse_claim_file,
     render_batch_text,
 )
+from ref_verify.cache import ResponseCache, default_cache
 from ref_verify.claim_check import check_claim_support, retracted_claim_result
 from ref_verify.crossref import CrossrefClient
 from ref_verify.doi_check import normalize_doi, verify_doi_metadata
@@ -26,6 +29,9 @@ from ref_verify.models import CitationInput, ClaimSupportResult
 from ref_verify.openalex import OpenAlexClient
 from ref_verify.pubmed import PubMedClient
 from ref_verify.semantic_scholar import SemanticScholarClient
+
+T = TypeVar("T")
+R = TypeVar("R")
 
 
 def main(
@@ -36,8 +42,11 @@ def main(
 ) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
-    lookup_client = client or CrossrefClient()
-    fallback_clients = list(abstract_clients) if abstract_clients is not None else _default_abstract_clients()
+    cache = None if args.no_cache else default_cache()
+    lookup_client = client or CrossrefClient(cache=cache)
+    fallback_clients = (
+        list(abstract_clients) if abstract_clients is not None else _default_abstract_clients(cache)
+    )
 
     try:
         if args.command == "verify-doi":
@@ -46,6 +55,10 @@ def main(
             return _check_claim(args, lookup_client, fallback_clients)
         if args.command == "check-file":
             return _check_file(args, lookup_client, fallback_clients)
+    except KeyboardInterrupt:
+        resume = " Finished lookups are cached, so rerunning the same command resumes quickly." if cache else ""
+        print(f"\nInterrupted.{resume}", file=sys.stderr)
+        return 130
     except Exception as exc:
         _emit({"error": str(exc)}, as_json=getattr(args, "json", False))
         return 1
@@ -59,16 +72,26 @@ def _build_parser() -> argparse.ArgumentParser:
         prog="ref-verify",
         description="Verify citation metadata and abstract-grounded claims.",
     )
+    no_cache_help = "Skip the on-disk HTTP response cache (same as REF_VERIFY_NO_CACHE=1)."
+    parser.add_argument("--no-cache", action="store_true", help=no_cache_help)
+    # Also accept the flag after the subcommand; SUPPRESS keeps the subparser from
+    # resetting a top-level --no-cache back to False.
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument("--no-cache", action="store_true", default=argparse.SUPPRESS, help=no_cache_help)
     subparsers = parser.add_subparsers(dest="command")
 
-    verify = subparsers.add_parser("verify-doi", help="Check DOI metadata")
+    verify = subparsers.add_parser("verify-doi", help="Check DOI metadata", parents=[common])
     verify.add_argument("doi")
     verify.add_argument("--title")
     verify.add_argument("--first-author")
     verify.add_argument("--year", type=int)
     verify.add_argument("--json", action="store_true")
 
-    claim = subparsers.add_parser("check-claim", help="Check a claim against a DOI abstract")
+    claim = subparsers.add_parser(
+        "check-claim",
+        help="Check a claim against a DOI abstract",
+        parents=[common],
+    )
     claim.add_argument("doi")
     claim.add_argument("--claim", required=True)
     claim.add_argument(
@@ -79,12 +102,32 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     claim.add_argument("--json", action="store_true")
 
-    check_file = subparsers.add_parser("check-file", help="Check claims from a JSONL or CSV file")
+    check_file = subparsers.add_parser(
+        "check-file",
+        help="Check claims from a JSONL or CSV file",
+        parents=[common],
+    )
     check_file.add_argument("path")
     check_file.add_argument("--format", choices=("jsonl", "csv"))
+    check_file.add_argument(
+        "--workers",
+        type=_positive_int,
+        default=4,
+        help="Rows checked in parallel (default 4); output keeps input order.",
+    )
     check_file.add_argument("--json", action="store_true")
 
     return parser
+
+
+def _positive_int(value: str) -> int:
+    try:
+        number = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"expected a positive integer, got {value!r}") from None
+    if number < 1:
+        raise argparse.ArgumentTypeError(f"expected a positive integer, got {value!r}")
+    return number
 
 
 def _verify_doi(args: argparse.Namespace, client: CrossrefClient) -> int:
@@ -140,13 +183,14 @@ def _check_file(
         _emit({"error": str(exc)}, as_json=args.json)
         return 1
 
-    results = []
-    for row in rows:
+    def check_row(row: ClaimInputRow) -> BatchRowResult:
         try:
             payload = _run_claim_check(row.doi, row.claim, row.source, client, fallback_clients)
         except Exception as exc:
             payload = _row_error_payload(row.claim, exc)
-        results.append(BatchRowResult(row=row, payload=payload))
+        return BatchRowResult(row=row, payload=payload)
+
+    results = _run_parallel(check_row, rows, args.workers, progress=_progress_label(args, "claims"))
     payload = batch_payload(results)
     if args.json:
         _emit(payload, as_json=True)
@@ -154,6 +198,39 @@ def _check_file(
         print(render_batch_text(results))
     summary = payload["summary"]
     return 0 if summary["total"] == summary["accept"] else 2
+
+
+def _progress_label(args: argparse.Namespace, noun: str) -> str | None:
+    # Progress goes to stderr and only to a terminal, so JSON and piped output stay clean.
+    if args.json or not sys.stderr.isatty():
+        return None
+    return f"Checking {noun}"
+
+
+def _run_parallel(
+    function: Callable[[T], R],
+    items: Sequence[T],
+    workers: int,
+    *,
+    progress: str | None = None,
+) -> list[R]:
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        futures = [executor.submit(function, item) for item in items]
+        try:
+            if progress:
+                sys.stderr.write(f"{progress}: 0/{len(futures)}")
+                sys.stderr.flush()
+                for done, _ in enumerate(as_completed(futures), start=1):
+                    sys.stderr.write(f"\r{progress}: {done}/{len(futures)}")
+                    sys.stderr.flush()
+                sys.stderr.write("\r\033[K")
+                sys.stderr.flush()
+            return [future.result() for future in futures]
+        except BaseException:
+            # Without this, Ctrl-C would wait for every queued item before exiting.
+            for future in futures:
+                future.cancel()
+            raise
 
 
 def _run_claim_check(
@@ -251,8 +328,8 @@ def _claim_error_code(result: ClaimSupportResult) -> str:
     return "CLAIM_NOT_EXPLICIT"
 
 
-def _default_abstract_clients() -> list[AbstractSourceClient]:
-    return [OpenAlexClient(), SemanticScholarClient(), PubMedClient()]
+def _default_abstract_clients(cache: ResponseCache | None = None) -> list[AbstractSourceClient]:
+    return [OpenAlexClient(cache=cache), SemanticScholarClient(cache=cache), PubMedClient(cache=cache)]
 
 
 def _select_abstract_clients(

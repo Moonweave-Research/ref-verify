@@ -1,24 +1,23 @@
 from __future__ import annotations
 
-import json
 import re
 import xml.etree.ElementTree as ET
-from typing import Any
 from urllib.error import HTTPError
 from urllib.parse import urlencode
-from urllib.request import Request, urlopen
 
-from ref_verify import __version__
 from ref_verify.abstract_lookup import AbstractSourceError
+from ref_verify.cache import ResponseCache
 from ref_verify.doi_check import normalize_doi
+from ref_verify.http import USER_AGENT, fetch_json, fetch_text
 from ref_verify.models import PaperRecord
 
 
 class PubMedClient:
     source_name = "pubmed"
 
-    def __init__(self, timeout: float = 20.0) -> None:
+    def __init__(self, timeout: float = 20.0, *, cache: ResponseCache | None = None) -> None:
         self.timeout = timeout
+        self.cache = cache
 
     def fetch_record(self, doi: str) -> PaperRecord | None:
         normalized = normalize_doi(doi)
@@ -27,19 +26,14 @@ class PubMedClient:
             raise AbstractSourceError("NOT_FOUND", "PubMed had no record for the DOI.")
         if len(pmids) != 1:
             raise AbstractSourceError("UNSUPPORTED", "PubMed returned multiple records for the DOI.")
-        request = Request(
-            "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?"
-            + urlencode({"db": "pubmed", "id": pmids[0], "retmode": "xml"}),
-            headers={
-                "User-Agent": (
-                    f"ref-verify/{__version__} "
-                    "(+https://github.com/Moonweave-Research/ref-verify)"
-                )
-            },
-        )
         try:
-            with urlopen(request, timeout=self.timeout) as response:
-                xml_payload = response.read().decode("utf-8")
+            xml_payload = fetch_text(
+                "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?"
+                + urlencode({"db": "pubmed", "id": pmids[0], "retmode": "xml"}),
+                headers={"User-Agent": USER_AGENT},
+                timeout=self.timeout,
+                cache=self.cache,
+            )
         except HTTPError as exc:
             if exc.code == 404:
                 raise AbstractSourceError("NOT_FOUND", "PubMed had no record for the DOI.") from exc
@@ -47,7 +41,7 @@ class PubMedClient:
         return parse_pubmed_article(xml_payload)
 
     def _search_pmids(self, doi: str) -> list[str]:
-        request = Request(
+        payload = fetch_json(
             "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?"
             + urlencode(
                 {
@@ -57,15 +51,10 @@ class PubMedClient:
                     "retmax": "2",
                 }
             ),
-            headers={
-                "User-Agent": (
-                    f"ref-verify/{__version__} "
-                    "(+https://github.com/Moonweave-Research/ref-verify)"
-                )
-            },
+            headers={"User-Agent": USER_AGENT},
+            timeout=self.timeout,
+            cache=self.cache,
         )
-        with urlopen(request, timeout=self.timeout) as response:
-            payload = json.loads(response.read().decode("utf-8"))
         ids = payload.get("esearchresult", {}).get("idlist", [])
         return [str(value) for value in ids if str(value).strip()]
 
