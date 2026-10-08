@@ -236,8 +236,8 @@ class SkillDocsTests(unittest.TestCase):
             encoding="utf-8"
         )
 
-        self.assertIn('version = "1.2.2"', pyproject)
-        self.assertIn('__version__ = "1.2.2"', init)
+        self.assertIn('version = "1.3.0"', pyproject)
+        self.assertIn('__version__ = "1.3.0"', init)
 
     def test_skill_runs_bundled_engine_by_absolute_path(self):
         # npx skills add copies src/ next to SKILL.md but installs no console script, and the
@@ -248,7 +248,7 @@ class SkillDocsTests(unittest.TestCase):
         self.assertIn('PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli --help', skill)
         self.assertIn('PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli verify-doi', skill)
         self.assertIn('PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli check-claim', skill)
-        self.assertInOrder(skill, ("$SKILL_DIR/src", "ref-verify --help", "uvx --from 'ref-verify>=1.2.1'"))
+        self.assertInOrder(skill, ("$SKILL_DIR/src", "ref-verify --help", "uvx --from 'ref-verify>=1.3.0'"))
 
     def test_bundled_engine_runs_from_another_working_directory(self):
         env = os.environ.copy()

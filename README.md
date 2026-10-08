@@ -112,15 +112,14 @@ references.bib with ref-verify".
    - A Word or other manuscript: copy the reference list into a plain-text
      editor and save it as `references.txt`. `[1]` or `1.` numbering and
      wrapped lines are fine. `.docx` and `.pdf` files are not read directly.
-2. Install (Python 3.10 or newer). PyPI 1.2.2 does not have `check-bib` yet,
-   so install from GitHub:
+2. Install (Python 3.10 or newer):
 
    ```bash
-   pipx install "git+https://github.com/Moonweave-Research/ref-verify"
+   pipx install ref-verify
    ```
 
    With `uv`, skip the install:
-   `uvx --from "git+https://github.com/Moonweave-Research/ref-verify" ref-verify check-bib references.bib`.
+   `uvx ref-verify check-bib references.bib`.
 
 3. Run:
 
