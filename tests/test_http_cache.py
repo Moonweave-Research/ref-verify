@@ -2,6 +2,8 @@ import io
 import json
 import os
 import tempfile
+import threading
+import time
 import unittest
 from contextlib import redirect_stdout
 from email.message import Message
@@ -276,6 +278,34 @@ class ClientRoutingTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertEqual(second.title, "Cached paper")
         self.assertEqual(urlopen.call_count, 1)
+
+    def test_crossref_requests_take_turns_across_threads(self):
+        # CrossRef's public pool rejects concurrent requests with 429, so parallel
+        # workers must not overlap their CrossRef calls.
+        active = 0
+        peak = 0
+        lock = threading.Lock()
+
+        def fake_fetch_json(url, **kwargs):
+            nonlocal active, peak
+            with lock:
+                active += 1
+                peak = max(peak, active)
+            time.sleep(0.02)
+            with lock:
+                active -= 1
+            return json.loads(CROSSREF_BODY)
+
+        client = CrossrefClient(timeout=1.0)
+        with patch("ref_verify.crossref.fetch_json", side_effect=fake_fetch_json) as fetch:
+            threads = [threading.Thread(target=client.fetch_work, args=("10.1000/example",)) for _ in range(4)]
+            for thread in threads:
+                thread.start()
+            for thread in threads:
+                thread.join()
+
+        self.assertEqual(fetch.call_count, 4)
+        self.assertEqual(peak, 1)
 
     def test_openalex_cached_404_still_reports_not_found(self):
         client = OpenAlexClient(timeout=1.0, mailto="test@example.org", cache=self.cache)

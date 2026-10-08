@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import html
 import re
+import threading
 from typing import Any
 from urllib.parse import quote
 
@@ -9,6 +10,10 @@ from ref_verify.cache import ResponseCache
 from ref_verify.doi_check import normalize_doi
 from ref_verify.http import USER_AGENT, fetch_json
 from ref_verify.models import PaperRecord
+
+# CrossRef's public pool answers one request at a time per client (x-concurrency-limit: 1)
+# and returns 429 to the rest, so parallel workers take turns here.
+_REQUEST_SLOT = threading.Semaphore(1)
 
 
 class CrossrefClient:
@@ -18,12 +23,13 @@ class CrossrefClient:
 
     def fetch_work(self, doi: str) -> PaperRecord:
         encoded_doi = quote(normalize_doi(doi), safe="")
-        payload = fetch_json(
-            f"https://api.crossref.org/works/{encoded_doi}",
-            headers={"User-Agent": USER_AGENT},
-            timeout=self.timeout,
-            cache=self.cache,
-        )
+        with _REQUEST_SLOT:
+            payload = fetch_json(
+                f"https://api.crossref.org/works/{encoded_doi}",
+                headers={"User-Agent": USER_AGENT},
+                timeout=self.timeout,
+                cache=self.cache,
+            )
         return parse_crossref_work(payload["message"])
 
 
