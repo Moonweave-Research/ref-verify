@@ -46,6 +46,8 @@ _CITATION_FILLER = {
     "al", "and", "et", "vol", "no", "pp", "doi", "https", "http", "org", "dx", "art", "article",
     "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "sept", "oct", "nov", "dec",
 }
+# More words than this before the volume number are a title plus journal, not a journal alone.
+_MAX_TITLELESS_JOURNAL_WORDS = 5
 _JOURNAL_STOPWORDS = {"a", "an", "and", "de", "der", "des", "for", "in", "of", "on", "the", "und"}
 _DEFAULT_RATE_LIMIT_PAUSE_SECONDS = 15.0
 _MAX_RATE_LIMIT_PAUSE_SECONDS = 60.0
@@ -355,7 +357,7 @@ def _structured_query(entry: ReferenceEntry) -> tuple[str, str, tuple[int, int]]
     # The first author goes to `query.author`, the rest of the citation without the year (a
     # bare year matches far too many records) to `query.bibliographic`, and the year (or the
     # year before, for online-first papers) to a publication-date filter.
-    if entry.title or entry.year is None:
+    if entry.title or entry.year is None or not _looks_titleless(entry.raw):
         return None
     parts = _FIRST_AUTHOR_END.split(DOI_PATTERN.sub(" ", entry.raw), maxsplit=1)
     names = re.findall(r"[^\W\d_]{2,}", parts[0])
@@ -366,6 +368,32 @@ def _structured_query(entry: ReferenceEntry) -> tuple[str, str, tuple[int, int]]
     if not rest:
         return None
     return rest, names[-1], (entry.year - 1, entry.year)
+
+
+def _looks_titleless(text: str) -> bool:
+    # Without a record to compare against: the words before the volume number, once the
+    # authors are set aside, are only a journal name ("A. G. Riess et al., Astron. J. 116,
+    # 1009"), not a title plus journal. Authors are the first word and any word next to an
+    # initial ("Riess" in "A. G. Riess", "Cooper" in "L. N. Cooper", "Tang" in "Tang, C. W.").
+    text = re.sub(r"\bet\.?\s*al\b|\(?\b(?:1[89]|20)\d{2}[a-z]?\b\)?", " ", DOI_PATTERN.sub(" ", text))
+    tokens = re.findall(r"[^\W_]+", text)
+    numbers = [index for index, token in enumerate(tokens) if token.isdigit()]
+    # Volume and page (or article number) must both follow the journal.
+    if len(numbers) < 2:
+        return False
+    before = tokens[: numbers[0]]
+    initials = {index for index, token in enumerate(before) if token.isalpha() and token.isupper() and len(token) <= 2}
+    words = [
+        token
+        for index, token in enumerate(before)
+        if index not in initials
+        and index != 0
+        and not ({index - 1, index + 1} & initials)
+        and len(token) >= 3
+        and token.isalpha()
+        and token.casefold() not in _JOURNAL_STOPWORDS | _CITATION_FILLER
+    ]
+    return len(words) <= _MAX_TITLELESS_JOURNAL_WORDS
 
 
 def _bibliographic_query(entry: ReferenceEntry) -> str:

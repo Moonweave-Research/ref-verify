@@ -414,7 +414,8 @@ article title (`J. Bardeen, L. N. Cooper, and J. R. Schrieffer, Phys. Rev. 108,
 1175 (1957)`) is compared on journal (full name or abbreviation), volume, first
 page or article number, year, and first author; it passes when all of them
 agree, and otherwise the reason names each field that differs. Without a DOI,
-when the plain search finds nothing, a second CrossRef search by first author,
+when the plain search finds nothing and the citation looks title-less, a second
+CrossRef search by first author,
 the rest of the citation, and the cited year finds short citations such as
 `A. G. Riess et al., Astron. J. 116, 1009 (1998).`; the same full agreement is
 required. The first author

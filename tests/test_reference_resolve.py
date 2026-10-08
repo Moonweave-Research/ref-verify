@@ -16,6 +16,7 @@ from ref_verify.crossref import CrossrefClient, parse_crossref_work
 from ref_verify.models import PaperRecord
 from ref_verify.reference_parse import ReferenceEntry, parse_bibtex
 from ref_verify.reference_resolve import (
+    _looks_titleless,
     UNMATCHED_REASON,
     check_reference,
     reference_payload,
@@ -515,6 +516,29 @@ class TitlelessCitationTests(unittest.TestCase):
         self.assertEqual(titled_result.error_code, "REFERENCE_UNMATCHED")
         self.assertEqual(wrong_result.error_code, "REFERENCE_UNMATCHED")
         self.assertEqual(withdrawn_result.error_code, "PAPER_RETRACTED")
+
+    def test_second_search_runs_only_for_references_that_look_title_less(self):
+        titled = FakeCrossref()
+        entry = _entry(
+            year=2022,
+            raw="Smith J, Patel R, Nguyen T. Long-term cardiovascular outcomes of intermittent fasting in adults "
+            "with type 2 diabetes: a randomized controlled trial. Lancet Diabetes Endocrinol. 2022;10(4):255-264.",
+        )
+
+        result = check_reference(entry, titled)
+
+        self.assertEqual(result.error_code, "REFERENCE_UNMATCHED")
+        # A titled reference can never be accepted from the second search, so it is not sent.
+        self.assertEqual(titled.filtered_queries, [])
+        for raw in (
+            "A. G. Riess et al., Astron. J. 116, 1009 (1998).",
+            "J. Bardeen, L. N. Cooper, and J. R. Schrieffer, Phys. Rev. 108, 1175 (1957).",
+            "Tang, C. W.; VanSlyke, S. A. Applied Physics Letters 1987, 51, 913–915.",
+            "B. P. Nguyen and K. Kim, Journal of the Korean Physical Society 64, 1665 (2014).",
+        ):
+            with self.subTest(raw=raw):
+                self.assertTrue(_looks_titleless(raw))
+        self.assertFalse(_looks_titleless("A. G. Riess et al., Astron. J. (1998)."))
 
     def test_no_second_search_for_structured_entries_or_without_a_year(self):
         bib = FakeCrossref()
