@@ -2473,6 +2473,8 @@ class CliTests(unittest.TestCase):
     def test_check_file_shows_progress_on_a_terminal(self):
         stdout, stderr = self._run_check_file_with_stderr([], tty=True)
 
+        # The counter appears before the first (slow) lookup finishes.
+        self.assertTrue(stderr.startswith("Checking claims: 0/3"))
         self.assertIn("Checking claims: 3/3", stderr)
         self.assertNotIn("Checking claims", stdout)
 
