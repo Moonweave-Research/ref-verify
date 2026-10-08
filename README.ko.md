@@ -113,16 +113,14 @@ ref-verify로 점검해줘"라고 요청하면 됩니다.
    - Word·한글 원고: 참고문헌 목록을 복사해 메모장 등에 붙여 넣고
      `references.txt`로 저장합니다. `[1]`, `1.` 번호나 줄바꿈이 있어도 됩니다.
      `.docx`, `.hwp`, `.pdf`는 직접 읽지 못합니다.
-2. 설치합니다(Python 3.10 이상). PyPI의 1.2.2에는 아직 `check-bib`가 없으므로
-   GitHub에서 설치합니다.
+2. 설치합니다(Python 3.10 이상).
 
    ```bash
-   pipx install "git+https://github.com/Moonweave-Research/ref-verify"
+   pipx install ref-verify
    ```
 
-   `uv`가 있다면 설치 없이
-   `uvx --from "git+https://github.com/Moonweave-Research/ref-verify" ref-verify check-bib references.bib`
-   로 바로 실행해도 됩니다.
+   `uv`가 있다면 설치 없이 `uvx ref-verify check-bib references.bib`로
+   바로 실행해도 됩니다.
 
 3. 실행합니다.
 

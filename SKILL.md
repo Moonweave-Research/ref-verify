@@ -74,7 +74,7 @@ order, and keep the first command that prints help:
 3. **From PyPI through uv**:
 
    ```bash
-   uvx --from 'ref-verify>=1.2.1' ref-verify --help
+   uvx --from 'ref-verify>=1.3.0' ref-verify --help
    ```
 
 In the commands below, `ref-verify` stands for whichever engine resolved. An
