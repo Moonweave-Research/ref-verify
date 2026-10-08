@@ -1,23 +1,35 @@
 # Reference-checking benchmark
 
-A small, labelled set of references for measuring how `ref-verify check-bib` judges
-real, fabricated, retracted, and unindexed references against live CrossRef. The
-README scorecard is generated from the newest file in [`results/`](results/).
+Two labelled sets of references for measuring how `ref-verify check-bib` judges real,
+fabricated, retracted, and unindexed references against live CrossRef.
+
+| Set | Items | Role |
+|---|---|---|
+| `references-holdout-v1.jsonl` | 86 | **Held-out set.** Written and committed before the tool was run on it; no paper in it appears in the development set, and it uses other journals, fields, and citation styles (IEEE, Nature, Harvard, Chicago, biblatex, and physics/chemistry styles that omit the article title). The README headline numbers and chart come from this set. |
+| `references-v1.jsonl` | 142 | **Development set (used while fixing the tool).** Its misses drove the matching fixes in #27, so its scores are in-sample and are shown only as a secondary line. |
+
+Rules for the held-out set: it is frozen at the commit that added it, and items are
+not changed after seeing results, except to correct a gold label that was factually
+wrong; every such correction is logged under [Label corrections](#label-corrections)
+with its reason. A new held-out set (`references-holdout-v2.jsonl`) is the way to
+measure again after the tool is tuned against v1's misses.
 
 ## Files
 
-- `references-v1.jsonl`: the labelled set, one reference per line.
-- `results/<YYYY-MM-DD>-<short sha>.json`: one benchmark run: tool version, commit,
-  dataset hash, per-item verdicts and timings, and the aggregates the README quotes.
-- `../scripts/benchmark_references.py`: runs the set (standard library only).
+- `references-holdout-v1.jsonl`, `references-v1.jsonl`: the labelled sets, one reference per line.
+- `results/<YYYY-MM-DD>-<short sha>-<set>.json`: one benchmark run of one set: tool
+  version, commit, dataset hash, per-item verdicts and timings, and the aggregates the
+  README quotes. (`results/2026-10-08-34da678.json` is an earlier development-set run,
+  before #27, kept for comparison.)
+- `../scripts/benchmark_references.py`: runs a set (standard library only).
 - `../scripts/render_scorecard.py`: draws `.github/assets/scorecard-{light,dark}.svg`
-  from a results file.
+  from a held-out results file, with the development-set result as a footnote.
 
 ## Item fields
 
 | Field | Meaning |
 |---|---|
-| `id` | Stable item id (`real-NN`, `fab-<type>-NN`, `retracted-NN`, `notincr-NN`). |
+| `id` | Stable item id (`real-NN`, `fab-<type>-NN`, `retracted-NN`, `notincr-NN`; held-out ids start with `h-`). |
 | `category` | `REAL`, `FABRICATED`, `RETRACTED`, or `NOT_IN_CROSSREF`. |
 | `subtype` | Citation style for real and retracted items (`bib_doi`, `apa_nodoi`, `vancouver_doi`, `ris`, ...); hallucination type for fabricated items; kind of source for unindexed items. |
 | `expected` | `PASS`, `FLAG` (anything except a clean PASS), `REJECT` (`PAPER_RETRACTED`), or `NOT_REJECT`. |
@@ -81,6 +93,10 @@ counting the doi.org lookups for DOIs CrossRef lacks); the cached run sends none
 
 Live CrossRef data changes (new records, new retraction notices, edited titles), so a
 rerun on the same commit can differ slightly from a stored result.
+
+## Label corrections
+
+None so far for `references-holdout-v1.jsonl`.
 
 ## What this does not measure
 
