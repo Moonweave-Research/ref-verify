@@ -274,6 +274,7 @@ def _transliterate_greek_letters(value: str) -> str:
 titles_match = _titles_match
 author_matches = _author_matches
 author_tokens = _author_tokens
+looks_like_group_author = _looks_like_group_author
 
 
 def title_in_text(title: str, text: str) -> bool:

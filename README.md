@@ -408,7 +408,13 @@ romanized ones (윤 → Yoon/Yun). When a DOI is unknown to CrossRef, doi.org is
 asked which agency registered it, so arXiv, Zenodo, or KISTI DOIs are not
 reported as dead. Search results that are about the paper rather than the
 paper itself (peer-review reports, Faculty Opinions recommendations,
-addenda and corrections) are skipped. The terminal output starts with a count line
+addenda and corrections) are skipped. A citation in a style that omits the
+article title (`J. Bardeen, L. N. Cooper, and J. R. Schrieffer, Phys. Rev. 108,
+1175 (1957)`) is compared on journal (full name or abbreviation), volume, first
+page or article number, year, and first author; it passes when all of them
+agree, and otherwise the reason names each field that differs. The first author
+is read only from the first name in the list, so a reference that puts a
+co-author first does not pass. The terminal output starts with a count line
 (`19 references: 11 PASS, 2 WARN, 5 REJECT, 1 UNVERIFIED`), lists one row per
 reference (citation key, or the start of the reference for a pasted list), puts
 the reason under every row that is not `PASS`, and ends with a one-paragraph

@@ -34,6 +34,11 @@ class PaperRecord:
     # review, recommendation, or notice about another work rather than the work itself.
     work_type: str | None = None
     is_about_other_work: bool = False
+    # Where the paper sits in its journal, for citation styles that omit the article title
+    # ("Phys. Rev. 108, 1175 (1957)"); `first_page` is the article number when there is one.
+    journal_abbreviations: list[str] = field(default_factory=list)
+    volume: str | None = None
+    first_page: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
