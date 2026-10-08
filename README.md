@@ -19,6 +19,34 @@ supports a specific claim, or audit references before submission. No server setu
 
 ---
 
+## Scorecard
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Moonweave-Research/ref-verify/main/.github/assets/scorecard-dark.svg">
+  <img src="https://raw.githubusercontent.com/Moonweave-Research/ref-verify/main/.github/assets/scorecard-light.svg" alt="Bar chart of check-bib verdicts on 128 labelled references: fabricated 100% flagged, retracted 94% caught, real 86% passed cleanly, 1 of 10 unindexed references wrongly rejected." width="830">
+</picture>
+
+| What was measured | Result | n | 95% CI |
+|---|---|---|---|
+| Fabricated references flagged (WARN or REJECT) | **100%** | 37 | 91–100% |
+| Retracted papers caught as `PAPER_RETRACTED` | **94%** | 16 | 72–99% |
+| Real papers passed cleanly | **86%** | 65 | 76–93% |
+| Real papers sent for a manual check (WARN) | 8% | 65 | 3–17% |
+| Real papers wrongly rejected | 6% | 65 | 2–15% |
+| Legitimate references missing from CrossRef that were rejected | 1 of 10 | 10 | 2–40% |
+
+Fabricated, by type: invented DOI 8/8 · no DOI 8/8 · DOI swap 7/7 · wrong author/year 8/8 · publicly reported cases 6/6.
+Time for all 128 references: 47 s on a cold cache (0.8 s median per reference), 3.8 s cached.
+
+Measured 2026-10-08 with ref-verify 1.2.2 (commit `64e1fd2`) against live CrossRef: 128 labelled
+references (real papers confirmed in CrossRef, fabricated ones written the way language models get
+citations wrong, well-known retractions, and real work CrossRef does not index) checked with
+`check-bib` as BibTeX, RIS, and plain-text lists. Not measured: whether a paper supports a claim
+(beyond a small numeric fixture), non-English literature, and full text. Dataset, method, and how to
+rerun: [benchmarks/README.md](https://github.com/Moonweave-Research/ref-verify/blob/main/benchmarks/README.md).
+
+---
+
 ## Install the skill
 
 ```bash

@@ -19,6 +19,33 @@ Cursor, Codex 같은 스킬 지원 에이전트가 초안에 참고문헌을 넣
 
 ---
 
+## 채점표
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Moonweave-Research/ref-verify/main/.github/assets/scorecard-dark.svg">
+  <img src="https://raw.githubusercontent.com/Moonweave-Research/ref-verify/main/.github/assets/scorecard-light.svg" alt="참고문헌 128개에 대한 check-bib 판정 막대 그래프: 가짜 100% 잡음, 철회 94% 잡음, 진짜 86% 깨끗이 통과, CrossRef 미등재 정상 문헌 10개 중 1개 REJECT." width="830">
+</picture>
+
+| 측정 항목 | 결과 | n | 95% 신뢰구간 |
+|---|---|---|---|
+| 가짜 참고문헌을 잡은 비율 (WARN 또는 REJECT) | **100%** | 37 | 91–100% |
+| 철회 논문을 `PAPER_RETRACTED`로 잡은 비율 | **94%** | 16 | 72–99% |
+| 진짜 논문을 깨끗이 통과시킨 비율 | **86%** | 65 | 76–93% |
+| 진짜 논문을 "확인 필요"(WARN)로 보낸 비율 | 8% | 65 | 3–17% |
+| 진짜 논문을 틀렸다고(REJECT) 판정한 비율 | 6% | 65 | 2–15% |
+| CrossRef에 없는 정상 문헌을 REJECT한 수 | 1/10 | 10 | 2–40% |
+
+가짜 유형별: 가짜 DOI 8/8 · DOI 없음 8/8 · DOI 바꿔치기 7/7 · 저자·연도 틀림 8/8 · 공개 보고 사례 6/6.
+128개 전체 시간: 캐시 없이 47초(참고문헌당 중앙값 0.8초), 캐시 사용 시 3.8초.
+
+2026-10-08에 ref-verify 1.2.2(커밋 `64e1fd2`)로 실제 CrossRef에 조회해 측정했습니다. 라벨이 붙은
+참고문헌 128개(CrossRef에서 확인한 진짜 논문, 언어 모델이 인용을 틀리는 방식대로 만든 가짜,
+잘 알려진 철회 논문, CrossRef가 색인하지 않는 정상 문헌)를 BibTeX, RIS, 일반 텍스트 목록으로
+`check-bib`에 넣었습니다. 측정하지 않은 것: 논문이 주장을 뒷받침하는지(작은 수치 fixture 외),
+영어 외 문헌, 본문. 데이터셋, 방법, 재실행 방법: [benchmarks/README.md](https://github.com/Moonweave-Research/ref-verify/blob/main/benchmarks/README.md).
+
+---
+
 ## 스킬 설치
 
 ```bash

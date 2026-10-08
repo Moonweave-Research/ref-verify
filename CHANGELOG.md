@@ -15,6 +15,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - `check-file --workers N` (default 4) checks rows in parallel; output keeps input order, and Semantic Scholar requests stay one at a time.
 - `ref-verify check-bib <path>` checks a BibTeX, RIS, or plain-text/Markdown reference list. References with a DOI are compared with CrossRef metadata; references without one are looked up with CrossRef bibliographic search (`REFERENCE_RESOLVED` with `resolved_doi`, or `REFERENCE_UNMATCHED` / `UNVERIFIED` when nothing matches). Set `REF_VERIFY_MAILTO` to identify yourself to CrossRef search.
 - `--report <path.html|path.md>` on `check-bib` and `check-file` writes a self-contained HTML (inline CSS, no scripts, only `doi.org` links) or Markdown verdict report with summary counts, a colour per verdict, reasons, and evidence. Any other extension is rejected before lookups start.
+- A labelled reference benchmark (`benchmarks/references-v1.jsonl`: real, fabricated, retracted, and CrossRef-unindexed references), a stdlib runner (`scripts/benchmark_references.py`) that checks it against live CrossRef with and without the HTTP cache, and a scorecard chart (`scripts/render_scorecard.py`) shown near the top of both READMEs. The benchmark needs the network and is not run in CI.
 
 ### Changed
 
