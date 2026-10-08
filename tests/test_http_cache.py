@@ -11,11 +11,12 @@ from pathlib import Path
 from unittest.mock import patch
 from urllib.error import HTTPError
 
+from ref_verify import http as http_module
 from ref_verify.abstract_lookup import AbstractSourceError
 from ref_verify.cache import ResponseCache, cache_directory, default_cache
 from ref_verify.cli import main
 from ref_verify.crossref import CrossrefClient
-from ref_verify.http import fetch_json, fetch_text
+from ref_verify.http import UrllibBackend, fetch_json, fetch_text, set_backend
 from ref_verify.openalex import OpenAlexClient
 from ref_verify.pubmed import PubMedClient
 
@@ -248,6 +249,69 @@ class FetchTests(unittest.TestCase):
             body = fetch_text(URL, headers={}, timeout=1.0)
 
         self.assertEqual(body, "<xml/>")
+
+
+class _FakeBackend:
+    def __init__(self, outcomes):
+        self.outcomes = list(outcomes)
+        self.calls = []
+
+    def get(self, url, headers, timeout):
+        self.calls.append((url, headers, timeout))
+        outcome = self.outcomes.pop(0)
+        if isinstance(outcome, Exception):
+            raise outcome
+        return outcome
+
+
+class BackendTests(unittest.TestCase):
+    def setUp(self):
+        self.addCleanup(set_backend, None)
+        self.sleeps = []
+
+    def test_default_backend_sends_request_through_urlopen(self):
+        with patch("ref_verify.http.urlopen", side_effect=[_Response('{"ok": 1}')]) as urlopen:
+            payload = fetch_json(URL, headers={"User-Agent": "test"}, timeout=3.0)
+
+        self.assertEqual(payload, {"ok": 1})
+        request = urlopen.call_args.args[0]
+        self.assertEqual(request.full_url, URL)
+        self.assertEqual(request.get_header("User-agent"), "test")
+        self.assertEqual(urlopen.call_args.kwargs, {"timeout": 3.0})
+
+    def test_fake_backend_replaces_urlopen(self):
+        backend = _FakeBackend(['{"ok": 2}'])
+        set_backend(backend)
+        with patch("ref_verify.http.urlopen") as urlopen:
+            payload = fetch_json(URL, headers={"User-Agent": "test"}, timeout=3.0)
+
+        self.assertEqual(payload, {"ok": 2})
+        self.assertEqual(backend.calls, [(URL, {"User-Agent": "test"}, 3.0)])
+        urlopen.assert_not_called()
+
+    def test_fake_backend_gets_retries_and_negative_cache(self):
+        backend = _FakeBackend([_http_error(429, retry_after="2"), '{"ok": 3}', _http_error(404)])
+        set_backend(backend)
+        with tempfile.TemporaryDirectory() as tmp:
+            cache = ResponseCache(Path(tmp), ttl_seconds=100)
+            payload = fetch_json(URL, headers={}, timeout=1.0, sleep=self.sleeps.append)
+            for _ in range(2):
+                with self.assertRaises(HTTPError) as context:
+                    fetch_json(URL + "-gone", headers={}, timeout=1.0, cache=cache)
+                self.assertEqual(context.exception.code, 404)
+
+        self.assertEqual(payload, {"ok": 3})
+        self.assertEqual(self.sleeps, [2.0])
+        self.assertEqual(len(backend.calls), 3)
+
+    def test_set_backend_none_restores_urllib(self):
+        set_backend(_FakeBackend([]))
+        set_backend(None)
+        with patch("ref_verify.http.urlopen", side_effect=[_Response("{}")]) as urlopen:
+            fetch_json(URL, headers={}, timeout=1.0)
+
+        self.assertEqual(urlopen.call_count, 1)
+        self.assertIsInstance(http_module._backend, UrllibBackend)
 
 
 
