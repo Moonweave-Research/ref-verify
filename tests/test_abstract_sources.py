@@ -148,6 +148,25 @@ class AbstractSourceTests(unittest.TestCase):
         self.assertEqual(urlopen.call_count, 2)
         self.assertEqual(sleep.call_count, 1)
 
+    def test_semantic_scholar_finds_arxiv_doi_by_arxiv_identifier(self):
+        response = _JsonResponse(
+            {
+                "title": "Attention Is All You Need",
+                "authors": [{"name": "Ashish Vaswani"}],
+                "year": 2017,
+                "abstract": "Our model achieves 28.4 BLEU.",
+                "externalIds": {"ArXiv": "1706.03762", "DOI": "10.65215/2q58a426"},
+            }
+        )
+
+        with patch("ref_verify.http.urlopen", return_value=response) as urlopen:
+            record = SemanticScholarClient(timeout=1.0).fetch_record("10.48550/arXiv.1706.03762")
+
+        self.assertIn("/paper/ARXIV:1706.03762?", urlopen.call_args.args[0].full_url)
+        assert record is not None
+        # Bound to the requested arXiv DOI through the matching arXiv identifier.
+        self.assertEqual(record.doi, "10.48550/arxiv.1706.03762")
+
     def test_semantic_scholar_reports_429_as_rate_limited(self):
         error = HTTPError(
             url="https://example.test",
