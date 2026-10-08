@@ -410,7 +410,11 @@ BibTeX 제목의 TeX 수식(`$\beta$`는 β), CrossRef에
 표기(윤 → Yoon/Yun)를 같은 것으로 봅니다. CrossRef에 없는 DOI는 doi.org에 등록기관을
 물어보므로 arXiv, Zenodo, KISTI DOI를 없는 DOI로 판정하지 않습니다. 논문 자체가 아니라
 그 논문에 관한 기록(동료 심사 보고서, Faculty Opinions 추천, addendum·correction)은 검색
-결과에서 건너뜁니다. 터미널 출력은
+결과에서 건너뜁니다. 논문 제목을 쓰지 않는 물리·화학 인용 형식(`J. Bardeen, L. N. Cooper, and
+J. R. Schrieffer, Phys. Rev. 108, 1175 (1957)`)은 학술지(전체 이름 또는 약어), 권, 첫 쪽
+또는 논문 번호, 연도, 제1저자로 비교하며, 모두 맞으면 통과하고 다르면 어느 항목이 다른지
+이유에 적습니다. 제1저자는 저자 목록의 첫 이름에서만 읽으므로 공저자를 맨 앞에 쓴
+참고문헌은 통과하지 않습니다. 터미널 출력은
 `19 references: 11 PASS, 2 WARN, 5 REJECT, 1 UNVERIFIED` 같은 개수 줄로 시작하고,
 참고문헌마다 한 줄(인용 키, 붙여 넣은 목록이면 참고문헌 앞부분)을 보여 주며, `PASS`가
 아닌 줄 아래에는 이유를, 끝에는 판정 설명을 붙입니다. `--json`이면 `summary`(`total`, `pass`, `warn`,

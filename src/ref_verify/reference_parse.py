@@ -21,6 +21,7 @@ _SUFFIX_FORMATS: dict[str, ReferenceFormat] = {
 # Old Wiley DOIs are SICIs with an angle-bracketed part ("...40:11<2004::aid-anie2004>3.0.co;2-5");
 # a bracketed run without spaces stays in the DOI, while a DOI wrapped as <...> ends at ">".
 _DOI_PATTERN = re.compile(r"10\.\d{4,9}/(?:[^\s\"<>{}]|<[^\s\"<>{}]*>)+", re.IGNORECASE)
+DOI_PATTERN = _DOI_PATTERN
 _YEAR_PATTERN = re.compile(r"\b(?:1[89]|20)\d{2}\b")
 _PARENTHESISED_YEAR_PATTERN = re.compile(r"\(((?:1[89]|20)\d{2})[a-z]?\)")
 # A publication year is followed by punctuation or the end ("2020;395", "2020.", "2020)"),
