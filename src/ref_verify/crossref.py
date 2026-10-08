@@ -4,6 +4,7 @@ import html
 import os
 import re
 import threading
+import time
 from typing import Any
 from urllib.parse import quote, urlencode
 
@@ -13,8 +14,16 @@ from ref_verify.http import USER_AGENT, fetch_json
 from ref_verify.models import PaperRecord
 
 # CrossRef's public pool answers one request at a time per client (x-concurrency-limit: 1)
-# and returns 429 to the rest, so parallel workers take turns here.
+# and returns 429 to the rest, so parallel workers take turns here. Requests that carry a
+# `mailto` go to the "polite" pool, which allows three at a time.
 _REQUEST_SLOT = threading.Semaphore(1)
+_POLITE_REQUEST_SLOT = threading.Semaphore(3)
+# Searches are further limited to 1 per second (3 in the polite pool); spacing them out
+# avoids a 429 and its backoff, which cost more than the wait.
+_SEARCH_INTERVAL_SECONDS = 1.0
+_POLITE_SEARCH_INTERVAL_SECONDS = 0.34
+_SEARCH_PACING = threading.Lock()
+_last_search_started = [float("-inf")]
 
 
 class CrossrefClient:
@@ -24,9 +33,13 @@ class CrossrefClient:
 
     def fetch_work(self, doi: str) -> PaperRecord:
         encoded_doi = quote(normalize_doi(doi), safe="")
-        with _REQUEST_SLOT:
+        url = f"https://api.crossref.org/works/{encoded_doi}"
+        mailto = os.environ.get("REF_VERIFY_MAILTO")
+        if mailto:
+            url += "?" + urlencode({"mailto": mailto})
+        with _POLITE_REQUEST_SLOT if mailto else _REQUEST_SLOT:
             payload = fetch_json(
-                f"https://api.crossref.org/works/{encoded_doi}",
+                url,
                 headers={"User-Agent": USER_AGENT},
                 timeout=self.timeout,
                 cache=self.cache,
@@ -38,14 +51,26 @@ class CrossrefClient:
         mailto = os.environ.get("REF_VERIFY_MAILTO")
         if mailto:
             params["mailto"] = mailto
-        payload = fetch_json(
-            "https://api.crossref.org/works?" + urlencode(params),
-            headers={"User-Agent": USER_AGENT},
-            timeout=self.timeout,
-            cache=self.cache,
-        )
+        url = "https://api.crossref.org/works?" + urlencode(params)
+        with _POLITE_REQUEST_SLOT if mailto else _REQUEST_SLOT:
+            if self.cache is None or self.cache.get(url) is None:
+                _pace_search(_POLITE_SEARCH_INTERVAL_SECONDS if mailto else _SEARCH_INTERVAL_SECONDS)
+            payload = fetch_json(
+                url,
+                headers={"User-Agent": USER_AGENT},
+                timeout=self.timeout,
+                cache=self.cache,
+            )
         items = payload.get("message", {}).get("items", [])
         return [parse_crossref_work(item) for item in items if isinstance(item, dict)]
+
+
+def _pace_search(interval: float) -> None:
+    with _SEARCH_PACING:
+        wait = _last_search_started[0] + interval - time.monotonic()
+        if wait > 0:
+            time.sleep(wait)
+        _last_search_started[0] = time.monotonic()
 
 
 def parse_crossref_work(message: dict[str, Any]) -> PaperRecord:

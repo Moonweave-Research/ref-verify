@@ -3,7 +3,7 @@ import json
 import os
 import tempfile
 import unittest
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from unittest.mock import patch
 from urllib.error import HTTPError
@@ -427,6 +427,23 @@ class CheckBibCliTests(unittest.TestCase):
 
         self.assertEqual(exit_code, 1)
         self.assertIn("Unbalanced braces", json.loads(output)["error"])
+
+    def test_progress_counter_goes_to_terminal_stderr_only(self):
+        class TerminalStderr(io.StringIO):
+            def isatty(self):
+                return True
+
+        client = FakeCrossref(works={PELRINE_DOI: PELRINE}, candidates=[GELS])
+        stdout, stderr = io.StringIO(), TerminalStderr()
+        with redirect_stdout(stdout), redirect_stderr(stderr):
+            main(["check-bib", str(FIXTURES / "refs.bib")], client=client, abstract_clients=[])
+        json_stderr = TerminalStderr()
+        with redirect_stdout(io.StringIO()), redirect_stderr(json_stderr):
+            main(["check-bib", str(FIXTURES / "refs.bib"), "--json"], client=client, abstract_clients=[])
+
+        self.assertIn("Checking references: 3/3", stderr.getvalue())
+        self.assertNotIn("Checking references", stdout.getvalue())
+        self.assertEqual(json_stderr.getvalue(), "")
 
     def test_workers_keep_input_order(self):
         client = FakeCrossref(works={PELRINE_DOI: PELRINE}, candidates=[GELS])

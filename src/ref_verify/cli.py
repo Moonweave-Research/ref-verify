@@ -238,8 +238,7 @@ def _check_bib(args: argparse.Namespace, client: CrossrefClient) -> int:
     def check_entry(entry: ReferenceEntry) -> ReferenceResult:
         return check_reference(entry, client)
 
-    with ThreadPoolExecutor(max_workers=args.workers) as executor:
-        results = list(executor.map(check_entry, entries))
+    results = _run_parallel(check_entry, entries, args.workers, progress=_progress_label(args, "references"))
     payload = reference_payload(results)
     if args.json:
         _emit(payload, as_json=True)
