@@ -19,8 +19,9 @@ measure again after the tool is tuned against v1's misses.
 - `references-holdout-v1.jsonl`, `references-v1.jsonl`: the labelled sets, one reference per line.
 - `results/<YYYY-MM-DD>-<short sha>-<set>.json`: one benchmark run of one set: tool
   version, commit, dataset hash, per-item verdicts and timings, and the aggregates the
-  README quotes. (`results/2026-10-08-34da678.json` is an earlier development-set run,
-  before #27, kept for comparison.)
+  README quotes. Two earlier development-set runs keep the old
+  naming: `2026-10-08-34da678.json` (before #27) and `2026-10-08-7910447.json` (after #27,
+  before the held-out set existed).
 - `../scripts/benchmark_references.py`: runs a set (standard library only).
 - `../scripts/render_scorecard.py`: draws `.github/assets/scorecard-{light,dark}.svg`
   from a held-out results file, with the development-set result as a footnote.

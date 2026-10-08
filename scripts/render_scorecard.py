@@ -96,7 +96,7 @@ def _interval(aggregates: dict[str, Any], key: str) -> str:
     return f"95% CI {round(100 * low)}–{round(100 * high)}%"
 
 
-def _dev_summary(dev: dict[str, Any]) -> str:
+def _dev_summary(dev: dict[str, Any]) -> tuple[str, str]:
     a = dev["aggregates"]
     parts = (
         f"real {a['real_clean_pass']['k']}/{a['real_clean_pass']['n']} PASS",
@@ -104,7 +104,7 @@ def _dev_summary(dev: dict[str, Any]) -> str:
         f"retracted {a['retracted_rejected']['k']}/{a['retracted_rejected']['n']} caught",
         f"unindexed {a['unindexed_rejected']['k']}/{a['unindexed_rejected']['n']} rejected",
     )
-    return f"Development set ({len(dev['results'])} refs, used while fixing the tool): " + " · ".join(parts)
+    return f"Development set ({len(dev['results'])} refs, used while fixing the tool, in-sample): " + " · ".join(parts[:2]), " · ".join(parts[2:])
 
 
 def render_svg(results: dict[str, Any], theme_name: str, dev: dict[str, Any] | None = None) -> str:
@@ -112,7 +112,7 @@ def render_svg(results: dict[str, Any], theme_name: str, dev: dict[str, Any] | N
     aggregates = results["aggregates"]
     composition = aggregates["composition"]
     total = len(results["results"])
-    height = TOP + ROW_PITCH * len(ROWS) + (62 if dev else 40)
+    height = TOP + ROW_PITCH * len(ROWS) + (84 if dev else 40)
     parts: list[str] = []
 
     title = f"How check-bib judged {total} held-out references"
@@ -176,10 +176,11 @@ def render_svg(results: dict[str, Any], theme_name: str, dev: dict[str, Any] | N
         f"Whole set: {timing['first_run_seconds']:.0f} s on a cold cache, "
         f"{timing['cached_run_seconds']:.1f} s cached · {results['workers']} workers"
     )
-    footer_y = height - (38 if dev else 16)
+    footer_y = height - (60 if dev else 16)
     parts.append(_text(LABEL_X, footer_y, footer, fill=theme["muted"], size=13))
     if dev:
-        parts.append(_text(LABEL_X, footer_y + 22, _dev_summary(dev), fill=theme["muted"], size=13))
+        for offset, line in zip((22, 40), _dev_summary(dev)):
+            parts.append(_text(LABEL_X, footer_y + offset, line, fill=theme["muted"], size=13))
 
     description = "; ".join(
         f"{label}: {composition.get(category, {}).get('pass', 0)} pass, "
