@@ -107,7 +107,7 @@ def render_svg(results: dict[str, Any], theme_name: str) -> str:
     title = f"How check-bib judged {total} labelled references"
     subtitle = (
         f"ref-verify {results['tool_version']} · commit {results['commit']} · {results['date']} · "
-        "live CrossRef lookups"
+        "live CrossRef · in-sample"
     )
     parts.append(_text(LABEL_X, 34, title, fill=theme["ink"], size=20, weight=600))
     parts.append(_text(LABEL_X, 58, subtitle, fill=theme["ink2"], size=14))

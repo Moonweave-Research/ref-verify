@@ -23,27 +23,29 @@ supports a specific claim, or audit references before submission. No server setu
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Moonweave-Research/ref-verify/main/.github/assets/scorecard-dark.svg">
-  <img src="https://raw.githubusercontent.com/Moonweave-Research/ref-verify/main/.github/assets/scorecard-light.svg" alt="Bar chart of check-bib verdicts on 140 labelled references: fabricated 100% flagged, retracted 94% caught, real 92% passed cleanly, 0 of 15 unindexed references wrongly rejected." width="830">
+  <img src="https://raw.githubusercontent.com/Moonweave-Research/ref-verify/main/.github/assets/scorecard-light.svg" alt="Bar chart of check-bib verdicts on 142 labelled references: fabricated 100% flagged, retracted 100% caught, real 100% passed cleanly, 1 of 17 unindexed references wrongly rejected." width="830">
 </picture>
 
 | What was measured | Result | n | 95% CI |
 |---|---|---|---|
 | Fabricated references flagged (WARN or REJECT) | **100%** | 43 | 92–100% |
-| Retracted papers caught as `PAPER_RETRACTED` | **94%** | 16 | 72–99% |
-| Real papers passed cleanly | **92%** | 66 | 83–97% |
-| Real papers sent for a manual check (WARN) | 3% | 66 | 1–10% |
-| Real papers wrongly rejected | 5% | 66 | 2–13% |
-| Legitimate references missing from CrossRef that were rejected | 0 of 15 | 15 | 0–20% |
+| Retracted papers caught as `PAPER_RETRACTED` | **100%** | 16 | 81–100% |
+| Real papers passed cleanly | **100%** | 66 | 94–100% |
+| Real papers sent for a manual check (WARN) | 0% | 66 | 0–6% |
+| Real papers wrongly rejected | 0% | 66 | 0–6% |
+| Legitimate references missing from CrossRef that were rejected | 1 of 17 | 17 | 1–27% |
 
 Fabricated, by type: invented DOI 8/8 · no DOI 8/8 · DOI swap 7/7 · wrong author/year 8/8 · publicly reported cases 12/12.
-Time for all 140 references: 120 s on a cold cache (0.9 s median per reference), 0.2 s cached.
+Time for all 142 references: 132 s on a cold cache (1.0 s median per reference), 0.4 s cached.
 
-Measured 2026-10-08 with ref-verify 1.2.2 (commit `34da678`) against live CrossRef: 140 labelled
+Measured 2026-10-08 with ref-verify 1.2.2 (commit `7910447`) against live CrossRef: 142 labelled
 references (real papers confirmed in CrossRef, fabricated ones written the way language models get
 citations wrong, well-known retractions, and real work CrossRef does not index) checked with
-`check-bib` as BibTeX, RIS, and plain-text lists. Not measured: whether a paper supports a claim
+`check-bib` as BibTeX, RIS, and plain-text lists. These are in-sample numbers: the matching fixes in
+[#27](https://github.com/Moonweave-Research/ref-verify/pull/27) were written against misses this set
+exposed, so expect a fresh set of references to score lower. Not measured: whether a paper supports a claim
 (beyond a small numeric fixture), non-English literature beyond a few Korean items, and full text.
-Every miss is listed per item in the [results file](https://github.com/Moonweave-Research/ref-verify/blob/main/benchmarks/results/2026-10-08-34da678.json); dataset, method, and how to rerun:
+Every miss is listed per item in the [results file](https://github.com/Moonweave-Research/ref-verify/blob/main/benchmarks/results/2026-10-08-7910447.json); dataset, method, and how to rerun:
 [benchmarks/README.md](https://github.com/Moonweave-Research/ref-verify/blob/main/benchmarks/README.md).
 
 ---

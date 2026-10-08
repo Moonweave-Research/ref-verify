@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="830" height="414" viewBox="0 0 830 414" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
-<title id="t">How check-bib judged 140 labelled references</title>
-<desc id="d">Real papers: 61 pass, 2 warn, 3 reject; Fabricated references: 0 pass, 25 warn, 18 reject; Retracted papers: 0 pass, 1 warn, 15 reject; Real, not in CrossRef: 0 pass, 15 warn, 0 reject</desc>
+<title id="t">How check-bib judged 142 labelled references</title>
+<desc id="d">Real papers: 66 pass, 0 warn, 0 reject; Fabricated references: 0 pass, 25 warn, 18 reject; Retracted papers: 0 pass, 0 warn, 16 reject; Real, not in CrossRef: 0 pass, 16 warn, 1 reject</desc>
 <rect width="830" height="414" rx="8" fill="#fcfcfb"/>
-<text x="24.0" y="34.0" fill="#0b0b0b" font-size="20" font-weight="600" text-anchor="start">How check-bib judged 140 labelled references</text>
-<text x="24.0" y="58.0" fill="#52514e" font-size="14" font-weight="400" text-anchor="start">ref-verify 1.2.2 · commit 34da678 · 2026-10-08 · live CrossRef lookups</text>
+<text x="24.0" y="34.0" fill="#0b0b0b" font-size="20" font-weight="600" text-anchor="start">How check-bib judged 142 labelled references</text>
+<text x="24.0" y="58.0" fill="#52514e" font-size="14" font-weight="400" text-anchor="start">ref-verify 1.2.2 · commit 7910447 · 2026-10-08 · live CrossRef · in-sample</text>
 <rect x="24.0" y="78" width="12" height="12" rx="2" fill="#86b6ef"/>
 <text x="42.0" y="89.0" fill="#52514e" font-size="13" font-weight="400" text-anchor="start">PASS</text>
 <rect x="94.0" y="78" width="12" height="12" rx="2" fill="#2a78d6"/>
@@ -12,12 +12,10 @@
 <text x="294.0" y="89.0" fill="#52514e" font-size="13" font-weight="400" text-anchor="start">REJECT</text>
 <text x="24.0" y="130.0" fill="#0b0b0b" font-size="15" font-weight="600" text-anchor="start">Real papers</text>
 <text x="24.0" y="149.0" fill="#898781" font-size="13" font-weight="400" text-anchor="start">n = 66</text>
-<path d="M216.00,120.00 H535.79 Q535.79,120.00 535.79,120.00 V144.00 Q535.79,144.00 535.79,144.00 H216.00 Z" fill="#86b6ef"><title>Real papers: 61 of 66 PASS (92%)</title></path>
-<text x="375.9" y="137.0" fill="#0b0b0b" font-size="13" font-weight="600" text-anchor="middle">61</text>
-<path d="M537.79,120.00 H548.27 Q548.27,120.00 548.27,120.00 V144.00 Q548.27,144.00 548.27,144.00 H537.79 Z" fill="#2a78d6"><title>Real papers: 2 of 66 WARN (3%)</title></path>
-<path d="M550.27,120.00 H562.00 Q566.00,120.00 566.00,124.00 V140.00 Q566.00,144.00 562.00,144.00 H550.27 Z" fill="#104281"><title>Real papers: 3 of 66 REJECT (5%)</title></path>
-<text x="582.0" y="130.0" fill="#0b0b0b" font-size="15" font-weight="600" text-anchor="start">92% passed cleanly</text>
-<text x="582.0" y="149.0" fill="#898781" font-size="13" font-weight="400" text-anchor="start">PASS only · 95% CI 83–97%</text>
+<path d="M216.00,120.00 H562.00 Q566.00,120.00 566.00,124.00 V140.00 Q566.00,144.00 562.00,144.00 H216.00 Z" fill="#86b6ef"><title>Real papers: 66 of 66 PASS (100%)</title></path>
+<text x="391.0" y="137.0" fill="#0b0b0b" font-size="13" font-weight="600" text-anchor="middle">66</text>
+<text x="582.0" y="130.0" fill="#0b0b0b" font-size="15" font-weight="600" text-anchor="start">100% passed cleanly</text>
+<text x="582.0" y="149.0" fill="#898781" font-size="13" font-weight="400" text-anchor="start">PASS only · 95% CI 94–100%</text>
 <text x="24.0" y="194.0" fill="#0b0b0b" font-size="15" font-weight="600" text-anchor="start">Fabricated references</text>
 <text x="24.0" y="213.0" fill="#898781" font-size="13" font-weight="400" text-anchor="start">n = 43</text>
 <path d="M216.00,184.00 H418.33 Q418.33,184.00 418.33,184.00 V208.00 Q418.33,208.00 418.33,208.00 H216.00 Z" fill="#2a78d6"><title>Fabricated references: 25 of 43 WARN (58%)</title></path>
@@ -28,17 +26,17 @@
 <text x="582.0" y="213.0" fill="#898781" font-size="13" font-weight="400" text-anchor="start">WARN or REJECT · 95% CI 92–100%</text>
 <text x="24.0" y="258.0" fill="#0b0b0b" font-size="15" font-weight="600" text-anchor="start">Retracted papers</text>
 <text x="24.0" y="277.0" fill="#898781" font-size="13" font-weight="400" text-anchor="start">n = 16</text>
-<path d="M216.00,248.00 H237.75 Q237.75,248.00 237.75,248.00 V272.00 Q237.75,272.00 237.75,272.00 H216.00 Z" fill="#2a78d6"><title>Retracted papers: 1 of 16 WARN (6%)</title></path>
-<text x="226.9" y="265.0" fill="#ffffff" font-size="13" font-weight="600" text-anchor="middle">1</text>
-<path d="M239.75,248.00 H562.00 Q566.00,248.00 566.00,252.00 V268.00 Q566.00,272.00 562.00,272.00 H239.75 Z" fill="#104281"><title>Retracted papers: 15 of 16 REJECT (94%)</title></path>
-<text x="402.9" y="265.0" fill="#ffffff" font-size="13" font-weight="600" text-anchor="middle">15</text>
-<text x="582.0" y="258.0" fill="#0b0b0b" font-size="15" font-weight="600" text-anchor="start">94% caught as retracted</text>
-<text x="582.0" y="277.0" fill="#898781" font-size="13" font-weight="400" text-anchor="start">PAPER_RETRACTED · 95% CI 72–99%</text>
+<path d="M216.00,248.00 H562.00 Q566.00,248.00 566.00,252.00 V268.00 Q566.00,272.00 562.00,272.00 H216.00 Z" fill="#104281"><title>Retracted papers: 16 of 16 REJECT (100%)</title></path>
+<text x="391.0" y="265.0" fill="#ffffff" font-size="13" font-weight="600" text-anchor="middle">16</text>
+<text x="582.0" y="258.0" fill="#0b0b0b" font-size="15" font-weight="600" text-anchor="start">100% caught as retracted</text>
+<text x="582.0" y="277.0" fill="#898781" font-size="13" font-weight="400" text-anchor="start">PAPER_RETRACTED · 95% CI 81–100%</text>
 <text x="24.0" y="322.0" fill="#0b0b0b" font-size="15" font-weight="600" text-anchor="start">Real, not in CrossRef</text>
-<text x="24.0" y="341.0" fill="#898781" font-size="13" font-weight="400" text-anchor="start">n = 15</text>
-<path d="M216.00,312.00 H562.00 Q566.00,312.00 566.00,316.00 V332.00 Q566.00,336.00 562.00,336.00 H216.00 Z" fill="#2a78d6"><title>Real, not in CrossRef: 15 of 15 WARN (100%)</title></path>
-<text x="391.0" y="329.0" fill="#ffffff" font-size="13" font-weight="600" text-anchor="middle">15</text>
-<text x="582.0" y="322.0" fill="#0b0b0b" font-size="15" font-weight="600" text-anchor="start">0 of 15 wrongly rejected</text>
-<text x="582.0" y="341.0" fill="#898781" font-size="13" font-weight="400" text-anchor="start">should be WARN · 95% CI 0–20%</text>
-<text x="24.0" y="398.0" fill="#898781" font-size="13" font-weight="400" text-anchor="start">Whole set: 120 s on a cold cache, 0.2 s cached · 4 workers</text>
+<text x="24.0" y="341.0" fill="#898781" font-size="13" font-weight="400" text-anchor="start">n = 17</text>
+<path d="M216.00,312.00 H543.53 Q543.53,312.00 543.53,312.00 V336.00 Q543.53,336.00 543.53,336.00 H216.00 Z" fill="#2a78d6"><title>Real, not in CrossRef: 16 of 17 WARN (94%)</title></path>
+<text x="379.8" y="329.0" fill="#ffffff" font-size="13" font-weight="600" text-anchor="middle">16</text>
+<path d="M545.53,312.00 H562.00 Q566.00,312.00 566.00,316.00 V332.00 Q566.00,336.00 562.00,336.00 H545.53 Z" fill="#104281"><title>Real, not in CrossRef: 1 of 17 REJECT (6%)</title></path>
+<text x="555.8" y="329.0" fill="#ffffff" font-size="13" font-weight="600" text-anchor="middle">1</text>
+<text x="582.0" y="322.0" fill="#0b0b0b" font-size="15" font-weight="600" text-anchor="start">1 of 17 wrongly rejected</text>
+<text x="582.0" y="341.0" fill="#898781" font-size="13" font-weight="400" text-anchor="start">should be WARN · 95% CI 1–27%</text>
+<text x="24.0" y="398.0" fill="#898781" font-size="13" font-weight="400" text-anchor="start">Whole set: 132 s on a cold cache, 0.4 s cached · 4 workers</text>
 </svg>

@@ -84,6 +84,10 @@ rerun on the same commit can differ slightly from a stored result.
 
 ## What this does not measure
 
+- Performance on references the checker was not tuned on. Fixes for misses this set
+  exposed (#27) were developed against it, so the stored results are in-sample; a new,
+  held-out set is the honest next measurement.
+
 - Whether a paper supports a claim (`check-claim`); only reference existence and
   metadata are scored here.
 - Non-English literature beyond a handful of Korean items (journal papers, theses, and
