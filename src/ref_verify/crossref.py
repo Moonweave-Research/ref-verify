@@ -98,6 +98,26 @@ def _pace_search(interval: float) -> None:
         _last_search_started[0] = time.monotonic()
 
 
+def other_registration_agency(client: Any, doi: str) -> str | None:
+    # arXiv and Zenodo (DataCite), many Korean (KISTI) and Japanese (JaLC) DOIs are registered
+    # outside CrossRef, so a CrossRef 404 alone does not make them dead. Returns that agency,
+    # or None when doi.org names CrossRef, says the DOI does not exist, or cannot be reached.
+    try:
+        agency = client.registration_agency(doi)
+    except Exception:
+        return None
+    if agency and agency.casefold() != "crossref":
+        return agency
+    return None
+
+
+def not_in_crossref_reason(agency: str, doi: str) -> str:
+    return (
+        f"This DOI is registered with {agency}, not CrossRef, so its title and authors were not "
+        f"compared; open https://doi.org/{doi} to confirm it is this work."
+    )
+
+
 def parse_crossref_work(message: dict[str, Any]) -> PaperRecord:
     doi = str(message.get("DOI") or "")
     title = _clean_title(_first_string(message.get("title"))) or "[title missing]"
