@@ -144,14 +144,14 @@ Common routing:
 - `CLAIM_AMBIGUOUS`: numeric evidence exists, but binding is ambiguous.
 - `CLAIM_NOT_EXPLICIT`: abstract does not explicitly support the claim.
 - `NO_ABSTRACT`: no trusted DOI-bound abstract evidence was available.
-- `DOI_NOT_FOUND`: CrossRef has no record for the DOI (HTTP 404), or the selected source did not find a DOI-bound record.
+- `DOI_NOT_FOUND`: neither CrossRef nor doi.org knows the DOI, or the selected source did not find a DOI-bound record.
 - `PAPER_RETRACTED`: CrossRef lists a retraction notice for the DOI; the claim is rejected before any abstract is read.
 - `DOI_MISMATCH`: selected DOI-bound record did not match the requested DOI.
 - `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_RATE_LIMITED`, `SOURCE_UNSUPPORTED`: source lookup failed, timed out, was rate-limited, or could not be used.
 - `ROW_CHECK_ERROR`: one row could not be checked, but other rows may still have results.
 - `REFERENCE_RESOLVED` (`check-bib`): a reference without a DOI matched a CrossRef record; use `resolved_doi`.
 - `REFERENCE_UNMATCHED` (`check-bib`): no CrossRef record matched; unverified, not proven wrong.
-- `DOI_NOT_IN_CROSSREF` (`check-bib`): the DOI is registered outside CrossRef (DataCite, KISTI, JaLC); its metadata was not compared.
+- `DOI_NOT_IN_CROSSREF` (`verify-doi`, `check-claim`, `check-file`, `check-bib`): the DOI is registered outside CrossRef (DataCite, KISTI, JaLC); its metadata was not compared. Unverified, not dead; `check-claim` judges the claim if OpenAlex or Semantic Scholar has the abstract.
 
 ## Agent Must Not
 

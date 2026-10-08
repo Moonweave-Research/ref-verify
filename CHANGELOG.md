@@ -9,6 +9,11 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+### Fixed
+
+- `verify-doi`, `check-claim`, and `check-file` no longer report DataCite (arXiv, Zenodo), KISTI, or JaLC DOIs as dead. When CrossRef has no record they ask doi.org for the registration agency, as `check-bib` does: `verify-doi` returns `verdict: WARN`, `status: UNVERIFIED`, `error_code: DOI_NOT_IN_CROSSREF`; `check-claim` looks for the abstract in OpenAlex, Semantic Scholar, and PubMed and judges the claim if one has it, otherwise returns `UNVERIFIABLE` with `DOI_NOT_IN_CROSSREF`. A DOI doi.org does not know is still `REJECT` / `DOI_NOT_FOUND`.
+- Semantic Scholar looks up an arXiv DOI (`10.48550/arXiv.<id>`) by its arXiv identifier, which it resolves while the DOI itself returns 404, and binds the record to that DOI only when the arXiv identifiers match.
+
 ## [1.3.0] — 2026-10-08
 
 ### Added

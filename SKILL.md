@@ -119,7 +119,9 @@ Route the result:
 - `PASS`: report the metadata match, then continue Layer 4 DOI landing-page
   resolution and Layer 5 retraction checks when the selected mode requires them.
 - `WARN`: report the missing or weak metadata, then continue manual fallback for
-  the missing layers instead of silently accepting the reference.
+  the missing layers instead of silently accepting the reference. With
+  `DOI_NOT_IN_CROSSREF` the DOI is registered outside CrossRef (arXiv, Zenodo,
+  KISTI); verify title and authors at doi.org and never call the DOI dead.
 - `REJECT`: stop using that citation as verified; report the mismatch and ask
   for a corrected DOI or citation unless the user explicitly wants alternatives.
 
@@ -199,7 +201,7 @@ decide the next step:
 - `CLAIM_AMBIGUOUS`: numeric evidence or context exists, but binding is
   ambiguous.
 - `NO_ABSTRACT`: attempted DOI-bound sources did not provide abstract text.
-- `DOI_NOT_FOUND`: CrossRef has no record for the DOI (HTTP 404), or the selected source did not find a DOI-bound record.
+- `DOI_NOT_FOUND`: neither CrossRef nor doi.org knows the DOI, or the selected source did not find a DOI-bound record.
 - `PAPER_RETRACTED`: CrossRef lists a retraction notice for the DOI; the claim is rejected before any abstract is read.
 - `DOI_MISMATCH`: the primary or explicitly selected DOI-bound record did not
   match the requested DOI.
@@ -207,8 +209,10 @@ decide the next step:
   failed, timed out, was rate-limited, or could not be used.
 - `REFERENCE_RESOLVED`, `REFERENCE_UNMATCHED` (`check-bib` only): a reference
   without a DOI did or did not match a CrossRef record.
-- `DOI_NOT_IN_CROSSREF` (`check-bib` only): the DOI exists at another
-  registration agency, so it is unverified rather than dead.
+- `DOI_NOT_IN_CROSSREF` (`verify-doi`, `check-claim`, `check-file`, `check-bib`): the
+  DOI exists at another registration agency (DataCite, KISTI, JaLC), so it is
+  unverified rather than dead. `check-claim` still judges the claim when OpenAlex
+  or Semantic Scholar has the abstract; otherwise confirm the work at doi.org.
 
 The CLI does not replace Layer 4 DOI landing-page resolution or two-source
 existence checks, and it only catches retractions that CrossRef records as a
