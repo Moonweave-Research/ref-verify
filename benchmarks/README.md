@@ -45,6 +45,21 @@ and a FASEB abstract DOI aliased to its withdrawal notice), reported separately:
 four got `PAPER_RETRACTED`. Per-item results:
 `results/2026-10-09-8170e66-{holdout-v2,holdout-v1,v1}.json`.
 
+## Wrong-record and Hangul-title fix (2026-10-09)
+
+Each set was run on a fresh cache at `6f4386b` (main `e045a86` plus the frozen regress-v3
+set, before the fix) and at `fe8e810` (after it), without `REF_VERIFY_MAILTO`.
+
+| Set | Before | After |
+|---|---|---|
+| regress-v3 | real 10/12 PASS, retracted 0/1, 1 wrong-record PASS, 2 unindexed books PASSed on a review | real 12/12 PASS, retracted 1/1, no wrong-record PASS |
+| holdout-v2 | real 40/45, fabricated 29/29, retracted 8/8, unindexed REJECT 0/13 | unchanged; 2 references no longer attach to a wrong record |
+| holdout-v1 (in-sample) | real 40/40, fabricated 26/26, retracted 10/10, unindexed REJECT 0/10 | unchanged; 2 no longer attach to a wrong record |
+| v1 (in-sample) | real 66/66, fabricated 43/43, retracted 16/16, unindexed REJECT 1/17 | unchanged; 3 no longer attach to a wrong record |
+
+No fabricated item became PASS, no real item lost its PASS, and no retracted item lost
+`PAPER_RETRACTED` in any set. Results: `results/2026-10-09-{6f4386b,fe8e810}-*.json`.
+
 ## Item fields
 
 | Field | Meaning |
