@@ -8,7 +8,7 @@ Decisions in adjudication.json (written by a person who read the answers) overri
 automatic ones. It also records whether the run invoked the ref-verify engine, used the web,
 and how long it took.
 
-Usage: python3 score.py --scratch DIR [--truth v2/truth.json] [--review] [--markdown]
+Usage: python3 score.py --scratch DIR [--truth v2/truth.json] [--adjudication FILE] [--review] [--markdown]
 """
 
 from __future__ import annotations
@@ -122,9 +122,9 @@ def automatic_decision(item: dict, answer: str) -> str:
     return "caught" if any(word.casefold() in lowered for word in words) else "review"
 
 
-def score(scratch: Path, truth_path: Path) -> dict:
+def score(scratch: Path, truth_path: Path, adjudication_path: Path | None = None) -> dict:
     truth = json.loads(truth_path.read_text(encoding="utf-8"))
-    adjudication_path = truth_path.parent / "adjudication.json"
+    adjudication_path = adjudication_path or truth_path.parent / "adjudication.json"
     adjudication = json.loads(adjudication_path.read_text(encoding="utf-8")) if adjudication_path.exists() else {}
     runs = [json.loads(line) for line in (scratch / "runs.jsonl").read_text(encoding="utf-8").splitlines() if line.strip()]
     scored = []
@@ -188,6 +188,7 @@ def summarize(result: dict) -> dict:
             "engine_invoked": sum(run["usage"]["mode"] == "engine" for run in runs),
             "skill_loaded": sum(run["usage"]["skill_loaded"] for run in runs),
             "web_tool_runs": sum(run["usage"]["web_tool_calls"] > 0 for run in runs),
+            "lookup_runs": sum(run["usage"]["web_tool_calls"] + run["usage"]["shell_http_calls"] > 0 for run in runs),
             "wall_seconds_median": round(statistics.median(walls), 1) if walls else None,
             "wall_seconds_mean": round(statistics.mean(walls), 1) if walls else None,
             "usable": sum(run.get("usable") is True for run in runs),
@@ -216,6 +217,7 @@ def markdown(summary: dict, truth: dict) -> str:
     for key, label in (("engine_invoked", "Runs that ran the ref-verify engine"),
                        ("skill_loaded", "Runs that loaded the skill"),
                        ("web_tool_runs", "Runs that used WebFetch/WebSearch"),
+                       ("lookup_runs", "Runs that looked sources up (shell HTTP or web tools)"),
                        ("usable", "Final answer usable (names reference, problem, fix)")):
         row(label, [f"{summary[c][key]}/{summary[c]['runs']}" for c in conditions])
     row("Wall time per run, median (mean)",
@@ -227,11 +229,12 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--scratch", type=Path, required=True)
     parser.add_argument("--truth", type=Path, default=HERE / "truth.json")
+    parser.add_argument("--adjudication", type=Path, help="default: adjudication.json next to the truth file")
     parser.add_argument("--review", action="store_true", help="list the decisions a person still has to make")
     parser.add_argument("--markdown", action="store_true")
     parser.add_argument("--out", type=Path, help="write per-run results JSON here")
     args = parser.parse_args()
-    result = score(args.scratch, args.truth)
+    result = score(args.scratch, args.truth, args.adjudication)
     summary = summarize(result)
     if args.review:
         items = {item["id"]: item for m in result["truth"]["manuscripts"].values() for item in m["items"]}

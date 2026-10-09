@@ -244,11 +244,144 @@ The agents found these mistakes in the manuscripts. None counts as a false alarm
 - **Claims favour CrossRef.** Every claim's abstract is in CrossRef, so one `curl` reaches it.
   Papers whose abstracts are only on publisher pages, OpenAlex or PubMed were not tested;
   there the engine's other sources might matter.
-- **One model.** Only Opus 5.5 was measured. The current subscription default for these
-  sessions is Sonnet 5.5, which might not check things by itself as often. That is the
-  cheapest next measurement.
+- **One model.** The section above measured only Opus 5.5. The Sonnet 5.5 rerun below shows
+  that the answer depends on the model.
 - **C has no shell.** It measures memory plus reasoning, not "no web but a shell".
 - **No Codex.** Codex was not run, for the same reason as in v1.
+
+## Sonnet 5.5 rerun (2026-10-09, main `3083597`)
+
+The current subscription default for these sessions is Sonnet 5.5. On Opus, B matched the
+skill because it called CrossRef itself. This rerun asks whether Sonnet does the same.
+
+The set, prompts, harness, and isolation are unchanged; only `--model claude-sonnet-5-5` is
+different. A, B, and C ran once per manuscript: 24 runs, at most 2 in parallel, 0 hook events.
+
+The engine is main `3083597`. It differs from the Opus runs' `e045a86` only by #38, which
+stops attaching references to letters, supplements, and reviews of other works, and counts
+Hangul words when deciding whether a reference has a title. Only A uses the engine.
+
+Decisions are in `adjudication-sonnet.json` (every planted error decided explicitly) and per-run
+results in `results/2026-10-09-3083597-e2e-v2-sonnet.json`. Opus counts are over 2 repeats,
+Sonnet over 1.
+
+| | Opus A | Opus B | Opus C | Sonnet A | Sonnet B | Sonnet C |
+|---|---|---|---|---|---|---|
+| FAB_DOI | 10/10 | 10/10 | 5/5 | 5/5 | 5/5 | 5/5 |
+| FAB_NODOI | 6/6 | 6/6 | 3/3 | 3/3 | 3/3 | 2/3 |
+| DOI_SWAP | 8/8 | 8/8 | 4/4 | 4/4 | 4/4 | 4/4 |
+| RETRACTED | 10/10 | 10/10 | 0/5 | 5/5 | **2/5** | 0/5 |
+| WRONG_YEAR | 10/10 | 10/10 | 5/5 | 5/5 | 5/5 | 5/5 |
+| WRONG_AUTHOR | 10/10 | 10/10 | 1/5 | 5/5 | **2/5** | 1/5 |
+| TITLELESS_WRONG_VOLPAGE | 6/6 | 6/6 | 1/3 | 3/3 | **0/3** | 0/3 |
+| CLAIM_NUMBER | 14/14 | 14/14 | 1/7 | 7/7 | **3/7** | 0/7 |
+| CLAIM_UNIT | 14/14 | 14/14 | 7/7 | 7/7 | 6/7 | 5/7 |
+| CLAIM_DIRECTION | 16/16 | 16/16 | 5/8 | 7/8 | 5/8 | 1/8 |
+| **All planted errors** | **104/104 (100%)** | **104/104 (100%)** | **32/52 (62%)** | **51/52 (98%)** | **35/52 (67%)** | **23/52 (44%)** |
+| …of which only hedged | 0 | 0 | 17 | 0 | 4 | 11 |
+| False alarms on correct references | 0/114 | 1/114 | 5/57 | 0/57 | 0/57 | 1/57 |
+| False alarms on unindexed refs / correct claims | 0 | 0 | 0 | 0 | 0 | 0 |
+| Ran the ref-verify engine | 16/16 | 0/16 | 0/8 | 8/8 | 0/8 | 0/8 |
+| Wall time per run, median | 75 s | 69 s | 30 s | 56 s | 39 s | 18 s |
+
+### Did B look sources up itself?
+
+| | Opus B (16 runs) | Sonnet B (8 runs) |
+|---|---|---|
+| Runs with any lookup of its own | 16 | 7 |
+| …calling the CrossRef API from the shell | 15 | 1 |
+| …with WebFetch/WebSearch only | 1 | 6 |
+| Runs answered from the manuscript alone | 0 | 1 (m6) |
+| Cited DOIs whose record it fetched | 143/158 (91%) | 38/79 (48%) |
+
+The fetched-DOI count includes title-less references whose DOI the agent had to find; a
+fabricated DOI is not counted. Sonnet B's runs:
+
+| Manuscript | How Sonnet B looked things up | DOIs fetched | Planted errors caught |
+|---|---|---|---|
+| m1 | 9 WebFetch, 1 WebSearch | 3/11 | 4/7 |
+| m2 | `curl` to the CrossRef API | 11/11 | 7/7 |
+| m3 | 9 WebFetch | 7/9 | 7/7 |
+| m4 | 15 WebFetch (2 blocked, 403) | 10/10 | 5/5 |
+| m5 | 5 WebFetch, 1 WebSearch (publisher pages 403) | 2/8 | 2/5 |
+| m6 | none: "I read both files but didn't check any DOI or claim online" | 0/10 | 5/8 |
+| m7 | 11 WebFetch, 3 WebSearch (Springer and MDPI 403) | 5/10 | 3/6 |
+| m8 | 5 WebSearch, no DOI or CrossRef lookup | 0/10 | 2/7 |
+
+**What the numbers say.**
+
+- **On the default model, the skill changes what the user gets: 51/52 vs 35/52.**
+  - Without it, Sonnet looked up about half the cited records, mostly through publisher pages
+    that often refused it (403). It said what it skipped: "I did not verify the rest,
+    including the specific numbers cited from Annapooranan, Zeng & Tang …".
+  - B fell behind on errors that need the record itself: retractions 2/5, wrong numbers 3/7,
+    title-less volume/page 0/3, author order 2/5.
+  - When Sonnet B queried the CrossRef API (m2), it caught 7/7, as Opus did.
+- **On Opus, the same skill made no difference (104/104 both), because Opus B queried
+  CrossRef by itself.** The value of the skill depends on the model.
+- **The cost is time:** 56 s vs 39 s median on Sonnet.
+- **Sonnet without lookups (C) is worse than Opus without lookups: 44% vs 62%.** It also made
+  fewer false alarms on correct references (1 vs 5); more of its remarks were "check this"
+  than assertions.
+
+### Wrong statements a user would act on
+
+- **Sonnet A (with the skill) misread an abstract once (m4).** It wrote "'455 nm에서 30%
+  늘어난다'는 초록에서 확인되지 않았습니다. 본문을 직접 확인하세요", although the abstract
+  says "30% contraction to 455 nm visible light". This is the A condition's only miss.
+- **Sonnet B (m6, no lookups) and Sonnet C (m6) both confirmed the planted author swap.** B
+  wrote "the key says Suk, but the first author is Park. This is harmless", and C wrote
+  "the first author is Park (Suk is the second author)". Suk is the first author.
+- **Sonnet B told the user to delete a real paper (m7).** The reference was a real paper with a
+  wrong page, and B wrote "해당 논문을 찾지 못했습니다 … 출처를 확인할 수 없으면 삭제하세요".
+- **Sonnet B (m8) reported three real papers as not found** after five WebSearch calls ("[1] …
+  I found no match"), with the caveat that they may not be indexed yet.
+- **Sonnet C (m2) flagged a correct DOI:** "Ref. 11's DOI looks malformed. 10.1002/cssc.71126
+  doesn't match the usual ChemSusChem pattern". It is the real DOI.
+
+### Semantic Scholar rate limits in A
+
+| | Opus A (16) | Sonnet A (8) |
+|---|---|---|
+| Runs where a Semantic Scholar call returned 429 | 10 | 2 |
+| …in the agent's own `curl` to api.semanticscholar.org | 10 | 2 |
+| …in ref-verify engine output | 0 | 0 |
+| Answers that mention the rate limit | 11 | 2 |
+| Answers that soften a verdict because of it | 6 | 1 |
+
+"Soften" means the answer gives the rate limit as the reason for a weaker verdict on a
+fabricated reference. Examples:
+
+- "A second search source (Semantic Scholar) was rate-limited, so I can't say for sure that
+  it's fabricated."
+- "The Semantic Scholar search was rate-limited, so I only have CrossRef evidence. Treat it as
+  unverified, and possibly fabricated."
+
+What the rate limit did and did not change:
+
+- **No missed errors.** The fabricated reference was still flagged in every one of these runs;
+  only the wording changed, from "remove it" to "treat it as unverified".
+- **The 429s came from the agent's own queries, not the engine.** The agent ran the manual
+  Semantic Scholar search that `SKILL.md` lists among its fallbacks (the
+  `api.semanticscholar.org/graph/v1/paper/search` URL). Its "S2 rate limiting" rule then says
+  to "use CrossRef as primary and note single-source limitation", which produces the softened
+  wording.
+- **Sonnet hit the limit less often** (2/8 runs vs 10/16) and also searched Semantic Scholar
+  itself less often: 2 runs and 2 queries, vs 12 runs and 20 queries for Opus.
+
+### Limits of the rerun
+
+- **One run per condition.** One repeat per condition, and the same-agent caveats above apply.
+- **Different engine for A.** A ran on `3083597`, not `e045a86`. B and C do not use the engine.
+- **Possible confound in blocked pages.** Sonnet B's 403s came from publisher pages it chose
+  to fetch. A run from another network might be blocked less often.
+
+### Isolation leftovers (not deleted)
+
+- **Tool-results files.** 6 of the 24 runs, all A, left a tool-results file under
+  `~/.claude/projects/<scratch path>/` (16–39 KB). Four A runs read their own saved
+  tool-results file back from there, at the path Claude Code gave them.
+- **Scratch files.** New files in `/tmp` from these runs: `out.json`, `refs_in.md`, `rv_in`.
 
 ## Rerun
 
@@ -261,6 +394,16 @@ python3 benchmarks/e2e/run_e2e.py --scratch /tmp/rv-e2e-v2 --truth benchmarks/e2
   --conditions C --repeats 1 --model claude-opus-5-5 --parallel 2
 python3 benchmarks/e2e/score.py --scratch /tmp/rv-e2e-v2 --truth benchmarks/e2e/v2/truth.json --markdown
 python3 benchmarks/e2e/engine_only.py --scratch /tmp/rv-e2e-v2-engine --truth benchmarks/e2e/v2/truth.json
+
+# Sonnet 5.5 rerun
+python3 benchmarks/e2e/run_e2e.py --scratch /tmp/rv-e2e-v2-sonnet --truth benchmarks/e2e/v2/truth.json \
+  --conditions A B --repeats 1 --model claude-sonnet-5-5 --parallel 2
+python3 benchmarks/e2e/run_e2e.py --scratch /tmp/rv-e2e-v2-sonnet --truth benchmarks/e2e/v2/truth.json \
+  --conditions C --repeats 1 --model claude-sonnet-5-5 --parallel 2
+python3 benchmarks/e2e/score.py --scratch /tmp/rv-e2e-v2-sonnet --truth benchmarks/e2e/v2/truth.json \
+  --adjudication benchmarks/e2e/v2/adjudication-sonnet.json --markdown
 ```
 
-`adjudication.json` belongs to the 2026-10-09 run. A new run needs its answers read again.
+`adjudication.json` and `adjudication-sonnet.json` belong to the 2026-10-09 runs. Run ids repeat
+across models, so pass `--adjudication` for the Sonnet runs. A new run needs its answers read
+again.

@@ -1,0 +1,372 @@
+{
+  "description": "Decisions for the 24 Sonnet 5.5 runs of the v2 set (2026-10-09), read in full. Every planted error is decided explicitly; correct items not listed are benign. Score with --adjudication.",
+  "runs": {
+    "v2m1_dea_en__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m1_dea_en#01": "caught",
+        "v2m1_dea_en#02": "caught",
+        "v2m1_dea_en#03": "caught",
+        "v2m1_dea_en#12": "caught",
+        "v2m1_dea_en#14": "caught",
+        "v2m1_dea_en#15": "caught",
+        "v2m1_dea_en#16": "caught"
+      },
+      "hedged_catches": [],
+      "note": "S2 mentioned, verdict firm: 'Semantic Scholar was rate-limited ... Treat it as non-existent unless you can produce the paper.'"
+    },
+    "v2m2_ionic_en__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m2_ionic_en#01": "caught",
+        "v2m2_ionic_en#02": "caught",
+        "v2m2_ionic_en#03": "caught",
+        "v2m2_ionic_en#09": "caught",
+        "v2m2_ionic_en#11": "caught",
+        "v2m2_ionic_en#12": "caught",
+        "v2m2_ionic_en#16": "caught"
+      },
+      "hedged_catches": [],
+      "note": "S2 softened the verdict on [12]: 'The Semantic Scholar search was rate-limited, so I only have CrossRef evidence. Treat it as unverified, and possibly fabricated'."
+    },
+    "v2m3_crystal_latex__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m3_crystal_latex#01": "caught",
+        "v2m3_crystal_latex#02": "caught",
+        "v2m3_crystal_latex#03": "caught",
+        "v2m3_crystal_latex#06": "caught",
+        "v2m3_crystal_latex#11": "caught",
+        "v2m3_crystal_latex#13": "caught",
+        "v2m3_crystal_latex#14": "caught"
+      },
+      "hedged_catches": []
+    },
+    "v2m4_polymer_ko__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m4_polymer_ko#01": "caught",
+        "v2m4_polymer_ko#02": "missed",
+        "v2m4_polymer_ko#06": "caught",
+        "v2m4_polymer_ko#13": "caught",
+        "v2m4_polymer_ko#14": "caught"
+      },
+      "hedged_catches": [],
+      "note": "Missed #02 and misreported the source: '\"455 nm에서 30% 늘어난다\"는 초록에서 확인되지 않았습니다. 본문을 직접 확인하세요' although the abstract says '30% contraction to 455 nm visible light'."
+    },
+    "v2m5_pvdf_lce_en__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m5_pvdf_lce_en#01": "caught",
+        "v2m5_pvdf_lce_en#02": "caught",
+        "v2m5_pvdf_lce_en#10": "caught",
+        "v2m5_pvdf_lce_en#11": "caught",
+        "v2m5_pvdf_lce_en#12": "caught"
+      },
+      "hedged_catches": []
+    },
+    "v2m6_rehab_latex__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m6_rehab_latex#01": "caught",
+        "v2m6_rehab_latex#02": "caught",
+        "v2m6_rehab_latex#03": "caught",
+        "v2m6_rehab_latex#07": "caught",
+        "v2m6_rehab_latex#09": "caught",
+        "v2m6_rehab_latex#11": "caught",
+        "v2m6_rehab_latex#14": "caught",
+        "v2m6_rehab_latex#15": "caught"
+      },
+      "hedged_catches": []
+    },
+    "v2m7_ceramic_ko__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m7_ceramic_ko#01": "caught",
+        "v2m7_ceramic_ko#02": "caught",
+        "v2m7_ceramic_ko#03": "caught",
+        "v2m7_ceramic_ko#06": "caught",
+        "v2m7_ceramic_ko#14": "caught",
+        "v2m7_ceramic_ko#15": "caught"
+      },
+      "hedged_catches": []
+    },
+    "v2m8_magnetism_en__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m8_magnetism_en#01": "caught",
+        "v2m8_magnetism_en#02": "caught",
+        "v2m8_magnetism_en#03": "caught",
+        "v2m8_magnetism_en#09": "caught",
+        "v2m8_magnetism_en#12": "caught",
+        "v2m8_magnetism_en#14": "caught",
+        "v2m8_magnetism_en#15": "caught"
+      },
+      "hedged_catches": [],
+      "note": "Not counted: '[9] Park ... isn't a beamline characterization paper, so it doesn't fit' reads the set's ambiguous sentence one way; a relevance remark, not a claim the entry is wrong."
+    },
+    "v2m1_dea_en__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m1_dea_en#01": "caught",
+        "v2m1_dea_en#02": "missed",
+        "v2m1_dea_en#03": "missed",
+        "v2m1_dea_en#12": "caught",
+        "v2m1_dea_en#14": "missed",
+        "v2m1_dea_en#15": "caught",
+        "v2m1_dea_en#16": "caught"
+      },
+      "hedged_catches": [],
+      "note": "Looked up 3 of 11 DOIs with WebFetch; 'I did not verify the rest, including the specific numbers cited from Annapooranan, Zeng & Tang ...'."
+    },
+    "v2m2_ionic_en__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m2_ionic_en#01": "caught",
+        "v2m2_ionic_en#02": "caught",
+        "v2m2_ionic_en#03": "caught",
+        "v2m2_ionic_en#09": "caught",
+        "v2m2_ionic_en#11": "caught",
+        "v2m2_ionic_en#12": "caught",
+        "v2m2_ionic_en#16": "caught"
+      },
+      "hedged_catches": []
+    },
+    "v2m3_crystal_latex__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m3_crystal_latex#01": "caught",
+        "v2m3_crystal_latex#02": "caught",
+        "v2m3_crystal_latex#03": "caught",
+        "v2m3_crystal_latex#06": "caught",
+        "v2m3_crystal_latex#11": "caught",
+        "v2m3_crystal_latex#13": "caught",
+        "v2m3_crystal_latex#14": "caught"
+      },
+      "hedged_catches": [],
+      "note": "#14: '404 from Crossref. I didn't search for the paper by title' - caught on the DOI."
+    },
+    "v2m4_polymer_ko__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m4_polymer_ko#01": "caught",
+        "v2m4_polymer_ko#02": "caught",
+        "v2m4_polymer_ko#06": "caught",
+        "v2m4_polymer_ko#13": "caught",
+        "v2m4_polymer_ko#14": "caught"
+      },
+      "hedged_catches": []
+    },
+    "v2m5_pvdf_lce_en__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m5_pvdf_lce_en#01": "missed",
+        "v2m5_pvdf_lce_en#02": "missed",
+        "v2m5_pvdf_lce_en#10": "caught",
+        "v2m5_pvdf_lce_en#11": "missed",
+        "v2m5_pvdf_lce_en#12": "caught"
+      },
+      "hedged_catches": [],
+      "note": "WebFetch only; publisher pages 403. '[4], [5]: I didn't check the 48 °C and 13.2 J/kg figures.' Retracted [8] called only off-topic."
+    },
+    "v2m6_rehab_latex__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m6_rehab_latex#01": "caught",
+        "v2m6_rehab_latex#02": "missed",
+        "v2m6_rehab_latex#03": "caught",
+        "v2m6_rehab_latex#07": "caught",
+        "v2m6_rehab_latex#09": "missed",
+        "v2m6_rehab_latex#11": "caught",
+        "v2m6_rehab_latex#14": "missed",
+        "v2m6_rehab_latex#15": "caught"
+      },
+      "hedged_catches": [
+        "v2m6_rehab_latex#03",
+        "v2m6_rehab_latex#15"
+      ],
+      "note": "No lookups at all (Read only): 'I read both files but didn't check any DOI or claim online.' Asserts the wrong order is right: 'the key says Suk, but the first author is Park. This is harmless'."
+    },
+    "v2m7_ceramic_ko__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m7_ceramic_ko#01": "caught",
+        "v2m7_ceramic_ko#02": "missed",
+        "v2m7_ceramic_ko#03": "caught",
+        "v2m7_ceramic_ko#06": "missed",
+        "v2m7_ceramic_ko#14": "missed",
+        "v2m7_ceramic_ko#15": "caught"
+      },
+      "hedged_catches": [],
+      "note": "WebFetch only; Springer and MDPI pages 403. [10]: '해당 논문을 찾지 못했습니다 ... 출처를 확인할 수 없으면 삭제하세요' for a real paper with a wrong page."
+    },
+    "v2m8_magnetism_en__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m8_magnetism_en#01": "missed",
+        "v2m8_magnetism_en#02": "missed",
+        "v2m8_magnetism_en#03": "caught",
+        "v2m8_magnetism_en#09": "missed",
+        "v2m8_magnetism_en#12": "missed",
+        "v2m8_magnetism_en#14": "missed",
+        "v2m8_magnetism_en#15": "caught"
+      },
+      "hedged_catches": [
+        "v2m8_magnetism_en#03",
+        "v2m8_magnetism_en#15"
+      ],
+      "note": "WebSearch only (5 searches), no DOI or CrossRef lookups: 'I didn't search for [4]-[10].' [1]-[3] 'I found no match'."
+    },
+    "v2m1_dea_en__C__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m1_dea_en#01": "caught",
+        "v2m1_dea_en#02": "missed",
+        "v2m1_dea_en#03": "missed",
+        "v2m1_dea_en#12": "caught",
+        "v2m1_dea_en#14": "missed",
+        "v2m1_dea_en#15": "caught",
+        "v2m1_dea_en#16": "caught"
+      },
+      "hedged_catches": [
+        "v2m1_dea_en#16"
+      ],
+      "note": "Zeng 25.9% and Annapooranan only 'couldn't check'."
+    },
+    "v2m2_ionic_en__C__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m2_ionic_en#01": "missed",
+        "v2m2_ionic_en#02": "missed",
+        "v2m2_ionic_en#03": "caught",
+        "v2m2_ionic_en#09": "missed",
+        "v2m2_ionic_en#11": "caught",
+        "v2m2_ionic_en#12": "missed",
+        "v2m2_ionic_en#16": "caught",
+        "v2m2_ionic_en#15": "false_alarm"
+      },
+      "hedged_catches": [
+        "v2m2_ionic_en#03",
+        "v2m2_ionic_en#16"
+      ],
+      "note": "False alarm: 'Ref. 11's DOI looks malformed. 10.1002/cssc.71126 doesn't match the usual ChemSusChem pattern'; it is the real DOI."
+    },
+    "v2m3_crystal_latex__C__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m3_crystal_latex#01": "missed",
+        "v2m3_crystal_latex#02": "caught",
+        "v2m3_crystal_latex#03": "missed",
+        "v2m3_crystal_latex#06": "caught",
+        "v2m3_crystal_latex#11": "caught",
+        "v2m3_crystal_latex#13": "missed",
+        "v2m3_crystal_latex#14": "caught"
+      },
+      "hedged_catches": [
+        "v2m3_crystal_latex#11",
+        "v2m3_crystal_latex#14"
+      ],
+      "note": "#14 inferred from the article number sequence; #01 and #03 only 'confirm'."
+    },
+    "v2m4_polymer_ko__C__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m4_polymer_ko#01": "caught",
+        "v2m4_polymer_ko#02": "missed",
+        "v2m4_polymer_ko#06": "caught",
+        "v2m4_polymer_ko#13": "caught",
+        "v2m4_polymer_ko#14": "caught"
+      },
+      "hedged_catches": [
+        "v2m4_polymer_ko#01",
+        "v2m4_polymer_ko#13",
+        "v2m4_polymer_ko#14"
+      ],
+      "note": "'30% 늘어난다 ... 원문과 대조해 보세요' does not say it is reversed."
+    },
+    "v2m5_pvdf_lce_en__C__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m5_pvdf_lce_en#01": "missed",
+        "v2m5_pvdf_lce_en#02": "missed",
+        "v2m5_pvdf_lce_en#10": "caught",
+        "v2m5_pvdf_lce_en#11": "missed",
+        "v2m5_pvdf_lce_en#12": "caught"
+      },
+      "hedged_catches": [
+        "v2m5_pvdf_lce_en#12"
+      ],
+      "note": "Retracted [8] called only off-topic."
+    },
+    "v2m6_rehab_latex__C__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m6_rehab_latex#01": "caught",
+        "v2m6_rehab_latex#02": "missed",
+        "v2m6_rehab_latex#03": "missed",
+        "v2m6_rehab_latex#07": "caught",
+        "v2m6_rehab_latex#09": "missed",
+        "v2m6_rehab_latex#11": "caught",
+        "v2m6_rehab_latex#14": "missed",
+        "v2m6_rehab_latex#15": "caught"
+      },
+      "hedged_catches": [
+        "v2m6_rehab_latex#15"
+      ],
+      "note": "#03 only 'Check the direction and the group'. Asserts 'the first author is Park (Suk is the second author)'."
+    },
+    "v2m7_ceramic_ko__C__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m7_ceramic_ko#01": "missed",
+        "v2m7_ceramic_ko#02": "missed",
+        "v2m7_ceramic_ko#03": "missed",
+        "v2m7_ceramic_ko#06": "missed",
+        "v2m7_ceramic_ko#14": "missed",
+        "v2m7_ceramic_ko#15": "caught"
+      },
+      "hedged_catches": [
+        "v2m7_ceramic_ko#15"
+      ],
+      "note": "All four numbers only '대조하지 못했습니다'."
+    },
+    "v2m8_magnetism_en__C__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m8_magnetism_en#01": "missed",
+        "v2m8_magnetism_en#02": "missed",
+        "v2m8_magnetism_en#03": "caught",
+        "v2m8_magnetism_en#09": "missed",
+        "v2m8_magnetism_en#12": "missed",
+        "v2m8_magnetism_en#14": "missed",
+        "v2m8_magnetism_en#15": "missed"
+      },
+      "hedged_catches": [],
+      "note": "Only the 1.5 kV unit caught."
+    }
+  }
+}
