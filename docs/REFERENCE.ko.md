@@ -4,7 +4,7 @@
 
 [README](https://github.com/Moonweave-Research/ref-verify/blob/main/README.ko.md)에서 다루지 않은 세부
 내용을 모았습니다. 모든 명령, 모드, 오류 코드, 캐시, 그리고 확인 범위의 한계를 설명합니다.
-PyPI의 현재 릴리스인 ref-verify 1.3.1 기준입니다.
+PyPI의 현재 릴리스인 ref-verify 1.3.2 기준입니다.
 
 ## 목차
 

@@ -4,7 +4,7 @@
 
 This page holds the details behind the [README](https://github.com/Moonweave-Research/ref-verify/blob/main/README.md):
 every command, mode, error code, the cache, and the limits of what is checked. It describes
-ref-verify 1.3.1, the current release on PyPI.
+ref-verify 1.3.2, the current release on PyPI.
 
 ## Contents
 
