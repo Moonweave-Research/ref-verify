@@ -305,7 +305,8 @@ ref-verify check-file claims.csv
 `Checking claims: N/M` 진행 표시가 나옵니다(`--json`일 때는 나오지 않음). Ctrl-C로
 멈출 수 있고, 끝난 조회는 캐시에 남으므로 같은 명령을 다시 실행하면 빠르게 이어집니다. 배치 모드는 기존의 보수적인 `check-claim` 엔진을 그대로
 사용합니다. `ACCEPT`는 abstract가 숫자 claim을 명시적으로 지지한다는
-뜻입니다. `WARN`, `PARTIAL`, `REJECT`, `UNVERIFIABLE`은 검증된 claim으로
+뜻입니다. claim에 든 숫자는 단위, 부호, 방향까지 모두 abstract의 한 절이나 문장이
+뒷받침해야 합니다. `WARN`, `PARTIAL`, `REJECT`, `UNVERIFIABLE`은 검증된 claim으로
 취급하면 안 됩니다.
 
 DOI/claim 쌍이 아니라 참고문헌 목록이 있을 때는 `check-bib`을 사용합니다.

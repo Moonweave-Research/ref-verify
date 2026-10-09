@@ -25,6 +25,7 @@ measure again after the tool is tuned against v1's misses.
   naming: `2026-10-08-34da678.json` (before #27) and `2026-10-08-7910447.json` (after #27,
   before the held-out set existed).
 - `../scripts/benchmark_references.py`: runs a set (standard library only).
+- `claims-v1.jsonl`, `claims-copy-v1.jsonl`, and `../scripts/benchmark_claims.py`: the claim sets and their runner (see [Claim set](#claim-set-claims-v1jsonl)).
 - `../scripts/render_scorecard.py`: draws `.github/assets/scorecard-{light,dark}.svg`
   from a held-out results file, with the development-set result as a footnote. The README chart
   is drawn from `results/2026-10-09-8170e66-holdout-v2.json` with
@@ -61,6 +62,74 @@ set, before the fix) and at `fe8e810` (after it), without `REF_VERIFY_MAILTO`.
 
 No fabricated item became PASS, no real item lost its PASS, and no retracted item lost
 `PAPER_RETRACTED` in any set. Results: `results/2026-10-09-{6f4386b,fe8e810}-*.json`.
+
+## Claim set (`claims-v1.jsonl`)
+
+60 numeric claims for measuring `ref-verify check-file` (the same check as `check-claim`):
+30 the abstract supports and 30 it does not, six each of a wrong number, a wrong unit or
+unit prefix, a reversed direction (above/below, rose/fell, more/less than), a number that
+belongs to another sample or quantity in the same abstract, and a claim with several
+quantities where one is wrong. Each of the 30 papers gives one supported and one
+unsupported claim. The papers are recent materials, chemistry, energy, sensor, water,
+concrete, and clinical papers with a CrossRef abstract; none appears in any other set,
+the E2E sets, or the test fixtures. The set was frozen at the commit that added it, before
+the claim engine was run on it.
+
+`claims-copy-v1.jsonl` has 60 more claims on the same 30 papers, written the other way:
+the supported claim copies a span of the abstract (a few tidy subscript or exponent
+spacing, such as `NH 3` to `NH3`), and the unsupported claim is that span with exactly one
+thing changed, six of each error type. This is how a citing sentence drafted from an
+abstract goes wrong. It was added after the first run of `claims-v1.jsonl`, where the
+unchanged engine accepted none of the 60 paraphrased claims, true or false, and so could not
+show a false ACCEPT; it was frozen before the engine was run on it.
+
+| Field | Meaning |
+|---|---|
+| `id` | `c1-NN` (`cc1-NN` in the copy set). |
+| `doi`, `claim` | What a user would pass to `check-claim`. |
+| `label` | `SUPPORTED` or `NOT_SUPPORTED`, by a reading of the abstract. |
+| `error_type` | For unsupported claims: `wrong_number`, `wrong_unit`, `wrong_direction`, `wrong_subject`, or `multi_quantity`. |
+| `evidence_quote` | An exact substring of the abstract that decides the label. |
+| `abstract_source`, `abstract_sha256` | The abstract the label was read from, as `ref-verify` fetches it. |
+| `verified`, `notes` | How the label was checked, and why a claim is wrong. |
+
+Scoring: `ACCEPT` is the only verdict counted as "supported"; `WARN` and `REJECT` both
+count as "not accepted". The headline is the false-ACCEPT rate on unsupported claims; the
+runner also reports ACCEPT precision and recall with 95% Wilson intervals. A row whose
+fetched abstract no longer matches `abstract_sha256` is listed under `abstract_changed`.
+
+```bash
+python3 scripts/benchmark_claims.py
+python3 scripts/benchmark_claims.py --dataset benchmarks/claims-copy-v1.jsonl
+```
+
+### Multi-quantity claim fix (2026-10-09)
+
+Each set was run on a fresh cache before the fix (`claims-v1` at `6c44979`,
+`claims-copy-v1` at `7d6a148`; the engine is the same in both) and after it (`2768bca`),
+without `REF_VERIFY_MAILTO`. No abstract changed between runs.
+
+| Set | Run | False ACCEPT (unsupported claims) | ACCEPT on supported claims | ACCEPT precision |
+|---|---|---|---|---|
+| claims-copy-v1 | before | 4/30 (5–30%) | 14/30 (30–64%) | 14/18 (55–91%) |
+| claims-copy-v1 | after | **0/30 (0–11%)** | 16/30 (36–70%) | 16/16 (81–100%) |
+| claims-v1 | before | 0/30 (0–11%) | 0/30 (0–11%) | no ACCEPT |
+| claims-v1 | after | 0/30 (0–11%) | 0/30 (0–11%) | no ACCEPT |
+
+Parentheses are 95% Wilson intervals. The four false ACCEPTs before the fix were one of
+each kind except a swapped subject: a cycle count changed beside a right efficiency
+(multi-quantity), an exponent changed (`10−4` to `10−3`), a unit changed in a secondary
+quantity (`42 ms` to `42 s`), and "higher than" turned into "lower than". The direction-word
+rule that catches the last one was added after this run showed it, so the
+`wrong_direction` row of the copy set is partly in-sample.
+
+On the copy set, three supported claims became ACCEPT (word-for-word claims carrying a
+percentage) and one became WARN: `cc1-27`, whose second number sits in the next clause
+of a sentence that goes on to "whereas ... (from 0.000486 to 1.17 MPa)", so the scope
+check sees "from". The paraphrased claims-v1 stays at no ACCEPT either way: `check-claim`
+accepts only claims whose wording follows the abstract, so it measures what is
+explicitly stated, not what a reader would accept as a paraphrase. Results:
+`results/2026-10-09-{6c44979,7d6a148,2768bca}-claims*.json`.
 
 ## Item fields
 
@@ -143,8 +212,8 @@ None so far for `references-holdout-v1.jsonl`, `references-holdout-v2.jsonl`, or
   exposed (#27) were developed against it, so the stored results are in-sample; a new,
   held-out set is the honest next measurement.
 
-- Whether a paper supports a claim (`check-claim`); only reference existence and
-  metadata are scored here.
+- Whether a paper supports a claim (`check-claim`), in the reference sets; only reference
+  existence and metadata are scored there. `claims-v1.jsonl` covers numeric claims.
 - Non-English literature beyond a handful of Korean items (journal papers, theses, and
   one paper cited by its Korean title).
 - Full text, page numbers, volume/issue, or journal names: `check-bib` compares title,

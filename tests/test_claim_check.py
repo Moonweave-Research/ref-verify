@@ -1179,6 +1179,146 @@ class ClaimCheckTests(unittest.TestCase):
         self.assertEqual(result.verdict, "WARN")
         self.assertEqual(result.evidence, "")
 
+    def test_multi_quantity_claim_needs_every_number(self):
+        record = PaperRecord(
+            doi="10.1000/lifetime-multi",
+            title="Membrane lifetime",
+            authors=["Lee"],
+            year=2025,
+            abstract=(
+                "The service lifetime of the membrane was 16 years at 80 °C and 1.65 years "
+                "at 100 °C."
+            ),
+            source="fixture",
+        )
+
+        for claim, verdict in (
+            ("a service lifetime of 16 years at 80 °C", "ACCEPT"),
+            ("a service lifetime of 61 years at 80 °C", "WARN"),
+            ("a service lifetime of 1.65 years at 80 °C", "WARN"),
+            ("a service lifetime of 16 years at 100 °C", "WARN"),
+        ):
+            with self.subTest(claim=claim):
+                self.assertEqual(check_claim_support(record, claim).verdict, verdict)
+
+    def test_real_abstract_wrong_lifetime_is_not_accepted(self):
+        # 10.3390/polym17172390, the sentence the E2E claim v2m3_crystal_latex#03 cites.
+        record = PaperRecord(
+            doi="10.3390/polym17172390",
+            title="TGA of an SGP membrane",
+            authors=["Author"],
+            year=2025,
+            abstract=(
+                "The results indicate that the SGP membrane sample exhibits activation energy "
+                "Ea = 136.90 kJ/mol, reaction order n = 1.65 and pre-factor A = e25.93. It can be "
+                "seen that the service lifetime of the SGP membrane sample is 16 years at 80 °C "
+                "and 1.65 years at 100 °C."
+            ),
+            source="fixture",
+        )
+
+        wrong = check_claim_support(record, "a service lifetime of 61 years at 80 °C")
+        right = check_claim_support(record, "a service lifetime of 16 years at 80 °C")
+
+        self.assertEqual(wrong.verdict, "WARN")
+        self.assertEqual(right.verdict, "ACCEPT")
+
+    def test_real_abstract_verbatim_parenthetical_claim_is_accepted(self):
+        # 10.3390/polym17070921, the sentence the E2E claim v2m2_ionic_en#04 cites.
+        record = PaperRecord(
+            doi="10.3390/polym17070921",
+            title="Ionized corncob cellulose",
+            authors=["Author"],
+            year=2025,
+            abstract=(
+                "Characterizations demonstrated exceptional properties: robust mechanical "
+                "strength (1.28 MPa tensile strength with 573% elongation); outstanding thermal "
+                "stability (stable to 278 °C); cryogenic tolerance (retaining flexibility at "
+                "−25 °C); and universal adhesion capability (4.23 MPa to glass substrates, with "
+                "adequate interfacial bonding across diverse surfaces)."
+            ),
+            source="fixture",
+        )
+
+        for claim, verdict in (
+            ("1.28 MPa tensile strength with 573% elongation", "ACCEPT"),
+            ("1.28 MPa tensile strength with 537% elongation", "WARN"),
+            ("1.28 kPa tensile strength with 573% elongation", "WARN"),
+            ("retaining flexibility at −25 °C", "ACCEPT"),
+            ("retaining flexibility at 25 °C", "WARN"),
+        ):
+            with self.subTest(claim=claim):
+                self.assertEqual(check_claim_support(record, claim).verdict, verdict)
+
+    def test_parenthetical_value_keeps_qualifiers_of_its_own_list_item(self):
+        cases = (
+            (
+                "The gel showed high strength (1.2 MPa with 500% elongation); good stability "
+                "(stable at 200 °C).",
+                "ACCEPT",
+            ),
+            (
+                "The gel showed high strength (1.2 MPa with 500% elongation) at 80 °C; good "
+                "stability.",
+                "WARN",
+            ),
+            ("In saline, the gel showed high strength (1.2 MPa with 500% elongation).", "WARN"),
+        )
+
+        for abstract, verdict in cases:
+            with self.subTest(abstract=abstract):
+                record = PaperRecord(
+                    doi="10.1000/parenthetical",
+                    title="Gel strength",
+                    authors=["Lee"],
+                    year=2025,
+                    abstract=abstract,
+                    source="fixture",
+                )
+
+                result = check_claim_support(record, "1.2 MPa with 500% elongation")
+
+                self.assertEqual(result.verdict, verdict)
+
+    def test_claim_rejects_wrong_secondary_quantity_direction_or_approximation(self):
+        cases = (
+            (
+                "The sensor had a sensitivity of 0.243 kPa −1 and a range up to 1600 kPa.",
+                "a sensitivity of 0.243 kPa−1 and a range up to 1600 kPa",
+                "ACCEPT",
+            ),
+            (
+                "The sensor had a sensitivity of 0.243 kPa −1 and a range up to 1600 kPa.",
+                "a sensitivity of 0.243 kPa−1 and a range up to 1600 Pa",
+                "WARN",
+            ),
+            (
+                "Device A showed higher conductivity than device B at 25 °C.",
+                "Device A showed lower conductivity than device B at 25 °C.",
+                "WARN",
+            ),
+            (
+                "Device A showed higher conductivity than device B at 25 °C.",
+                "Device A showed higher conductivity than device B at 25 °C.",
+                "ACCEPT",
+            ),
+            ("The device lifetime was ~5000 cycles.", "the device lifetime was 5000 cycles", "WARN"),
+            ("The device lifetime was about 5000 cycles.", "the device lifetime was about 5000 cycles", "ACCEPT"),
+        )
+
+        for abstract, claim, verdict in cases:
+            with self.subTest(claim=claim):
+                record = PaperRecord(
+                    doi="10.1000/secondary-quantity",
+                    title="Secondary quantity",
+                    authors=["Lee"],
+                    year=2025,
+                    abstract=abstract,
+                    source="fixture",
+                )
+
+                self.assertEqual(check_claim_support(record, claim).verdict, verdict)
+
     def test_absent_claim_is_warn_not_contradiction_without_explicit_conflict(self):
         record = PaperRecord(
             doi="10.1000/unrelated",

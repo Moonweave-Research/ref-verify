@@ -2,7 +2,71 @@ import json
 import unittest
 from pathlib import Path
 
-from ref_verify.numeric_claim import check_numeric_claim_support
+from ref_verify.numeric_claim import check_numeric_claim_support, claim_quantities_supported
+
+
+class ClaimQuantitiesTests(unittest.TestCase):
+    def test_every_claim_number_needs_a_match(self):
+        evidence = "The service lifetime was 16 years at 80 °C and 1.65 years at 100 °C."
+
+        self.assertTrue(claim_quantities_supported("16 years at 80 °C", evidence))
+        self.assertFalse(claim_quantities_supported("61 years at 80 °C", evidence))
+        self.assertFalse(claim_quantities_supported("16 years at 90 °C", evidence))
+
+    def test_units_prefixes_and_signs_must_match(self):
+        cases = (
+            ("Cells cycled for 2000 h at 0.1 mA cm −2.", "2000 h at 0.1 A cm−2", False),
+            ("Cells cycled for 2000 h at 0.1 mA cm −2.", "2000 h at 0.1 mA cm−2", True),
+            ("The response time was 42 ms.", "a response time of 42 s", False),
+            ("Patients received 40 mg daily.", "40 g daily", False),
+            ("Curcumin 8 grams/day was given.", "8 g/day", True),
+            ("The modulus was 3 MPa.", "3 mPa", False),
+            ("The film stayed flexible at −25 °C.", "flexible at 25 °C", False),
+            ("The film stayed flexible at −25 °C.", "flexible at −25 °C", True),
+        )
+
+        for evidence, claim, expected in cases:
+            with self.subTest(claim=claim):
+                self.assertEqual(claim_quantities_supported(claim, evidence), expected)
+
+    def test_reads_number_formats(self):
+        cases = (
+            ("an ionic conductivity of 3.14 × 10−4 S cm−1", "3.14 × 10−4 S cm−1", True),
+            ("an ionic conductivity of 3.14 × 10−4 S cm−1", "3.14 × 10−3 S cm−1", False),
+            ("stable for 10 000 cycles", "stable for 10,000 cycles", True),
+            ("a pressure range of 0–6 kPa", "from 0 to 6 kPa", True),
+            ("optimal at 50 and 60 nm, respectively", "60 nm", True),
+            ("a sensitivity of 0.243 kPa −1", "0.243 kPa−1", True),
+            ("κ = 2.56 ± 0.07 W/mK", "2.56 W/mK", True),
+            ("SNC 700 reached 97.83% at −0.6 V vs. RHE", "97.83% at −0.8 V", False),
+        )
+
+        for evidence, claim, expected in cases:
+            with self.subTest(claim=claim):
+                self.assertEqual(claim_quantities_supported(claim, evidence), expected)
+
+    def test_names_and_citation_markers_are_not_quantities(self):
+        evidence = "COVID-19 patients received 40 mg of atorvastatin."
+
+        self.assertTrue(claim_quantities_supported("COVID-19 patients received 40 mg [12]", evidence))
+        self.assertTrue(claim_quantities_supported("40 mg of atorvastatin (Smith et al., 2024)", evidence))
+        self.assertTrue(claim_quantities_supported("LiFePO4 and Fe2C cells with 40 mg", evidence))
+
+    def test_comparators_and_direction_words(self):
+        cases = (
+            ("Selectivity reached up to 70.2%.", "selectivity above 60%", True),
+            ("Selectivity reached up to 70.2%.", "selectivity over 70.2%", False),
+            ("C1 selectivity was minimized to 19.0%.", "C1 selectivity exceeded 19.0%", False),
+            ("The particle size was 518.9 nm.", "a particle size below 500 nm", False),
+            ("The lifetime was ~5000 cycles.", "a lifetime of 5000 cycles", False),
+            ("The lifetime was ~5000 cycles.", "a lifetime of about 5000 cycles", True),
+            ("The value was higher than the reference of 11.85%.", "lower than the reference of 11.85%", False),
+            ("The value was higher than the reference of 11.85%.", "higher than the reference of 11.85%", True),
+        )
+
+        for evidence, claim, expected in cases:
+            with self.subTest(claim=claim):
+                self.assertEqual(claim_quantities_supported(claim, evidence), expected)
 
 
 class NumericClaimTests(unittest.TestCase):

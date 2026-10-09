@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 
 from ref_verify.models import ClaimSupportResult, PaperRecord
-from ref_verify.numeric_claim import check_numeric_claim_support
+from ref_verify.numeric_claim import check_numeric_claim_support, claim_quantities_supported
 
 _PERCENTAGE_VALUE_PATTERN = r"\d+(?:,\d{3})*(?:\.\d+)?"
 _PERCENTAGE_UNIT_PATTERN = r"(?:%|\bpercent\b|\bper\s+cent\b)"
@@ -247,7 +247,8 @@ def check_claim_support(record: PaperRecord, claim: str) -> ClaimSupportResult:
     evidence_sentences = _ranked_evidence_sentences(record.abstract, claim)
     evidence_sentence = evidence_sentences[0] if evidence_sentences else record.abstract.strip()
 
-    if threshold is None or not _is_strain_percentage_claim(claim):
+    strain_claim = threshold is not None and _is_strain_percentage_claim(claim)
+    if not strain_claim:
         numeric_result = check_numeric_claim_support(record.abstract, claim)
         if numeric_result.status == "SUPPORTED":
             return ClaimSupportResult(
@@ -267,7 +268,7 @@ def check_claim_support(record: PaperRecord, claim: str) -> ClaimSupportResult:
                 comparator,
                 claim,
             )
-            if supported:
+            if supported and claim_quantities_supported(claim, sentence):
                 if _has_cross_sentence_contradictory_percentage_context(
                     evidence_sentences,
                     sentence_index,
@@ -299,9 +300,11 @@ def check_claim_support(record: PaperRecord, claim: str) -> ClaimSupportResult:
                     claim=claim,
                 )
 
-    if threshold is None:
+    # A claim the abstract states word for word is supported, whatever numbers it carries;
+    # strain percentages keep their own pre-strain and actuation checks above.
+    if not strain_claim:
         for sentence in evidence_sentences:
-            if _sentence_supports_text_claim(sentence, claim):
+            if _sentence_supports_text_claim(sentence, claim) and claim_quantities_supported(claim, sentence):
                 return ClaimSupportResult(
                     status="SUPPORTED",
                     verdict="ACCEPT",
@@ -650,15 +653,21 @@ def _sentence_supports_text_claim(sentence: str, claim: str) -> bool:
     claim_tokens = _phrase_tokens(claim)
     if not claim_tokens:
         return False
-    sentence_tokens = _phrase_tokens(sentence)
+    sentence_spans = list(re.finditer(r"[a-zA-Z0-9]+", sentence))
+    sentence_tokens = [span.group().lower() for span in sentence_spans]
 
     for start in _token_sequence_offsets(sentence_tokens, claim_tokens):
         end = start + len(claim_tokens)
         if _has_unsupported_claim_frame(sentence):
             continue
-        if _has_scope_qualifier_prefix(sentence_tokens, start):
+        scope_start, scope_end = _scope_bounds(
+            sentence, sentence_spans[start].start(), sentence_spans[end - 1].end()
+        )
+        first_scoped = next(index for index, span in enumerate(sentence_spans) if span.start() >= scope_start)
+        if _has_scope_qualifier_prefix(sentence_tokens[first_scoped:], start - first_scoped):
             continue
-        if _has_comparative_suffix(sentence_tokens, end):
+        scoped_tokens = [span.group().lower() for span in sentence_spans if span.start() < scope_end]
+        if _has_comparative_suffix(scoped_tokens, end):
             continue
         return True
     return False
@@ -747,13 +756,43 @@ def _has_sentence_scope_prefix(value: str) -> bool:
 
 
 def _has_percentage_scope_suffix(sentence: str, percentage_end: int) -> bool:
-    suffix_tokens = _phrase_tokens(sentence[percentage_end:])
+    _, scope_end = _scope_bounds(sentence, percentage_end, percentage_end)
+    suffix_tokens = _phrase_tokens(sentence[percentage_end:scope_end])
     return _has_scope_qualifier_tokens(suffix_tokens)
 
 
 def _has_percentage_scope_prefix(sentence: str, percentage_start: int) -> bool:
-    prefix_tokens = _phrase_tokens(sentence[:percentage_start])
+    scope_start, _ = _scope_bounds(sentence, percentage_start, percentage_start)
+    prefix_tokens = _phrase_tokens(sentence[scope_start:percentage_start])
     return _has_scope_qualifier_tokens(prefix_tokens)
+
+
+def _scope_bounds(sentence: str, start: int, end: int) -> tuple[int, int]:
+    # A value inside parentheses belongs to its own "; "-separated list item: in
+    # "A (1.28 MPa); B (flexible at −25 °C)" the "at" qualifies B, not A. Elsewhere the
+    # whole sentence is the scope.
+    depth = 0
+    opening = -1
+    for index in range(start - 1, -1, -1):
+        if sentence[index] == ")":
+            depth += 1
+        elif sentence[index] == "(":
+            if depth == 0:
+                opening = index
+                break
+            depth -= 1
+    if opening == -1:
+        return 0, len(sentence)
+    depth = 0
+    for index in range(end, len(sentence)):
+        if sentence[index] == "(":
+            depth += 1
+        elif sentence[index] == ")":
+            if depth == 0:
+                semicolon = sentence.find(";", index)
+                return sentence.rfind(";", 0, opening) + 1, semicolon if semicolon != -1 else len(sentence)
+            depth -= 1
+    return 0, len(sentence)
 
 
 def _has_approximate_percentage_context(
