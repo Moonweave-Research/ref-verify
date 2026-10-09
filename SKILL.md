@@ -74,7 +74,7 @@ order, and keep the first command that prints help:
 3. **From PyPI through uv**:
 
    ```bash
-   uvx --from 'ref-verify>=1.3.0' ref-verify --help
+   uvx --from 'ref-verify>=1.3.2' ref-verify --help
    ```
 
 The commands below use the bundled form; with engine 2 or 3, replace

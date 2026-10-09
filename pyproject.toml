@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ref-verify"
-version = "1.3.1"
+version = "1.3.2"
 description = "Executable DOI and claim verification helpers for academic citations"
 readme = "README.md"
 requires-python = ">=3.10"
