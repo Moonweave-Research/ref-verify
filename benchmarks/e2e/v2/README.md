@@ -383,6 +383,122 @@ What the rate limit did and did not change:
   tool-results file back from there, at the path Claude Code gave them.
 - **Scratch files.** New files in `/tmp` from these runs: `out.json`, `refs_in.md`, `rv_in`.
 
+## SKILL.md fix: engine-first sweep (2026-10-09, main `506a4fe` + the SKILL.md change)
+
+The runs above showed three problems in condition A:
+
+- **Rate-limit hedging.** Hand-written Semantic Scholar searches hit 429s, and answers softened
+  their verdicts because of it.
+- **Hand-written claim checks.** The agent used `curl` for claims and never ran `check-file`.
+- **Oversized output.** Engine JSON was too large for one tool result.
+
+`SKILL.md` now has a "Pre-submission sweep":
+
+- `check-bib` on the reference list only, read as text or as JSON saved to a file.
+- `check-file` on the numeric claims, each judged from the abstract sentence the engine
+  returns.
+- Manual lookups only where the engine is undecided, with Semantic Scholar as the last
+  resort.
+- A rate limit is no evidence, and it never softens a verdict.
+- The answer leads with decisions, then a short "look these up yourself" list.
+
+Condition A was rerun with the v2 set on both models, one run per manuscript per round. B and C
+do not load the skill.
+
+The text changed between rounds, in response to the misses below:
+
+- **r1:** the first version.
+- **r2:** adds the title-less search hint (search the author, journal, and topic words of the
+  citing sentence).
+- **r3, r4:** add "copy numbers, units, and direction words exactly" and "read the whole
+  abstract when the sentence covers only part of the claim". r3 and r4 are the same final text,
+  run twice.
+
+| | Opus before | Opus r1 | Opus r2 | Opus r3 | Opus r4 | Sonnet before | Sonnet r1 | Sonnet r2 | Sonnet r3 | Sonnet r4 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| FAB_DOI | 10/10 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 |
+| FAB_NODOI | 6/6 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 |
+| DOI_SWAP | 8/8 | 4/4 | 4/4 | 4/4 | 4/4 | 4/4 | 4/4 | 4/4 | 4/4 | 4/4 |
+| RETRACTED | 10/10 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 |
+| WRONG_YEAR | 10/10 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 |
+| WRONG_AUTHOR | 10/10 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 | 5/5 |
+| TITLELESS_WRONG_VOLPAGE | 6/6 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | **2/3** | 3/3 | 3/3 | 3/3 |
+| CLAIM_NUMBER | 14/14 | 7/7 | 7/7 | 7/7 | 7/7 | 7/7 | 7/7 | 7/7 | 7/7 | 7/7 |
+| CLAIM_UNIT | 14/14 | 7/7 | 7/7 | 7/7 | 7/7 | 7/7 | 7/7 | **6/7** | 7/7 | 7/7 |
+| CLAIM_DIRECTION | 16/16 | 8/8 | 8/8 | 8/8 | 8/8 | **7/8** | 8/8 | 8/8 | 8/8 | 8/8 |
+| **All planted errors** | **104/104** | 52/52 | 52/52 | **52/52** | **52/52** | **51/52** | 51/52 | 51/52 | **52/52** | **52/52** |
+| False alarms (refs / unindexed / claims) | 0/0/0 | 0/1/0 | 0/0/0 | 0/0/1 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 |
+| Runs using `check-file` | 0/16 | 8/8 | 8/8 | 8/8 | 8/8 | 0/8 | 7/8 | 8/8 | 6/8 | 8/8 |
+| Runs using `check-claim` | 3/16 | 6/8 | 7/8 | 8/8 | 7/8 | 4/8 | 6/8 | 5/8 | 5/8 | 5/8 |
+| Runs with own `curl` calls | 16/16 | 4/8 | 6/8 | 6/8 | 6/8 | 5/8 | 4/8 | 4/8 | 6/8 | 4/8 |
+| Runs with own Semantic Scholar queries | 12/16 | 0 | 0 | 0 | 0 | 2/8 | 0 | 0 | 0 | 0 |
+| Answers mentioning a rate limit | 11/16 | 0 | 0 | 0 | 0 | 2/8 | 0 | 0 | 0 | 0 |
+| …that softened a verdict because of it | 6/16 | 0 | 0 | 0 | 0 | 1/8 | 0 | 0 | 0 | 0 |
+| Runs whose engine output exceeded the tool-result limit | 6/16 | 0 | 0 | 0 | 0 | 5/8 | 0 | 0 | 1/8 | 0 |
+| Wall time per run, median | 75 s | 59 s | 64 s | 64 s | 66 s | 56 s | 48 s | 47 s | 53 s | 53 s |
+
+`check-bib` ran in every run. The "before" columns are the A runs above: Opus over 2 repeats,
+Sonnet over 1. Decisions are in `skill-fix/adjudication-<model>-r<round>.json`, and per-run
+results are in `skill-fix/results-2026-10-09-a-only.json`.
+
+**What the numbers say.**
+
+- **Recall is no lower on either model with the final text.**
+  - Opus caught 104/104 over r3 and r4, as before.
+  - Sonnet caught 104/104 over r3 and r4, against 51/52 before (the miss was a direction
+    error).
+- **The rate-limit hedging is gone.** In all 64 new runs, no answer mentions a rate limit and
+  no agent searched Semantic Scholar by hand.
+- **Only one run hit the output limit.** The engine output exceeded the tool-result limit in 1
+  of 64 runs, against 11 of 24 before.
+- **Every run used the engine.** `check-file` became the main claim path in 61 of 64 runs.
+- **Runs are faster.** Median time fell from 75 s to 59–66 s on Opus and from 56 s to 47–53 s
+  on Sonnet.
+- **Each earlier round had one Sonnet miss caused by the new workflow:**
+  - **r1, title-less volume/page:** the agent searched the citation without the topic words.
+    Fixed by the r2 hint.
+  - **r2, unit:** the agent copied `\SI{172.3}{\joule\per\mole}` into `claims.jsonl` as
+    "172.3 kJ/mol", already corrected, and then found it matched. Fixed by the copy rule.
+  - With one run per manuscript per round, r3 and r4 show the fixes held twice; they do not
+    rule out a rarer miss.
+
+**False alarms and wrong statements in the new runs.**
+
+Opus made two false alarms, against none in its 16 runs before:
+
+- **r1, thesis title.** "원고에는 '의'가 빠져 있습니다" about a thesis title that has it.
+- **r3, abstract misread.** "The abstract does not say the groups were 'home exercise training
+  or usual activity'"; it does.
+
+Two more statements of the "the abstract doesn't say X" kind were wrong, both attached to
+errors that were caught:
+
+- **Sonnet r1 and r2.** "the 'deposited at 100 K' detail is not in the abstract"; it is.
+- **Opus r4.** "The abstract only calls it 'P2'"; the abstract names it.
+
+The rule to read the whole abstract first cut these down but did not end them.
+
+**Engine findings (no engine change here).**
+
+Run directly on the truth's 30 claim sentences, `check-file` returned
+`WARN`/`CLAIM_NOT_EXPLICIT` for 29, including all 8 correct ones. One example: "1.28 MPa
+tensile strength with 573% elongation" appears word for word in its abstract.
+
+It also returned `ACCEPT` for one planted error: "a service lifetime of 61 years at 80 °C",
+whose evidence sentence says 16 years. Its evidence sentence was the right one in 23 of 30
+claims.
+
+This is why the sweep judges each claim from the sentence, not the label. In all 8 new m3
+runs, the agent reported the 61-year claim as wrong.
+
+**Isolation leftovers (not deleted).**
+
+- **Tool-results files.** 2 of the 64 new runs left a file under `~/.claude/projects/`, both in
+  Sonnet r3 (`…e2e4-sonnet3-projects-v2m2-ionic-en--A--1` and `…v2m8-magnetism-en--A--1`).
+- **Scratch files.** New in `/tmp`: `claims.jsonl`, `refs_only.md`, `refcheck/`, `refwork/`.
+- **Read-only access.** In Sonnet r1, two `ls` commands listed the user's global skill folder
+  `~/.agents/skills/ref-verify/src`. No engine ran from it.
+
 ## Rerun
 
 ```
