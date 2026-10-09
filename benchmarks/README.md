@@ -25,7 +25,7 @@ measure again after the tool is tuned against v1's misses.
   naming: `2026-10-08-34da678.json` (before #27) and `2026-10-08-7910447.json` (after #27,
   before the held-out set existed).
 - `../scripts/benchmark_references.py`: runs a set (standard library only).
-- `claims-v1.jsonl` and `../scripts/benchmark_claims.py`: the claim set and its runner (see [Claim set](#claim-set-claims-v1jsonl)).
+- `claims-v1.jsonl`, `claims-copy-v1.jsonl`, and `../scripts/benchmark_claims.py`: the claim sets and their runner (see [Claim set](#claim-set-claims-v1jsonl)).
 - `../scripts/render_scorecard.py`: draws `.github/assets/scorecard-{light,dark}.svg`
   from a held-out results file, with the development-set result as a footnote. The README chart
   is drawn from `results/2026-10-09-8170e66-holdout-v2.json` with
@@ -75,9 +75,17 @@ concrete, and clinical papers with a CrossRef abstract; none appears in any othe
 the E2E sets, or the test fixtures. The set was frozen at the commit that added it, before
 the claim engine was run on it.
 
+`claims-copy-v1.jsonl` has 60 more claims on the same 30 papers, written the other way:
+the supported claim copies a span of the abstract (a few tidy subscript or exponent
+spacing, such as `NH 3` to `NH3`), and the unsupported claim is that span with exactly one
+thing changed, six of each error type. This is how a citing sentence drafted from an
+abstract goes wrong. It was added after the first run of `claims-v1.jsonl`, where the
+unchanged engine accepted none of the 60 paraphrased claims, true or false, and so could not
+show a false ACCEPT; it was frozen before the engine was run on it.
+
 | Field | Meaning |
 |---|---|
-| `id` | `c1-NN`. |
+| `id` | `c1-NN` (`cc1-NN` in the copy set). |
 | `doi`, `claim` | What a user would pass to `check-claim`. |
 | `label` | `SUPPORTED` or `NOT_SUPPORTED`, by a reading of the abstract. |
 | `error_type` | For unsupported claims: `wrong_number`, `wrong_unit`, `wrong_direction`, `wrong_subject`, or `multi_quantity`. |
@@ -92,6 +100,7 @@ fetched abstract no longer matches `abstract_sha256` is listed under `abstract_c
 
 ```bash
 python3 scripts/benchmark_claims.py
+python3 scripts/benchmark_claims.py --dataset benchmarks/claims-copy-v1.jsonl
 ```
 
 ## Item fields
