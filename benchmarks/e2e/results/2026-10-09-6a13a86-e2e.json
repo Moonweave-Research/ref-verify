@@ -1,0 +1,1407 @@
+{
+ "summary": {
+  "A": {
+   "runs": 16,
+   "recall_by_type": {
+    "TITLELESS_WRONG_VOLPAGE": [
+     6,
+     6
+    ],
+    "RETRACTED": [
+     8,
+     8
+    ],
+    "FAB_NODOI": [
+     8,
+     8
+    ],
+    "CLAIM_UNIT": [
+     8,
+     8
+    ],
+    "CLAIM_DIRECTION": [
+     8,
+     8
+    ],
+    "DOI_SWAP": [
+     8,
+     8
+    ],
+    "FAB_DOI": [
+     10,
+     10
+    ],
+    "WRONG_YEAR": [
+     8,
+     8
+    ],
+    "CLAIM_NUMBER": [
+     10,
+     10
+    ],
+    "WRONG_AUTHOR": [
+     6,
+     6
+    ]
+   },
+   "recall_overall": [
+    80,
+    80
+   ],
+   "false_alarms": {
+    "correct_reference": [
+     0,
+     120
+    ],
+    "unindexed_reference": [
+     0,
+     10
+    ],
+    "correct_claim": [
+     0,
+     16
+    ]
+   },
+   "engine_invoked": 16,
+   "skill_loaded": 16,
+   "web_tool_runs": 2,
+   "wall_seconds_median": 85.0,
+   "wall_seconds_mean": 84.5,
+   "usable": 16,
+   "pending_review": 0
+  },
+  "B": {
+   "runs": 16,
+   "recall_by_type": {
+    "DOI_SWAP": [
+     8,
+     8
+    ],
+    "FAB_DOI": [
+     10,
+     10
+    ],
+    "WRONG_YEAR": [
+     8,
+     8
+    ],
+    "CLAIM_NUMBER": [
+     7,
+     10
+    ],
+    "CLAIM_DIRECTION": [
+     8,
+     8
+    ],
+    "WRONG_AUTHOR": [
+     6,
+     6
+    ],
+    "RETRACTED": [
+     8,
+     8
+    ],
+    "FAB_NODOI": [
+     8,
+     8
+    ],
+    "CLAIM_UNIT": [
+     8,
+     8
+    ],
+    "TITLELESS_WRONG_VOLPAGE": [
+     6,
+     6
+    ]
+   },
+   "recall_overall": [
+    77,
+    80
+   ],
+   "false_alarms": {
+    "correct_reference": [
+     0,
+     120
+    ],
+    "unindexed_reference": [
+     0,
+     10
+    ],
+    "correct_claim": [
+     0,
+     16
+    ]
+   },
+   "engine_invoked": 0,
+   "skill_loaded": 0,
+   "web_tool_runs": 13,
+   "wall_seconds_median": 40.0,
+   "wall_seconds_mean": 44.7,
+   "usable": 16,
+   "pending_review": 0
+  }
+ },
+ "runs": [
+  {
+   "run_id": "m4_physics_en__A__1",
+   "manuscript": "m4_physics_en",
+   "condition": "A",
+   "repeat": 1,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (m4_physics_en.md). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 73.7,
+   "hook_event_lines": 0,
+   "answer_chars": 2507,
+   "usage": {
+    "mode": "engine",
+    "skill_loaded": true,
+    "engine_calls": 1,
+    "engine_subcommands": [
+     "check-bib"
+    ],
+    "web_tool_calls": 0,
+    "shell_http_calls": 2,
+    "tool_calls": 6
+   },
+   "usable": true,
+   "note": "Pilot run, same harness and command.",
+   "decisions": {
+    "m4_physics_en#01": "clean",
+    "m4_physics_en#02": "clean",
+    "m4_physics_en#03": "clean",
+    "m4_physics_en#04": "clean",
+    "m4_physics_en#05": "clean",
+    "m4_physics_en#06": "clean",
+    "m4_physics_en#07": "clean",
+    "m4_physics_en#08": "caught",
+    "m4_physics_en#09": "caught",
+    "m4_physics_en#10": "caught",
+    "m4_physics_en#11": "caught",
+    "m4_physics_en#12": "caught",
+    "m4_physics_en#13": "caught",
+    "m4_physics_en#14": "clean"
+   }
+  },
+  {
+   "run_id": "m1_dea_en__A__1",
+   "manuscript": "m1_dea_en",
+   "condition": "A",
+   "repeat": 1,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (m1_dea_en.md). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 117.5,
+   "hook_event_lines": 0,
+   "answer_chars": 3069,
+   "usage": {
+    "mode": "engine",
+    "skill_loaded": true,
+    "engine_calls": 2,
+    "engine_subcommands": [
+     "check-bib"
+    ],
+    "web_tool_calls": 0,
+    "shell_http_calls": 5,
+    "tool_calls": 11
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m1_dea_en#01": "clean",
+    "m1_dea_en#02": "clean",
+    "m1_dea_en#03": "clean",
+    "m1_dea_en#04": "clean",
+    "m1_dea_en#05": "clean",
+    "m1_dea_en#06": "clean",
+    "m1_dea_en#07": "caught",
+    "m1_dea_en#08": "caught",
+    "m1_dea_en#09": "clean",
+    "m1_dea_en#10": "clean",
+    "m1_dea_en#11": "caught",
+    "m1_dea_en#12": "clean",
+    "m1_dea_en#13": "caught",
+    "m1_dea_en#14": "caught",
+    "m1_dea_en#15": "clean"
+   }
+  },
+  {
+   "run_id": "m1_dea_en__B__1",
+   "manuscript": "m1_dea_en",
+   "condition": "B",
+   "repeat": 1,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (m1_dea_en.md). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 57.3,
+   "hook_event_lines": 0,
+   "answer_chars": 2318,
+   "usage": {
+    "mode": "no_skill",
+    "skill_loaded": false,
+    "engine_calls": 0,
+    "engine_subcommands": [],
+    "web_tool_calls": 2,
+    "shell_http_calls": 2,
+    "tool_calls": 7
+   },
+   "usable": true,
+   "note": "Pelrine 2000 '380%' not mentioned; the answer says two passages misdescribe papers but names only Poulin and Duduta.",
+   "decisions": {
+    "m1_dea_en#01": "clean",
+    "m1_dea_en#02": "clean",
+    "m1_dea_en#03": "clean",
+    "m1_dea_en#04": "clean",
+    "m1_dea_en#05": "clean",
+    "m1_dea_en#06": "clean",
+    "m1_dea_en#07": "caught",
+    "m1_dea_en#08": "caught",
+    "m1_dea_en#09": "clean",
+    "m1_dea_en#10": "clean",
+    "m1_dea_en#11": "caught",
+    "m1_dea_en#12": "clean",
+    "m1_dea_en#13": "missed",
+    "m1_dea_en#14": "caught",
+    "m1_dea_en#15": "clean"
+   }
+  },
+  {
+   "run_id": "m2_vaccine_en__A__1",
+   "manuscript": "m2_vaccine_en",
+   "condition": "A",
+   "repeat": 1,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (m2_vaccine_en.md). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 62.7,
+   "hook_event_lines": 0,
+   "answer_chars": 2397,
+   "usage": {
+    "mode": "engine",
+    "skill_loaded": true,
+    "engine_calls": 4,
+    "engine_subcommands": [
+     "check-bib",
+     "check-claim"
+    ],
+    "web_tool_calls": 0,
+    "shell_http_calls": 2,
+    "tool_calls": 8
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m2_vaccine_en#01": "clean",
+    "m2_vaccine_en#02": "caught",
+    "m2_vaccine_en#03": "clean",
+    "m2_vaccine_en#04": "clean",
+    "m2_vaccine_en#05": "caught",
+    "m2_vaccine_en#06": "clean",
+    "m2_vaccine_en#07": "clean",
+    "m2_vaccine_en#08": "clean",
+    "m2_vaccine_en#09": "caught",
+    "m2_vaccine_en#10": "clean",
+    "m2_vaccine_en#11": "clean",
+    "m2_vaccine_en#12": "caught",
+    "m2_vaccine_en#13": "caught",
+    "m2_vaccine_en#14": "clean",
+    "m2_vaccine_en#15": "clean"
+   }
+  },
+  {
+   "run_id": "m2_vaccine_en__B__1",
+   "manuscript": "m2_vaccine_en",
+   "condition": "B",
+   "repeat": 1,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (m2_vaccine_en.md). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 32.0,
+   "hook_event_lines": 0,
+   "answer_chars": 2496,
+   "usage": {
+    "mode": "no_skill",
+    "skill_loaded": false,
+    "engine_calls": 0,
+    "engine_subcommands": [],
+    "web_tool_calls": 1,
+    "shell_http_calls": 0,
+    "tool_calls": 4
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m2_vaccine_en#01": "clean",
+    "m2_vaccine_en#02": "caught",
+    "m2_vaccine_en#03": "clean",
+    "m2_vaccine_en#04": "clean",
+    "m2_vaccine_en#05": "caught",
+    "m2_vaccine_en#06": "clean",
+    "m2_vaccine_en#07": "clean",
+    "m2_vaccine_en#08": "clean",
+    "m2_vaccine_en#09": "caught",
+    "m2_vaccine_en#10": "clean",
+    "m2_vaccine_en#11": "clean",
+    "m2_vaccine_en#12": "caught",
+    "m2_vaccine_en#13": "caught",
+    "m2_vaccine_en#14": "clean",
+    "m2_vaccine_en#15": "clean"
+   }
+  },
+  {
+   "run_id": "m3_ml_en__A__1",
+   "manuscript": "m3_ml_en",
+   "condition": "A",
+   "repeat": 1,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (m3_ml_en.md). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 73.6,
+   "hook_event_lines": 0,
+   "answer_chars": 2210,
+   "usage": {
+    "mode": "engine",
+    "skill_loaded": true,
+    "engine_calls": 3,
+    "engine_subcommands": [
+     "check-bib",
+     "check-claim"
+    ],
+    "web_tool_calls": 0,
+    "shell_http_calls": 3,
+    "tool_calls": 8
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m3_ml_en#01": "clean",
+    "m3_ml_en#02": "clean",
+    "m3_ml_en#03": "clean",
+    "m3_ml_en#04": "clean",
+    "m3_ml_en#05": "clean",
+    "m3_ml_en#06": "clean",
+    "m3_ml_en#07": "clean",
+    "m3_ml_en#08": "clean",
+    "m3_ml_en#09": "caught",
+    "m3_ml_en#10": "caught",
+    "m3_ml_en#11": "caught",
+    "m3_ml_en#12": "clean",
+    "m3_ml_en#13": "caught",
+    "m3_ml_en#14": "clean"
+   }
+  },
+  {
+   "run_id": "m3_ml_en__B__1",
+   "manuscript": "m3_ml_en",
+   "condition": "B",
+   "repeat": 1,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (m3_ml_en.md). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 30.6,
+   "hook_event_lines": 0,
+   "answer_chars": 2384,
+   "usage": {
+    "mode": "no_skill",
+    "skill_loaded": false,
+    "engine_calls": 0,
+    "engine_subcommands": [],
+    "web_tool_calls": 2,
+    "shell_http_calls": 0,
+    "tool_calls": 5
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m3_ml_en#01": "clean",
+    "m3_ml_en#02": "clean",
+    "m3_ml_en#03": "clean",
+    "m3_ml_en#04": "clean",
+    "m3_ml_en#05": "clean",
+    "m3_ml_en#06": "clean",
+    "m3_ml_en#07": "clean",
+    "m3_ml_en#08": "clean",
+    "m3_ml_en#09": "caught",
+    "m3_ml_en#10": "caught",
+    "m3_ml_en#11": "caught",
+    "m3_ml_en#12": "clean",
+    "m3_ml_en#13": "caught",
+    "m3_ml_en#14": "clean"
+   }
+  },
+  {
+   "run_id": "m4_physics_en__B__1",
+   "manuscript": "m4_physics_en",
+   "condition": "B",
+   "repeat": 1,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (m4_physics_en.md). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 38.1,
+   "hook_event_lines": 0,
+   "answer_chars": 2758,
+   "usage": {
+    "mode": "no_skill",
+    "skill_loaded": false,
+    "engine_calls": 0,
+    "engine_subcommands": [],
+    "web_tool_calls": 2,
+    "shell_http_calls": 0,
+    "tool_calls": 5
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m4_physics_en#01": "clean",
+    "m4_physics_en#02": "clean",
+    "m4_physics_en#03": "clean",
+    "m4_physics_en#04": "clean",
+    "m4_physics_en#05": "clean",
+    "m4_physics_en#06": "clean",
+    "m4_physics_en#07": "clean",
+    "m4_physics_en#08": "caught",
+    "m4_physics_en#09": "caught",
+    "m4_physics_en#10": "caught",
+    "m4_physics_en#11": "caught",
+    "m4_physics_en#12": "caught",
+    "m4_physics_en#13": "caught",
+    "m4_physics_en#14": "clean"
+   }
+  },
+  {
+   "run_id": "m5_dea_latex__A__1",
+   "manuscript": "m5_dea_latex",
+   "condition": "A",
+   "repeat": 1,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 97.4,
+   "hook_event_lines": 0,
+   "answer_chars": 2303,
+   "usage": {
+    "mode": "engine",
+    "skill_loaded": true,
+    "engine_calls": 5,
+    "engine_subcommands": [
+     "check-bib",
+     "check-claim"
+    ],
+    "web_tool_calls": 0,
+    "shell_http_calls": 2,
+    "tool_calls": 7
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m5_dea_latex#01": "clean",
+    "m5_dea_latex#02": "clean",
+    "m5_dea_latex#03": "clean",
+    "m5_dea_latex#04": "clean",
+    "m5_dea_latex#05": "clean",
+    "m5_dea_latex#06": "clean",
+    "m5_dea_latex#07": "caught",
+    "m5_dea_latex#08": "clean",
+    "m5_dea_latex#09": "caught",
+    "m5_dea_latex#10": "clean",
+    "m5_dea_latex#11": "caught",
+    "m5_dea_latex#12": "caught",
+    "m5_dea_latex#13": "caught",
+    "m5_dea_latex#14": "clean"
+   }
+  },
+  {
+   "run_id": "m5_dea_latex__B__1",
+   "manuscript": "m5_dea_latex",
+   "condition": "B",
+   "repeat": 1,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 47.4,
+   "hook_event_lines": 0,
+   "answer_chars": 2669,
+   "usage": {
+    "mode": "no_skill",
+    "skill_loaded": false,
+    "engine_calls": 0,
+    "engine_subcommands": [],
+    "web_tool_calls": 0,
+    "shell_http_calls": 2,
+    "tool_calls": 5
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m5_dea_latex#01": "clean",
+    "m5_dea_latex#02": "clean",
+    "m5_dea_latex#03": "clean",
+    "m5_dea_latex#04": "clean",
+    "m5_dea_latex#05": "clean",
+    "m5_dea_latex#06": "clean",
+    "m5_dea_latex#07": "caught",
+    "m5_dea_latex#08": "clean",
+    "m5_dea_latex#09": "caught",
+    "m5_dea_latex#10": "clean",
+    "m5_dea_latex#11": "caught",
+    "m5_dea_latex#12": "caught",
+    "m5_dea_latex#13": "caught",
+    "m5_dea_latex#14": "clean"
+   }
+  },
+  {
+   "run_id": "m6_biomed_latex__A__1",
+   "manuscript": "m6_biomed_latex",
+   "condition": "A",
+   "repeat": 1,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 95.6,
+   "hook_event_lines": 0,
+   "answer_chars": 2366,
+   "usage": {
+    "mode": "engine",
+    "skill_loaded": true,
+    "engine_calls": 5,
+    "engine_subcommands": [
+     "check-bib",
+     "check-claim"
+    ],
+    "web_tool_calls": 0,
+    "shell_http_calls": 2,
+    "tool_calls": 10
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m6_biomed_latex#01": "clean",
+    "m6_biomed_latex#02": "clean",
+    "m6_biomed_latex#03": "caught",
+    "m6_biomed_latex#04": "clean",
+    "m6_biomed_latex#05": "clean",
+    "m6_biomed_latex#06": "clean",
+    "m6_biomed_latex#07": "clean",
+    "m6_biomed_latex#08": "clean",
+    "m6_biomed_latex#09": "caught",
+    "m6_biomed_latex#10": "clean",
+    "m6_biomed_latex#11": "clean",
+    "m6_biomed_latex#12": "caught",
+    "m6_biomed_latex#13": "caught",
+    "m6_biomed_latex#14": "caught",
+    "m6_biomed_latex#15": "clean"
+   }
+  },
+  {
+   "run_id": "m6_biomed_latex__B__1",
+   "manuscript": "m6_biomed_latex",
+   "condition": "B",
+   "repeat": 1,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 30.5,
+   "hook_event_lines": 0,
+   "answer_chars": 1937,
+   "usage": {
+    "mode": "no_skill",
+    "skill_loaded": false,
+    "engine_calls": 0,
+    "engine_subcommands": [],
+    "web_tool_calls": 1,
+    "shell_http_calls": 0,
+    "tool_calls": 5
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m6_biomed_latex#01": "clean",
+    "m6_biomed_latex#02": "clean",
+    "m6_biomed_latex#03": "caught",
+    "m6_biomed_latex#04": "clean",
+    "m6_biomed_latex#05": "clean",
+    "m6_biomed_latex#06": "clean",
+    "m6_biomed_latex#07": "clean",
+    "m6_biomed_latex#08": "clean",
+    "m6_biomed_latex#09": "caught",
+    "m6_biomed_latex#10": "clean",
+    "m6_biomed_latex#11": "clean",
+    "m6_biomed_latex#12": "caught",
+    "m6_biomed_latex#13": "caught",
+    "m6_biomed_latex#14": "caught",
+    "m6_biomed_latex#15": "clean"
+   }
+  },
+  {
+   "run_id": "m7_polymer_ko__A__1",
+   "manuscript": "m7_polymer_ko",
+   "condition": "A",
+   "repeat": 1,
+   "prompt": "투고 전에 이 원고(m7_polymer_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+   "exit_code": 0,
+   "wall_seconds": 94.9,
+   "hook_event_lines": 0,
+   "answer_chars": 1925,
+   "usage": {
+    "mode": "engine",
+    "skill_loaded": true,
+    "engine_calls": 2,
+    "engine_subcommands": [
+     "check-bib",
+     "check-claim"
+    ],
+    "web_tool_calls": 6,
+    "shell_http_calls": 2,
+    "tool_calls": 14
+   },
+   "usable": true,
+   "note": "Unindexed [4] (thesis) listed under '확인 권장', not called wrong.",
+   "decisions": {
+    "m7_polymer_ko#01": "clean",
+    "m7_polymer_ko#02": "caught",
+    "m7_polymer_ko#03": "clean",
+    "m7_polymer_ko#04": "clean",
+    "m7_polymer_ko#05": "clean",
+    "m7_polymer_ko#06": "clean",
+    "m7_polymer_ko#07": "clean",
+    "m7_polymer_ko#08": "clean",
+    "m7_polymer_ko#09": "caught",
+    "m7_polymer_ko#10": "caught",
+    "m7_polymer_ko#11": "clean",
+    "m7_polymer_ko#12": "caught",
+    "m7_polymer_ko#13": "clean"
+   }
+  },
+  {
+   "run_id": "m7_polymer_ko__B__1",
+   "manuscript": "m7_polymer_ko",
+   "condition": "B",
+   "repeat": 1,
+   "prompt": "투고 전에 이 원고(m7_polymer_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+   "exit_code": 0,
+   "wall_seconds": 78.5,
+   "hook_event_lines": 0,
+   "answer_chars": 2030,
+   "usage": {
+    "mode": "no_skill",
+    "skill_loaded": false,
+    "engine_calls": 0,
+    "engine_subcommands": [],
+    "web_tool_calls": 5,
+    "shell_http_calls": 2,
+    "tool_calls": 10
+   },
+   "usable": true,
+   "note": "Unindexed [4], [5] listed under '확인하지 못한 항목', not called wrong.",
+   "decisions": {
+    "m7_polymer_ko#01": "clean",
+    "m7_polymer_ko#02": "caught",
+    "m7_polymer_ko#03": "clean",
+    "m7_polymer_ko#04": "clean",
+    "m7_polymer_ko#05": "clean",
+    "m7_polymer_ko#06": "clean",
+    "m7_polymer_ko#07": "clean",
+    "m7_polymer_ko#08": "clean",
+    "m7_polymer_ko#09": "caught",
+    "m7_polymer_ko#10": "caught",
+    "m7_polymer_ko#11": "clean",
+    "m7_polymer_ko#12": "caught",
+    "m7_polymer_ko#13": "clean"
+   }
+  },
+  {
+   "run_id": "m8_ml_ko__A__1",
+   "manuscript": "m8_ml_ko",
+   "condition": "A",
+   "repeat": 1,
+   "prompt": "투고 전에 이 원고(m8_ml_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+   "exit_code": 0,
+   "wall_seconds": 137.5,
+   "hook_event_lines": 0,
+   "answer_chars": 1841,
+   "usage": {
+    "mode": "engine",
+    "skill_loaded": true,
+    "engine_calls": 3,
+    "engine_subcommands": [
+     "check-bib"
+    ],
+    "web_tool_calls": 0,
+    "shell_http_calls": 4,
+    "tool_calls": 8
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m8_ml_ko#01": "clean",
+    "m8_ml_ko#02": "caught",
+    "m8_ml_ko#03": "clean",
+    "m8_ml_ko#04": "clean",
+    "m8_ml_ko#05": "clean",
+    "m8_ml_ko#06": "clean",
+    "m8_ml_ko#07": "clean",
+    "m8_ml_ko#08": "caught",
+    "m8_ml_ko#09": "caught",
+    "m8_ml_ko#10": "caught",
+    "m8_ml_ko#11": "clean",
+    "m8_ml_ko#12": "caught",
+    "m8_ml_ko#13": "caught"
+   }
+  },
+  {
+   "run_id": "m8_ml_ko__B__1",
+   "manuscript": "m8_ml_ko",
+   "condition": "B",
+   "repeat": 1,
+   "prompt": "투고 전에 이 원고(m8_ml_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+   "exit_code": 0,
+   "wall_seconds": 42.8,
+   "hook_event_lines": 0,
+   "answer_chars": 1349,
+   "usage": {
+    "mode": "no_skill",
+    "skill_loaded": false,
+    "engine_calls": 0,
+    "engine_subcommands": [],
+    "web_tool_calls": 0,
+    "shell_http_calls": 3,
+    "tool_calls": 5
+   },
+   "usable": true,
+   "note": "States '1,200만 장, 1000개 범주라는 부분은 맞습니다' — affirms the planted wrong number (abstract: 1.2 million images).",
+   "decisions": {
+    "m8_ml_ko#01": "clean",
+    "m8_ml_ko#02": "caught",
+    "m8_ml_ko#03": "clean",
+    "m8_ml_ko#04": "clean",
+    "m8_ml_ko#05": "clean",
+    "m8_ml_ko#06": "clean",
+    "m8_ml_ko#07": "clean",
+    "m8_ml_ko#08": "caught",
+    "m8_ml_ko#09": "caught",
+    "m8_ml_ko#10": "caught",
+    "m8_ml_ko#11": "clean",
+    "m8_ml_ko#12": "missed",
+    "m8_ml_ko#13": "caught"
+   }
+  },
+  {
+   "run_id": "m1_dea_en__A__2",
+   "manuscript": "m1_dea_en",
+   "condition": "A",
+   "repeat": 2,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (m1_dea_en.md). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 55.9,
+   "hook_event_lines": 0,
+   "answer_chars": 2784,
+   "usage": {
+    "mode": "engine",
+    "skill_loaded": true,
+    "engine_calls": 1,
+    "engine_subcommands": [
+     "check-bib"
+    ],
+    "web_tool_calls": 0,
+    "shell_http_calls": 2,
+    "tool_calls": 6
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m1_dea_en#01": "clean",
+    "m1_dea_en#02": "clean",
+    "m1_dea_en#03": "clean",
+    "m1_dea_en#04": "clean",
+    "m1_dea_en#05": "clean",
+    "m1_dea_en#06": "clean",
+    "m1_dea_en#07": "caught",
+    "m1_dea_en#08": "caught",
+    "m1_dea_en#09": "clean",
+    "m1_dea_en#10": "clean",
+    "m1_dea_en#11": "caught",
+    "m1_dea_en#12": "clean",
+    "m1_dea_en#13": "caught",
+    "m1_dea_en#14": "caught",
+    "m1_dea_en#15": "clean"
+   }
+  },
+  {
+   "run_id": "m1_dea_en__B__2",
+   "manuscript": "m1_dea_en",
+   "condition": "B",
+   "repeat": 2,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (m1_dea_en.md). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 56.7,
+   "hook_event_lines": 0,
+   "answer_chars": 3376,
+   "usage": {
+    "mode": "no_skill",
+    "skill_loaded": false,
+    "engine_calls": 0,
+    "engine_subcommands": [],
+    "web_tool_calls": 3,
+    "shell_http_calls": 0,
+    "tool_calls": 6
+   },
+   "usable": true,
+   "note": "Lists Pelrine 2000 among the correct entries and never mentions 380%; also says Ha 2006 '300 MV/m' could not be confirmed (correct claim, not called wrong).",
+   "decisions": {
+    "m1_dea_en#01": "clean",
+    "m1_dea_en#02": "clean",
+    "m1_dea_en#03": "clean",
+    "m1_dea_en#04": "clean",
+    "m1_dea_en#05": "clean",
+    "m1_dea_en#06": "clean",
+    "m1_dea_en#07": "caught",
+    "m1_dea_en#08": "caught",
+    "m1_dea_en#09": "clean",
+    "m1_dea_en#10": "clean",
+    "m1_dea_en#11": "caught",
+    "m1_dea_en#12": "clean",
+    "m1_dea_en#13": "missed",
+    "m1_dea_en#14": "caught",
+    "m1_dea_en#15": "clean"
+   }
+  },
+  {
+   "run_id": "m2_vaccine_en__A__2",
+   "manuscript": "m2_vaccine_en",
+   "condition": "A",
+   "repeat": 2,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (m2_vaccine_en.md). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 65.9,
+   "hook_event_lines": 0,
+   "answer_chars": 1943,
+   "usage": {
+    "mode": "engine",
+    "skill_loaded": true,
+    "engine_calls": 5,
+    "engine_subcommands": [
+     "check-bib",
+     "check-claim"
+    ],
+    "web_tool_calls": 0,
+    "shell_http_calls": 3,
+    "tool_calls": 8
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m2_vaccine_en#01": "clean",
+    "m2_vaccine_en#02": "caught",
+    "m2_vaccine_en#03": "clean",
+    "m2_vaccine_en#04": "clean",
+    "m2_vaccine_en#05": "caught",
+    "m2_vaccine_en#06": "clean",
+    "m2_vaccine_en#07": "clean",
+    "m2_vaccine_en#08": "clean",
+    "m2_vaccine_en#09": "caught",
+    "m2_vaccine_en#10": "clean",
+    "m2_vaccine_en#11": "clean",
+    "m2_vaccine_en#12": "caught",
+    "m2_vaccine_en#13": "caught",
+    "m2_vaccine_en#14": "clean",
+    "m2_vaccine_en#15": "clean"
+   }
+  },
+  {
+   "run_id": "m2_vaccine_en__B__2",
+   "manuscript": "m2_vaccine_en",
+   "condition": "B",
+   "repeat": 2,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (m2_vaccine_en.md). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 33.2,
+   "hook_event_lines": 0,
+   "answer_chars": 2403,
+   "usage": {
+    "mode": "no_skill",
+    "skill_loaded": false,
+    "engine_calls": 0,
+    "engine_subcommands": [],
+    "web_tool_calls": 1,
+    "shell_http_calls": 0,
+    "tool_calls": 4
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m2_vaccine_en#01": "clean",
+    "m2_vaccine_en#02": "caught",
+    "m2_vaccine_en#03": "clean",
+    "m2_vaccine_en#04": "clean",
+    "m2_vaccine_en#05": "caught",
+    "m2_vaccine_en#06": "clean",
+    "m2_vaccine_en#07": "clean",
+    "m2_vaccine_en#08": "clean",
+    "m2_vaccine_en#09": "caught",
+    "m2_vaccine_en#10": "clean",
+    "m2_vaccine_en#11": "clean",
+    "m2_vaccine_en#12": "caught",
+    "m2_vaccine_en#13": "caught",
+    "m2_vaccine_en#14": "clean",
+    "m2_vaccine_en#15": "clean"
+   }
+  },
+  {
+   "run_id": "m3_ml_en__A__2",
+   "manuscript": "m3_ml_en",
+   "condition": "A",
+   "repeat": 2,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (m3_ml_en.md). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 51.2,
+   "hook_event_lines": 0,
+   "answer_chars": 2174,
+   "usage": {
+    "mode": "engine",
+    "skill_loaded": true,
+    "engine_calls": 2,
+    "engine_subcommands": [
+     "check-bib"
+    ],
+    "web_tool_calls": 0,
+    "shell_http_calls": 2,
+    "tool_calls": 6
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m3_ml_en#01": "clean",
+    "m3_ml_en#02": "clean",
+    "m3_ml_en#03": "clean",
+    "m3_ml_en#04": "clean",
+    "m3_ml_en#05": "clean",
+    "m3_ml_en#06": "clean",
+    "m3_ml_en#07": "clean",
+    "m3_ml_en#08": "clean",
+    "m3_ml_en#09": "caught",
+    "m3_ml_en#10": "caught",
+    "m3_ml_en#11": "caught",
+    "m3_ml_en#12": "clean",
+    "m3_ml_en#13": "caught",
+    "m3_ml_en#14": "clean"
+   }
+  },
+  {
+   "run_id": "m3_ml_en__B__2",
+   "manuscript": "m3_ml_en",
+   "condition": "B",
+   "repeat": 2,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (m3_ml_en.md). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 30.7,
+   "hook_event_lines": 0,
+   "answer_chars": 1906,
+   "usage": {
+    "mode": "no_skill",
+    "skill_loaded": false,
+    "engine_calls": 0,
+    "engine_subcommands": [],
+    "web_tool_calls": 2,
+    "shell_http_calls": 0,
+    "tool_calls": 5
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m3_ml_en#01": "clean",
+    "m3_ml_en#02": "clean",
+    "m3_ml_en#03": "clean",
+    "m3_ml_en#04": "clean",
+    "m3_ml_en#05": "clean",
+    "m3_ml_en#06": "clean",
+    "m3_ml_en#07": "clean",
+    "m3_ml_en#08": "clean",
+    "m3_ml_en#09": "caught",
+    "m3_ml_en#10": "caught",
+    "m3_ml_en#11": "caught",
+    "m3_ml_en#12": "clean",
+    "m3_ml_en#13": "caught",
+    "m3_ml_en#14": "clean"
+   }
+  },
+  {
+   "run_id": "m4_physics_en__A__2",
+   "manuscript": "m4_physics_en",
+   "condition": "A",
+   "repeat": 2,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (m4_physics_en.md). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 90.4,
+   "hook_event_lines": 0,
+   "answer_chars": 2845,
+   "usage": {
+    "mode": "engine",
+    "skill_loaded": true,
+    "engine_calls": 2,
+    "engine_subcommands": [
+     "check-bib"
+    ],
+    "web_tool_calls": 0,
+    "shell_http_calls": 3,
+    "tool_calls": 7
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m4_physics_en#01": "clean",
+    "m4_physics_en#02": "clean",
+    "m4_physics_en#03": "clean",
+    "m4_physics_en#04": "clean",
+    "m4_physics_en#05": "clean",
+    "m4_physics_en#06": "clean",
+    "m4_physics_en#07": "clean",
+    "m4_physics_en#08": "caught",
+    "m4_physics_en#09": "caught",
+    "m4_physics_en#10": "caught",
+    "m4_physics_en#11": "caught",
+    "m4_physics_en#12": "caught",
+    "m4_physics_en#13": "caught",
+    "m4_physics_en#14": "clean"
+   }
+  },
+  {
+   "run_id": "m4_physics_en__B__2",
+   "manuscript": "m4_physics_en",
+   "condition": "B",
+   "repeat": 2,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (m4_physics_en.md). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 38.4,
+   "hook_event_lines": 0,
+   "answer_chars": 2826,
+   "usage": {
+    "mode": "no_skill",
+    "skill_loaded": false,
+    "engine_calls": 0,
+    "engine_subcommands": [],
+    "web_tool_calls": 1,
+    "shell_http_calls": 0,
+    "tool_calls": 4
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m4_physics_en#01": "clean",
+    "m4_physics_en#02": "clean",
+    "m4_physics_en#03": "clean",
+    "m4_physics_en#04": "clean",
+    "m4_physics_en#05": "clean",
+    "m4_physics_en#06": "clean",
+    "m4_physics_en#07": "clean",
+    "m4_physics_en#08": "caught",
+    "m4_physics_en#09": "caught",
+    "m4_physics_en#10": "caught",
+    "m4_physics_en#11": "caught",
+    "m4_physics_en#12": "caught",
+    "m4_physics_en#13": "caught",
+    "m4_physics_en#14": "clean"
+   }
+  },
+  {
+   "run_id": "m5_dea_latex__A__2",
+   "manuscript": "m5_dea_latex",
+   "condition": "A",
+   "repeat": 2,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 95.4,
+   "hook_event_lines": 0,
+   "answer_chars": 2853,
+   "usage": {
+    "mode": "engine",
+    "skill_loaded": true,
+    "engine_calls": 5,
+    "engine_subcommands": [
+     "check-bib",
+     "check-claim"
+    ],
+    "web_tool_calls": 0,
+    "shell_http_calls": 5,
+    "tool_calls": 10
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m5_dea_latex#01": "clean",
+    "m5_dea_latex#02": "clean",
+    "m5_dea_latex#03": "clean",
+    "m5_dea_latex#04": "clean",
+    "m5_dea_latex#05": "clean",
+    "m5_dea_latex#06": "clean",
+    "m5_dea_latex#07": "caught",
+    "m5_dea_latex#08": "clean",
+    "m5_dea_latex#09": "caught",
+    "m5_dea_latex#10": "clean",
+    "m5_dea_latex#11": "caught",
+    "m5_dea_latex#12": "caught",
+    "m5_dea_latex#13": "caught",
+    "m5_dea_latex#14": "clean"
+   }
+  },
+  {
+   "run_id": "m5_dea_latex__B__2",
+   "manuscript": "m5_dea_latex",
+   "condition": "B",
+   "repeat": 2,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 41.5,
+   "hook_event_lines": 0,
+   "answer_chars": 2178,
+   "usage": {
+    "mode": "no_skill",
+    "skill_loaded": false,
+    "engine_calls": 0,
+    "engine_subcommands": [],
+    "web_tool_calls": 0,
+    "shell_http_calls": 2,
+    "tool_calls": 5
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m5_dea_latex#01": "clean",
+    "m5_dea_latex#02": "clean",
+    "m5_dea_latex#03": "clean",
+    "m5_dea_latex#04": "clean",
+    "m5_dea_latex#05": "clean",
+    "m5_dea_latex#06": "clean",
+    "m5_dea_latex#07": "caught",
+    "m5_dea_latex#08": "clean",
+    "m5_dea_latex#09": "caught",
+    "m5_dea_latex#10": "clean",
+    "m5_dea_latex#11": "caught",
+    "m5_dea_latex#12": "caught",
+    "m5_dea_latex#13": "caught",
+    "m5_dea_latex#14": "clean"
+   }
+  },
+  {
+   "run_id": "m6_biomed_latex__A__2",
+   "manuscript": "m6_biomed_latex",
+   "condition": "A",
+   "repeat": 2,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 61.1,
+   "hook_event_lines": 0,
+   "answer_chars": 2455,
+   "usage": {
+    "mode": "engine",
+    "skill_loaded": true,
+    "engine_calls": 3,
+    "engine_subcommands": [
+     "check-bib"
+    ],
+    "web_tool_calls": 0,
+    "shell_http_calls": 2,
+    "tool_calls": 8
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m6_biomed_latex#01": "clean",
+    "m6_biomed_latex#02": "clean",
+    "m6_biomed_latex#03": "caught",
+    "m6_biomed_latex#04": "clean",
+    "m6_biomed_latex#05": "clean",
+    "m6_biomed_latex#06": "clean",
+    "m6_biomed_latex#07": "clean",
+    "m6_biomed_latex#08": "clean",
+    "m6_biomed_latex#09": "caught",
+    "m6_biomed_latex#10": "clean",
+    "m6_biomed_latex#11": "clean",
+    "m6_biomed_latex#12": "caught",
+    "m6_biomed_latex#13": "caught",
+    "m6_biomed_latex#14": "caught",
+    "m6_biomed_latex#15": "clean"
+   }
+  },
+  {
+   "run_id": "m6_biomed_latex__B__2",
+   "manuscript": "m6_biomed_latex",
+   "condition": "B",
+   "repeat": 2,
+   "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+   "exit_code": 0,
+   "wall_seconds": 31.9,
+   "hook_event_lines": 0,
+   "answer_chars": 2234,
+   "usage": {
+    "mode": "no_skill",
+    "skill_loaded": false,
+    "engine_calls": 0,
+    "engine_subcommands": [],
+    "web_tool_calls": 1,
+    "shell_http_calls": 0,
+    "tool_calls": 5
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m6_biomed_latex#01": "clean",
+    "m6_biomed_latex#02": "clean",
+    "m6_biomed_latex#03": "caught",
+    "m6_biomed_latex#04": "clean",
+    "m6_biomed_latex#05": "clean",
+    "m6_biomed_latex#06": "clean",
+    "m6_biomed_latex#07": "clean",
+    "m6_biomed_latex#08": "clean",
+    "m6_biomed_latex#09": "caught",
+    "m6_biomed_latex#10": "clean",
+    "m6_biomed_latex#11": "clean",
+    "m6_biomed_latex#12": "caught",
+    "m6_biomed_latex#13": "caught",
+    "m6_biomed_latex#14": "caught",
+    "m6_biomed_latex#15": "clean"
+   }
+  },
+  {
+   "run_id": "m7_polymer_ko__A__2",
+   "manuscript": "m7_polymer_ko",
+   "condition": "A",
+   "repeat": 2,
+   "prompt": "투고 전에 이 원고(m7_polymer_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+   "exit_code": 0,
+   "wall_seconds": 99.7,
+   "hook_event_lines": 0,
+   "answer_chars": 2169,
+   "usage": {
+    "mode": "engine",
+    "skill_loaded": true,
+    "engine_calls": 2,
+    "engine_subcommands": [
+     "check-bib"
+    ],
+    "web_tool_calls": 3,
+    "shell_http_calls": 4,
+    "tool_calls": 12
+   },
+   "usable": true,
+   "note": "Unindexed [4], [5] listed under '직접 확인 필요', not called wrong.",
+   "decisions": {
+    "m7_polymer_ko#01": "clean",
+    "m7_polymer_ko#02": "caught",
+    "m7_polymer_ko#03": "clean",
+    "m7_polymer_ko#04": "clean",
+    "m7_polymer_ko#05": "clean",
+    "m7_polymer_ko#06": "clean",
+    "m7_polymer_ko#07": "clean",
+    "m7_polymer_ko#08": "clean",
+    "m7_polymer_ko#09": "caught",
+    "m7_polymer_ko#10": "caught",
+    "m7_polymer_ko#11": "clean",
+    "m7_polymer_ko#12": "caught",
+    "m7_polymer_ko#13": "clean"
+   }
+  },
+  {
+   "run_id": "m7_polymer_ko__B__2",
+   "manuscript": "m7_polymer_ko",
+   "condition": "B",
+   "repeat": 2,
+   "prompt": "투고 전에 이 원고(m7_polymer_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+   "exit_code": 0,
+   "wall_seconds": 83.5,
+   "hook_event_lines": 0,
+   "answer_chars": 2162,
+   "usage": {
+    "mode": "no_skill",
+    "skill_loaded": false,
+    "engine_calls": 0,
+    "engine_subcommands": [],
+    "web_tool_calls": 9,
+    "shell_http_calls": 3,
+    "tool_calls": 15
+   },
+   "usable": true,
+   "note": "Unindexed [4], [5] listed as '확인 불가 ... 직접 확인 권장', not called wrong.",
+   "decisions": {
+    "m7_polymer_ko#01": "clean",
+    "m7_polymer_ko#02": "caught",
+    "m7_polymer_ko#03": "clean",
+    "m7_polymer_ko#04": "clean",
+    "m7_polymer_ko#05": "clean",
+    "m7_polymer_ko#06": "clean",
+    "m7_polymer_ko#07": "clean",
+    "m7_polymer_ko#08": "clean",
+    "m7_polymer_ko#09": "caught",
+    "m7_polymer_ko#10": "caught",
+    "m7_polymer_ko#11": "clean",
+    "m7_polymer_ko#12": "caught",
+    "m7_polymer_ko#13": "clean"
+   }
+  },
+  {
+   "run_id": "m8_ml_ko__A__2",
+   "manuscript": "m8_ml_ko",
+   "condition": "A",
+   "repeat": 2,
+   "prompt": "투고 전에 이 원고(m8_ml_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+   "exit_code": 0,
+   "wall_seconds": 79.6,
+   "hook_event_lines": 0,
+   "answer_chars": 1912,
+   "usage": {
+    "mode": "engine",
+    "skill_loaded": true,
+    "engine_calls": 2,
+    "engine_subcommands": [
+     "check-bib"
+    ],
+    "web_tool_calls": 0,
+    "shell_http_calls": 2,
+    "tool_calls": 6
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m8_ml_ko#01": "clean",
+    "m8_ml_ko#02": "caught",
+    "m8_ml_ko#03": "clean",
+    "m8_ml_ko#04": "clean",
+    "m8_ml_ko#05": "clean",
+    "m8_ml_ko#06": "clean",
+    "m8_ml_ko#07": "clean",
+    "m8_ml_ko#08": "caught",
+    "m8_ml_ko#09": "caught",
+    "m8_ml_ko#10": "caught",
+    "m8_ml_ko#11": "clean",
+    "m8_ml_ko#12": "caught",
+    "m8_ml_ko#13": "caught"
+   }
+  },
+  {
+   "run_id": "m8_ml_ko__B__2",
+   "manuscript": "m8_ml_ko",
+   "condition": "B",
+   "repeat": 2,
+   "prompt": "투고 전에 이 원고(m8_ml_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+   "exit_code": 0,
+   "wall_seconds": 41.7,
+   "hook_event_lines": 0,
+   "answer_chars": 1488,
+   "usage": {
+    "mode": "no_skill",
+    "skill_loaded": false,
+    "engine_calls": 0,
+    "engine_subcommands": [],
+    "web_tool_calls": 3,
+    "shell_http_calls": 0,
+    "tool_calls": 6
+   },
+   "usable": true,
+   "note": null,
+   "decisions": {
+    "m8_ml_ko#01": "clean",
+    "m8_ml_ko#02": "caught",
+    "m8_ml_ko#03": "clean",
+    "m8_ml_ko#04": "clean",
+    "m8_ml_ko#05": "clean",
+    "m8_ml_ko#06": "clean",
+    "m8_ml_ko#07": "clean",
+    "m8_ml_ko#08": "caught",
+    "m8_ml_ko#09": "caught",
+    "m8_ml_ko#10": "caught",
+    "m8_ml_ko#11": "clean",
+    "m8_ml_ko#12": "caught",
+    "m8_ml_ko#13": "caught"
+   }
+  }
+ ],
+ "tool": "Claude Code 2.1.295, model claude-opus-5-5 (subscription default), ref-verify skill from main 6a13a86",
+ "date": "2026-10-09"
+}

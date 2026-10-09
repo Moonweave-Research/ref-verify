@@ -1,0 +1,179 @@
+{
+  "description": "Decisions by a person who read every final answer (2026-10-09). 'reviewed': items the answer names are catches for planted errors and benign context for correct references unless listed under 'items'. A false alarm would be an answer calling a correct reference wrong (nonexistent, wrong DOI/year/author, retracted) or a correct claim misquoted; relevance or 'could not confirm' remarks are not false alarms. 'usable': the answer names the reference, the problem, and a fix.",
+  "runs": {
+    "m1_dea_en__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m1_dea_en__A__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m1_dea_en__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "m1_dea_en#13": "missed"
+      },
+      "note": "Pelrine 2000 '380%' not mentioned; the answer says two passages misdescribe papers but names only Poulin and Duduta."
+    },
+    "m1_dea_en__B__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "m1_dea_en#13": "missed"
+      },
+      "note": "Lists Pelrine 2000 among the correct entries and never mentions 380%; also says Ha 2006 '300 MV/m' could not be confirmed (correct claim, not called wrong)."
+    },
+    "m2_vaccine_en__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m2_vaccine_en__A__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m2_vaccine_en__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m2_vaccine_en__B__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m3_ml_en__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m3_ml_en__A__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m3_ml_en__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m3_ml_en__B__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m4_physics_en__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {},
+      "note": "Pilot run, same harness and command."
+    },
+    "m4_physics_en__A__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m4_physics_en__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m4_physics_en__B__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m5_dea_latex__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m5_dea_latex__A__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m5_dea_latex__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m5_dea_latex__B__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m6_biomed_latex__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m6_biomed_latex__A__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m6_biomed_latex__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m6_biomed_latex__B__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m7_polymer_ko__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {},
+      "note": "Unindexed [4] (thesis) listed under '확인 권장', not called wrong."
+    },
+    "m7_polymer_ko__A__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {},
+      "note": "Unindexed [4], [5] listed under '직접 확인 필요', not called wrong."
+    },
+    "m7_polymer_ko__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {},
+      "note": "Unindexed [4], [5] listed under '확인하지 못한 항목', not called wrong."
+    },
+    "m7_polymer_ko__B__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {},
+      "note": "Unindexed [4], [5] listed as '확인 불가 ... 직접 확인 권장', not called wrong."
+    },
+    "m8_ml_ko__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m8_ml_ko__A__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "m8_ml_ko__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "m8_ml_ko#12": "missed"
+      },
+      "note": "States '1,200만 장, 1000개 범주라는 부분은 맞습니다' — affirms the planted wrong number (abstract: 1.2 million images)."
+    },
+    "m8_ml_ko__B__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    }
+  }
+}
