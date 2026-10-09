@@ -2,6 +2,8 @@
 
 Condition A copies the skill (SKILL.md + src/, as `npx skills add` lays it out) into
 <scratch project>/.claude/skills/ref-verify/; condition B gets the same project without it.
+Condition C (v2) is B with only Read, Glob, and Grep allowed: no web tools and no shell, so the
+agent can only answer from what the model already knows.
 Every run uses a fresh scratch project and a fresh engine cache, so runs do not share state.
 
 Isolation of the child sessions (verified before the first real run):
@@ -13,7 +15,8 @@ Isolation of the child sessions (verified before the first real run):
   CLAUDE_REFVERIFY_EVAL_CHILD=1  marks the process as an eval child
 A run whose stream reports any hook event is stopped and the harness exits.
 
-Usage: python3 run_e2e.py --scratch DIR [--only m1_dea_en:A:1 ...] [--parallel 2]
+Usage: python3 run_e2e.py --scratch DIR [--truth v2/truth.json] [--conditions A B C]
+                         [--model claude-opus-5-5] [--only m1_dea_en:A:1 ...] [--parallel 2]
 """
 
 from __future__ import annotations
@@ -32,8 +35,11 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 CLAUDE = os.environ.get("CLAUDE_BIN", str(Path.home() / ".local/bin/claude"))
 SETTINGS = json.dumps({"disableAllHooks": True, "autoMemoryEnabled": False})
-ALLOWED_TOOLS = "Bash Read Glob Grep WebFetch WebSearch Skill"
-DISALLOWED_TOOLS = "Write Edit NotebookEdit"
+TOOLS = {
+    "A": ("Bash Read Glob Grep WebFetch WebSearch Skill", "Write Edit NotebookEdit"),
+    "B": ("Bash Read Glob Grep WebFetch WebSearch Skill", "Write Edit NotebookEdit"),
+    "C": ("Read Glob Grep", "Bash WebFetch WebSearch Write Edit NotebookEdit Skill"),
+}
 TIMEOUT_SECONDS = 1800
 
 PROMPTS = {
@@ -43,7 +49,10 @@ PROMPTS = {
 }
 
 
-def command(prompt: str) -> list[str]:
+def command(prompt: str, condition: str = "A", model: str | None = None) -> list[str]:
+    allowed, disallowed = TOOLS[condition]
+    # v2 pins the model: the subscription default moved from Opus to Sonnet between v1 and v2.
+    pinned = ["--model", model] if model else []
     return [
         CLAUDE,
         "-p",
@@ -63,20 +72,21 @@ def command(prompt: str) -> list[str]:
         "--permission-mode",
         "dontAsk",
         "--allowedTools",
-        ALLOWED_TOOLS,
+        allowed,
         "--disallowedTools",
-        DISALLOWED_TOOLS,
+        disallowed,
+        *pinned,
     ]
 
 
-def prepare_project(root: Path, manuscript: dict, with_skill: bool) -> list[str]:
+def prepare_project(root: Path, base: Path, manuscript: dict, with_skill: bool) -> list[str]:
     if root.exists():
         raise SystemExit(f"{root} already exists; use a fresh --scratch directory")
     root.mkdir(parents=True)
     files = []
     for key in ("path", "bib"):
         if manuscript.get(key):
-            source = HERE / manuscript[key]
+            source = base / manuscript[key]
             shutil.copy2(source, root / source.name)
             files.append(source.name)
     if with_skill:
@@ -97,10 +107,10 @@ def _events(transcript: Path) -> list[dict]:
     return events
 
 
-def run_one(scratch: Path, name: str, manuscript: dict, condition: str, repeat: int) -> dict:
+def run_one(scratch: Path, base: Path, model: str | None, name: str, manuscript: dict, condition: str, repeat: int) -> dict:
     run_id = f"{name}__{condition}__{repeat}"
     project = scratch / "projects" / run_id
-    files = prepare_project(project, manuscript, with_skill=condition == "A")
+    files = prepare_project(project, base, manuscript, with_skill=condition == "A")
     prompt = PROMPTS[manuscript["language"]].format(files=", ".join(files))
     transcript = scratch / "transcripts" / f"{run_id}.jsonl"
     transcript.parent.mkdir(parents=True, exist_ok=True)
@@ -109,7 +119,7 @@ def run_one(scratch: Path, name: str, manuscript: dict, condition: str, repeat: 
     with transcript.open("w", encoding="utf-8") as out, open(os.devnull) as devnull:
         try:
             process = subprocess.run(
-                command(prompt),
+                command(prompt, condition, model),
                 cwd=project,
                 env=env,
                 stdin=devnull,
@@ -142,26 +152,31 @@ def run_one(scratch: Path, name: str, manuscript: dict, condition: str, repeat: 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--scratch", type=Path, required=True)
+    parser.add_argument("--truth", type=Path, default=HERE / "truth.json")
+    parser.add_argument("--conditions", nargs="+", default=["A", "B"], choices=sorted(TOOLS))
+    parser.add_argument("--model", help="pin the child model (v1 ran on the default, then claude-opus-5-5)")
     parser.add_argument("--only", nargs="*", help="run ids like m1_dea_en:A:1")
     parser.add_argument("--repeats", type=int, default=2)
     parser.add_argument("--parallel", type=int, default=1, choices=(1, 2))
     args = parser.parse_args()
 
-    truth = json.loads((HERE / "truth.json").read_text(encoding="utf-8"))
+    truth = json.loads(args.truth.read_text(encoding="utf-8"))
+    base = args.truth.resolve().parent
     jobs = [
         (name, manuscript, condition, repeat)
         for repeat in range(1, args.repeats + 1)
         for name, manuscript in truth["manuscripts"].items()
-        for condition in ("A", "B")
+        for condition in args.conditions
     ]
     if args.only:
         wanted = {tuple(item.split(":")) for item in args.only}
         jobs = [job for job in jobs if (job[0], job[2], str(job[3])) in wanted]
-    print("command template:", json.dumps(command("<PROMPT>")), flush=True)
+    for condition in args.conditions:
+        print(f"command template {condition}:", json.dumps(command("<PROMPT>", condition, args.model)), flush=True)
     log = args.scratch / "runs.jsonl"
     args.scratch.mkdir(parents=True, exist_ok=True)
     with ThreadPoolExecutor(max_workers=args.parallel) as executor:
-        for record in executor.map(lambda job: run_one(args.scratch, *job), jobs):
+        for record in executor.map(lambda job: run_one(args.scratch, base, args.model, *job), jobs):
             with log.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(record, ensure_ascii=False) + "\n")
     return 0

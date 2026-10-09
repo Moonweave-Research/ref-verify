@@ -1,0 +1,320 @@
+{
+  "description": "Decisions of the person who read all 40 v2 answers (2026-10-09). With reviewed: true, an item the automatic rule left as 'review' is a catch for a planted error and benign for a correct one; 'items' lists every exception. Condition C items are all listed explicitly.",
+  "runs": {
+    "v2m1_dea_en__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {},
+      "note": "Not counted: 'Remenar et al.: incomplete author list' is a correct APA remark about the set."
+    },
+    "v2m1_dea_en__A__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m1_dea_en__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m1_dea_en__B__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m2_ionic_en__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m2_ionic_en__A__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m2_ionic_en__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m2_ionic_en__B__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m3_crystal_latex__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m3_crystal_latex__A__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m3_crystal_latex__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m3_crystal_latex__B__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m4_polymer_ko__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m4_polymer_ko__A__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m4_polymer_ko__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m4_polymer_ko__B__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m5_pvdf_lce_en__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m5_pvdf_lce_en__A__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m5_pvdf_lce_en__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {},
+      "note": "Not counted: '[6] Ali et al.: the title doesn't match what the paper is' (under 'Serious'); it is the paper's real title and the answer does not call the entry wrong."
+    },
+    "v2m5_pvdf_lce_en__B__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m5_pvdf_lce_en#07": "false_alarm"
+      },
+      "note": "False alarm: '[4] Luo et al. - the year is probably wrong', listed as problem 6 of 7, although the entry (2026, vol. 38 no. 8) is correct; the answer then says 2026 is fine."
+    },
+    "v2m6_rehab_latex__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m6_rehab_latex__A__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m6_rehab_latex#03": "caught"
+      },
+      "note": "#03 caught without naming Ryu: 'Robot-assisted therapy (line 12): the paper says the opposite of what you wrote' with the abstract quote."
+    },
+    "v2m6_rehab_latex__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m6_rehab_latex__B__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m7_ceramic_ko__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m7_ceramic_ko__A__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m7_ceramic_ko__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m7_ceramic_ko__B__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m8_magnetism_en__A__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {},
+      "note": "Not counted: [6] Zhou is a simulation, not a measurement; the answer is right and the set's wording was loose (also noted in A2 and B2)."
+    },
+    "v2m8_magnetism_en__A__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m8_magnetism_en__B__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m8_magnetism_en__B__2": {
+      "reviewed": true,
+      "usable": true,
+      "items": {}
+    },
+    "v2m1_dea_en__C__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m1_dea_en#01": "caught",
+        "v2m1_dea_en#02": "missed",
+        "v2m1_dea_en#03": "caught",
+        "v2m1_dea_en#12": "caught",
+        "v2m1_dea_en#14": "missed",
+        "v2m1_dea_en#15": "caught",
+        "v2m1_dea_en#16": "caught",
+        "v2m1_dea_en#08": "false_alarm",
+        "v2m1_dea_en#10": "false_alarm"
+      },
+      "hedged_catches": [
+        "v2m1_dea_en#03",
+        "v2m1_dea_en#16"
+      ],
+      "note": "Hedged catches: #03 ('only' may reverse the finding), #16 (may not exist). #02: repeats 25.9% as fact in the Results comparison. False alarms: Wang 8(15) 155228 'doesn't fit ... probably 8(1), 015xxx' and Mei 'e202502157 doesn't follow Wiley's pattern ... should be e02157'; both match CrossRef."
+    },
+    "v2m2_ionic_en__C__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m2_ionic_en#01": "caught",
+        "v2m2_ionic_en#02": "missed",
+        "v2m2_ionic_en#03": "caught",
+        "v2m2_ionic_en#09": "missed",
+        "v2m2_ionic_en#11": "caught",
+        "v2m2_ionic_en#12": "missed",
+        "v2m2_ionic_en#16": "caught"
+      },
+      "hedged_catches": [
+        "v2m2_ionic_en#03",
+        "v2m2_ionic_en#16"
+      ],
+      "note": "Hedged catches: #03 (may be backwards), #16 (may not be a real paper)."
+    },
+    "v2m3_crystal_latex__C__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m3_crystal_latex#01": "missed",
+        "v2m3_crystal_latex#02": "caught",
+        "v2m3_crystal_latex#03": "missed",
+        "v2m3_crystal_latex#06": "caught",
+        "v2m3_crystal_latex#11": "caught",
+        "v2m3_crystal_latex#13": "missed",
+        "v2m3_crystal_latex#14": "caught",
+        "v2m3_crystal_latex#12": "false_alarm"
+      },
+      "hedged_catches": [
+        "v2m3_crystal_latex#11",
+        "v2m3_crystal_latex#14"
+      ],
+      "note": "Hedged catches: #11 (possible author-order problem), #14 (looks generic, confirm it exists). #01 and #03 only 'check the figures'. False alarm: li2026lattice 'e202503161 doesn't follow Wiley's usual article-number format'; it matches CrossRef."
+    },
+    "v2m4_polymer_ko__C__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m4_polymer_ko#01": "caught",
+        "v2m4_polymer_ko#02": "caught",
+        "v2m4_polymer_ko#06": "caught",
+        "v2m4_polymer_ko#13": "caught",
+        "v2m4_polymer_ko#14": "caught"
+      },
+      "hedged_catches": [
+        "v2m4_polymer_ko#01",
+        "v2m4_polymer_ko#02",
+        "v2m4_polymer_ko#13",
+        "v2m4_polymer_ko#14"
+      ],
+      "note": "Hedged catches: #01 (375 µm일 수 있음), #02 (보통 수축), #13 and #14 (흔한 이름, 실존 확인 권장)."
+    },
+    "v2m5_pvdf_lce_en__C__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m5_pvdf_lce_en#01": "caught",
+        "v2m5_pvdf_lce_en#02": "missed",
+        "v2m5_pvdf_lce_en#10": "caught",
+        "v2m5_pvdf_lce_en#11": "missed",
+        "v2m5_pvdf_lce_en#12": "caught",
+        "v2m5_pvdf_lce_en#09": "false_alarm"
+      },
+      "hedged_catches": [
+        "v2m5_pvdf_lce_en#01",
+        "v2m5_pvdf_lce_en#12"
+      ],
+      "note": "Hedged catches: #01 (looks reversed, check), #12 (make sure it exists). False alarm: 'Ali et al. This is a review article ... cite the original study instead'; it is a primary study."
+    },
+    "v2m6_rehab_latex__C__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m6_rehab_latex#01": "caught",
+        "v2m6_rehab_latex#02": "missed",
+        "v2m6_rehab_latex#03": "caught",
+        "v2m6_rehab_latex#07": "caught",
+        "v2m6_rehab_latex#09": "missed",
+        "v2m6_rehab_latex#11": "caught",
+        "v2m6_rehab_latex#14": "missed",
+        "v2m6_rehab_latex#15": "caught",
+        "v2m6_rehab_latex#05": "false_alarm"
+      },
+      "hedged_catches": [
+        "v2m6_rehab_latex#03",
+        "v2m6_rehab_latex#15"
+      ],
+      "note": "Hedged catches: #03 (reads like the opposite, check), #15 (possibly made up). #02 only 'check 41%'. False alarm: \"'all participants' probably misstates it. The regimen likely applied to one arm only\"; the abstract says all participants received it."
+    },
+    "v2m7_ceramic_ko__C__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m7_ceramic_ko#01": "missed",
+        "v2m7_ceramic_ko#02": "caught",
+        "v2m7_ceramic_ko#03": "caught",
+        "v2m7_ceramic_ko#06": "missed",
+        "v2m7_ceramic_ko#14": "missed",
+        "v2m7_ceramic_ko#15": "caught"
+      },
+      "hedged_catches": [
+        "v2m7_ceramic_ko#03",
+        "v2m7_ceramic_ko#15"
+      ],
+      "note": "Hedged catches: #03 (4.1 K를 잘못 옮겼을 가능성), #15 (존재하지 않는 문헌일 수 있음)."
+    },
+    "v2m8_magnetism_en__C__1": {
+      "reviewed": true,
+      "usable": true,
+      "items": {
+        "v2m8_magnetism_en#01": "missed",
+        "v2m8_magnetism_en#02": "missed",
+        "v2m8_magnetism_en#03": "caught",
+        "v2m8_magnetism_en#09": "caught",
+        "v2m8_magnetism_en#12": "missed",
+        "v2m8_magnetism_en#14": "missed",
+        "v2m8_magnetism_en#15": "caught"
+      },
+      "hedged_catches": [
+        "v2m8_magnetism_en#15"
+      ],
+      "note": "Hedged catch: #15 (couldn't confirm it exists). #01 and #02 only 'worth checking'."
+    }
+  }
+}

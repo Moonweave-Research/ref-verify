@@ -8,7 +8,7 @@ Decisions in adjudication.json (written by a person who read the answers) overri
 automatic ones. It also records whether the run invoked the ref-verify engine, used the web,
 and how long it took.
 
-Usage: python3 score.py --scratch DIR [--review] [--markdown]
+Usage: python3 score.py --scratch DIR [--truth v2/truth.json] [--review] [--markdown]
 """
 
 from __future__ import annotations
@@ -21,6 +21,7 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+CONDITION_LABELS = {"A": "A: with ref-verify skill", "B": "B: without", "C": "C: without, no web or shell"}
 
 # Words that show which problem the answer names, per error type (English and Korean).
 PROBLEM_WORDS = {
@@ -121,9 +122,9 @@ def automatic_decision(item: dict, answer: str) -> str:
     return "caught" if any(word.casefold() in lowered for word in words) else "review"
 
 
-def score(scratch: Path) -> dict:
-    truth = json.loads((HERE / "truth.json").read_text(encoding="utf-8"))
-    adjudication_path = HERE / "adjudication.json"
+def score(scratch: Path, truth_path: Path) -> dict:
+    truth = json.loads(truth_path.read_text(encoding="utf-8"))
+    adjudication_path = truth_path.parent / "adjudication.json"
     adjudication = json.loads(adjudication_path.read_text(encoding="utf-8")) if adjudication_path.exists() else {}
     runs = [json.loads(line) for line in (scratch / "runs.jsonl").read_text(encoding="utf-8").splitlines() if line.strip()]
     scored = []
@@ -158,7 +159,7 @@ def summarize(result: dict) -> dict:
     truth = result["truth"]
     items = {item["id"]: item for m in truth["manuscripts"].values() for item in m["items"]}
     summary = {}
-    for condition in ("A", "B"):
+    for condition in sorted({run["condition"] for run in result["runs"]}):
         runs = [run for run in result["runs"] if run["condition"] == condition]
         recall: dict[str, list[int]] = {}
         false_alarms = {"correct_reference": [0, 0], "unindexed_reference": [0, 0], "correct_claim": [0, 0]}
@@ -199,34 +200,38 @@ def markdown(summary: dict, truth: dict) -> str:
     def pct(pair: list[int]) -> str:
         return f"{pair[0]}/{pair[1]} ({100 * pair[0] / pair[1]:.0f}%)" if pair[1] else "-"
 
-    lines = ["| | A: with ref-verify skill | B: without |", "|---|---|---|"]
+    conditions = sorted(summary)
+    lines = ["| | " + " | ".join(CONDITION_LABELS[c] for c in conditions) + " |", "|---" * (len(conditions) + 1) + "|"]
+
+    def row(label: str, cells: list[str]) -> None:
+        lines.append(f"| {label} | " + " | ".join(cells) + " |")
+
     for kind in truth["error_types"]:
-        lines.append(f"| {kind} | {pct(summary['A']['recall_by_type'].get(kind, [0, 0]))} | "
-                     f"{pct(summary['B']['recall_by_type'].get(kind, [0, 0]))} |")
-    lines.append(f"| **All planted errors** | **{pct(summary['A']['recall_overall'])}** | **{pct(summary['B']['recall_overall'])}** |")
+        row(kind, [pct(summary[c]["recall_by_type"].get(kind, [0, 0])) for c in conditions])
+    row("**All planted errors**", [f"**{pct(summary[c]['recall_overall'])}**" for c in conditions])
     for bucket, label in (("correct_reference", "False alarms: correct references"),
                           ("unindexed_reference", "False alarms: unindexed thesis/KCI/arXiv/JMLR"),
                           ("correct_claim", "False alarms: correct numeric claims")):
-        lines.append(f"| {label} | {pct(summary['A']['false_alarms'][bucket])} | {pct(summary['B']['false_alarms'][bucket])} |")
+        row(label, [pct(summary[c]["false_alarms"][bucket]) for c in conditions])
     for key, label in (("engine_invoked", "Runs that ran the ref-verify engine"),
                        ("skill_loaded", "Runs that loaded the skill"),
                        ("web_tool_runs", "Runs that used WebFetch/WebSearch"),
                        ("usable", "Final answer usable (names reference, problem, fix)")):
-        lines.append(f"| {label} | {summary['A'][key]}/{summary['A']['runs']} | {summary['B'][key]}/{summary['B']['runs']} |")
-    lines.append(f"| Wall time per run, median (mean) | {summary['A']['wall_seconds_median']} s "
-                 f"({summary['A']['wall_seconds_mean']} s) | {summary['B']['wall_seconds_median']} s "
-                 f"({summary['B']['wall_seconds_mean']} s) |")
+        row(label, [f"{summary[c][key]}/{summary[c]['runs']}" for c in conditions])
+    row("Wall time per run, median (mean)",
+        [f"{summary[c]['wall_seconds_median']} s ({summary[c]['wall_seconds_mean']} s)" for c in conditions])
     return "\n".join(lines)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--scratch", type=Path, required=True)
+    parser.add_argument("--truth", type=Path, default=HERE / "truth.json")
     parser.add_argument("--review", action="store_true", help="list the decisions a person still has to make")
     parser.add_argument("--markdown", action="store_true")
     parser.add_argument("--out", type=Path, help="write per-run results JSON here")
     args = parser.parse_args()
-    result = score(args.scratch)
+    result = score(args.scratch, args.truth)
     summary = summarize(result)
     if args.review:
         items = {item["id"]: item for m in result["truth"]["manuscripts"].values() for item in m["items"]}
