@@ -660,7 +660,9 @@ def _sentence_supports_text_claim(sentence: str, claim: str) -> bool:
         end = start + len(claim_tokens)
         if _has_unsupported_claim_frame(sentence):
             continue
-        scope_start, scope_end = _scope_bounds(sentence, sentence_spans[start].start(), sentence_spans[end - 1].end())
+        scope_start, scope_end = _scope_bounds(
+            sentence, sentence_spans[start].start(), sentence_spans[end - 1].end()
+        )
         first_scoped = next(index for index, span in enumerate(sentence_spans) if span.start() >= scope_start)
         if _has_scope_qualifier_prefix(sentence_tokens[first_scoped:], start - first_scoped):
             continue

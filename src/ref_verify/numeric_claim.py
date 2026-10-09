@@ -316,7 +316,8 @@ _SUPERSCRIPTS = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺", "0123456789-+
 _DASHES = "-‐‑−–—"
 _SCIENTIFIC_PATTERN = re.compile(
     r"(?P<mantissa>\d+(?:\.\d+)?)\s*[×x]\s*10\s*"
-    r"(?:\^\s*(?P<caret>[-−–]?\s*\d+)|(?P<signed>[-−–]\s*\d+)|(?P<superscript>[⁻⁺]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+))"
+    r"(?:\^\s*(?P<caret>[-−–]?\s*\d+)|(?P<signed>[-−–]\s*\d+)"
+    r"|(?P<superscript>[⁻⁺]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+))"
 )
 # Thousands may be grouped with commas or (thin) spaces: "10,000", "10 000".
 _PLAIN_NUMBER_PATTERN = re.compile(r"\d{1,3}(?:[,\u2009\u202f\u00a0 ]\d{3})+(?:\.\d+)?(?![\d,])|\d+(?:\.\d+)?")
