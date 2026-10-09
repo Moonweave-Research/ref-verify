@@ -53,7 +53,7 @@ reference is `PASS`, `2` otherwise, `1` for input errors) and returns
 ref-verify check-file claims.jsonl --json
 ```
 
-5. Treat only `verdict == "ACCEPT"` as verified.
+5. Treat only `verdict == "ACCEPT"` as verified. `ACCEPT` requires every number in the claim, with its unit, sign, and direction, to be supported by the same abstract sentence.
 6. Treat every other result as not verified for citation support.
 7. Do not rewrite `WARN`, `PARTIAL`, `REJECT`, `UNVERIFIABLE`, or `failed > 0` into acceptance.
 
@@ -176,4 +176,4 @@ Do not use memory to fill missing abstract evidence.
 
 ## Safe Interpretation
 
-`ref-verify` is a conservative citation guard. It does not prove that a paper is good, important, unretracted, or that the full paper supports a broader statement. It only checks whether the DOI-bound abstract explicitly supports the submitted numeric claim.
+`ref-verify` is a conservative citation guard. It does not prove that a paper is good, important, unretracted, or that the full paper supports a broader statement. It only checks whether the DOI-bound abstract explicitly supports the submitted numeric claim. A claim with several numbers is accepted only when one abstract sentence supports all of them; one matching number does not carry the others.

@@ -163,10 +163,12 @@ Route the result:
   attempted CLI sources. Continue the manual fallback chain below instead of
   treating the claim as rejected or supported.
 
-CLI `ACCEPT` is abstract-level evidence only. If the claim describes a
-mechanism, implementation, or procedure, do not promote that result to the
-Full Audit verdict; classify the claim in Layer 3 and obtain the required
-full-text evidence first.
+CLI `ACCEPT` is abstract-level evidence only. It means every number in the
+claim, with its unit, sign, and direction, is supported by the same abstract
+sentence; one number the sentence does not support blocks `ACCEPT` even when
+another number matches. If the claim describes a mechanism, implementation,
+or procedure, do not promote that result to the Full Audit verdict; classify
+the claim in Layer 3 and obtain the required full-text evidence first.
 
 For JSON output, use `abstract_source`, `source_attempts`, and `error_code` to
 decide the next step:
