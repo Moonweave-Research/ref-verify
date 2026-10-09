@@ -24,7 +24,7 @@ User says "find papers on X" or "cite papers supporting claim Y"?
   └─ Full Audit (searching from scratch requires content verification)
 
 User says "verify/check my reference list" or pre-submission audit?
-  └─ CLI available → run check-bib on the list first, then the steps below
+  └─ CLI available → Pre-submission sweep (below) first: check-bib, then check-file
   └─ ≤5 refs  → Full Audit all
   └─ >5 refs  → Quick Screen all first; Full Audit MISMATCH/DEAD + any ref
                  cited for a specific factual claim
@@ -77,10 +77,11 @@ order, and keep the first command that prints help:
    uvx --from 'ref-verify>=1.3.0' ref-verify --help
    ```
 
-In the commands below, `ref-verify` stands for whichever engine resolved. An
-unavailable engine is not a verification result. If all three fail, follow the
-manual fallback protocol below. Do not pretend the CLI ran, and do not invent a
-result from memory.
+The commands below use the bundled form; with engine 2 or 3, replace
+`PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli` with `ref-verify` (or
+the `uvx` form). An unavailable engine is not a verification result. If all
+three fail, follow the manual fallback protocol below. Do not pretend the CLI
+ran, and do not invent a result from memory.
 
 ### CLI-first workflow
 
@@ -91,16 +92,6 @@ CrossRef first, then DOI-bound OpenAlex, Semantic Scholar, and PubMed fallback w
 CrossRef has no abstract.
 
 CrossRef metadata screen:
-
-```bash
-ref-verify verify-doi <doi> \
-  --title "<provided title>" \
-  --first-author <provided-first-author-last-name> \
-  --year <provided-year> \
-  --json
-```
-
-Bundled-engine form:
 
 ```bash
 PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli verify-doi <doi> \
@@ -129,17 +120,11 @@ Reference list check (BibTeX, RIS, or a plain-text/Markdown bibliography). Run
 this first when the user hands over a reference list, then check claims:
 
 ```bash
-ref-verify check-bib <references.bib|references.ris|references.txt> --json
-```
-
-Bundled-engine form:
-
-```bash
-PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli check-bib <references file> --json
+PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli check-bib <references.bib|.ris|.txt|.md>
 ```
 
 When the user wants something to read or share (an advisor, co-authors), add
-`--report <name>.html` (or `.md`) next to `--json`: the HTML lists the items
+`--report <name>.html` (or `.md`): the HTML lists the items
 that need a look first and explains each verdict in plain words. Give the user
 the report path.
 
@@ -162,20 +147,11 @@ Route each result:
 Single claim check against a DOI abstract:
 
 ```bash
-ref-verify check-claim <doi> --claim "<specific factual claim>" --json
-```
-
-Bundled-engine form:
-
-```bash
 PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli check-claim <doi> --claim "<specific factual claim>" --json
 ```
 
-By default, `check-claim` uses CrossRef first. If CrossRef has no abstract, it
-tries DOI-bound OpenAlex, Semantic Scholar, and PubMed fallback sources. Use
-`--source crossref`, `--source openalex`, `--source semantic-scholar`, or `--source pubmed` for
-source-specific debugging. Explicit non-CrossRef source selection bypasses
-CrossRef, so it can isolate an OpenAlex, Semantic Scholar, or PubMed failure.
+`--source crossref|openalex|semantic-scholar|pubmed` forces one source (it
+bypasses CrossRef), for debugging a single source's failure.
 
 Route the result:
 
@@ -219,6 +195,40 @@ existence checks, and it only catches retractions that CrossRef records as a
 retraction notice. Continue the manual protocol for those layers when the
 selected mode requires them.
 
+### Pre-submission sweep
+
+Use the engine for both jobs. It queries CrossRef and doi.org for references and
+CrossRef, then OpenAlex, Semantic Scholar, and PubMed for abstracts, with a cache;
+do not hand-write `curl` calls for these.
+
+1. **References → `check-bib`.** Save only the reference list (the References
+   section, or the `.bib`); body paragraphs become spurious UNVERIFIED rows. The
+   text output gives one verdict and reason per reference. `--json` is too large
+   for one tool result: write it to a file (`--json > refs-check.json`) and read
+   it in parts.
+2. **Numeric claims → `check-file`.** Write `claims.jsonl`, one
+   `{"id", "doi", "claim"}` per cited sentence with a number (DOI from the
+   reference or check-bib's resolved DOI). Copy numbers, units, and direction
+   words exactly as the manuscript has them (`\SI{172.3}{\joule\per\mole}` is
+   172.3 J/mol); never correct a claim while copying it. Run
+   `PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli check-file claims.jsonl`.
+   The text output gives each claim's verdict and the abstract sentence it
+   matched (`Evidence`).
+3. **Judge each claim from that sentence, never from memory or the label alone.**
+   - Different value, unit, or direction → the manuscript misstates the paper,
+     even under `ACCEPT`; quote the sentence and give the correct value.
+   - Same value, unit, and direction → quoted abstract support, not a problem
+     (the label stays `WARN` in any verdict table).
+   - Sentence about something else, or about only part of the claim → read the
+     whole abstract (`check-claim` prints it under `paper`) before writing that
+     the abstract does not state it.
+4. **Look up by hand only what the engine left undecided** (`REFERENCE_UNMATCHED`,
+   `DOI_NOT_IN_CROSSREF`, `UNVERIFIABLE`): Layer 1 sources and doi.org. For a
+   citation without a title, search the author and journal plus the topic words of
+   the sentence citing it; a record that fits but has another volume or page means
+   the citation's volume or page is wrong. Mechanism claims still need Layer 3b,
+   and Layers 4–5 still apply where the mode requires.
+
 ---
 
 ### Quick Screen — metadata + DOI sanity check
@@ -250,8 +260,9 @@ Run all five layers per paper. The layers are ordered by what they catch — don
 
 Search two sources independently:
 - CrossRef: `https://api.crossref.org/works?query.bibliographic={title+author}&rows=5`
-- Semantic Scholar: `https://api.semanticscholar.org/graph/v1/paper/search?query={title+author}&fields=title,authors,year,externalIds,abstract&limit=5`
+- OpenAlex: `https://api.openalex.org/works?search={title+author}&per-page=5`
 - arXiv for preprints: `https://export.arxiv.org/api/query?search_query=ti:{title}&max_results=3`
+- Semantic Scholar, only when these cannot settle the item (it rate-limits shared clients): `https://api.semanticscholar.org/graph/v1/paper/search?query={title+author}&fields=title,authors,year,externalIds,abstract&limit=5`
 
 A paper is confirmed only if titles essentially match and first-author last name agrees across two sources.
 
@@ -276,10 +287,12 @@ Before fetching anything, classify what kind of claim is being verified:
 
 If the claim is mechanism/implementation-class, an abstract-only check is not sufficient even when the abstract is topically on point. Fetch the abstract as evidence of existence/topic match, but do not resolve the verdict from the abstract alone — continue to Layer 3b below.
 
-Fetch the abstract using this priority order:
+Fetch the abstract with the engine (`check-claim`/`check-file` try sources 1–3 and
+PubMed). By hand, when the engine is unavailable or found no abstract, use this
+priority order:
 1. CrossRef raw JSON: `https://api.crossref.org/works/{DOI}` — check the `abstract` field
 2. OpenAlex: `https://api.openalex.org/works/doi:{DOI}?mailto={contact_email}` — reconstruct `abstract_inverted_index`
-3. Semantic Scholar: append `&fields=abstract` to your S2 DOI lookup
+3. Semantic Scholar: `https://api.semanticscholar.org/graph/v1/paper/DOI:{DOI}?fields=abstract`
 4. Open-access fallback: `https://api.unpaywall.org/v2/{DOI}?email={contact_email}` — check `is_oa` and `oa_locations`
 5. arXiv fallback for preprints: `https://export.arxiv.org/api/query?id_list={arxiv_id}`
 6. PubMed Central for life/bio papers: `https://www.ncbi.nlm.nih.gov/pmc/articles/{PMCID}/`
@@ -345,6 +358,12 @@ Search `"{first author last name}" "{journal name}" retraction` and check the DO
 
 **Quick Screen**: one line per reference (see above).
 
+**Pre-submission sweep**: lead with decisions. For each problem: the reference
+as cited, what is wrong, the evidence (engine reason, CrossRef record, or quoted
+abstract sentence), and the fix. Then a short separate list, "Could not be
+confirmed automatically — look these up yourself", for items still unverified
+(theses, unindexed preprints). No commentary on tools, retries, or rate limits.
+
 **Full Audit**: one card per paper, then a summary table.
 
 ```
@@ -393,7 +412,7 @@ X / Y verified.  Z need attention.
 
 ## Anti-Hallucination Rules
 
-- Never recall a DOI from memory — fetch from CrossRef or S2.
+- Never recall a DOI from memory — fetch from CrossRef or OpenAlex.
 - Never describe paper content without fetched source text at the required depth to quote from.
 - Never fill in missing metadata by guessing or pattern-matching.
 - If two sources disagree, show both — do not choose silently.
@@ -410,4 +429,4 @@ X / Y verified.  Z need attention.
 
 **Conference proceedings**: volume/pages often absent from CrossRef; mark `[NOT IN SOURCE]`, not guessed.
 
-**S2 rate limiting**: wait 2s and retry once; if still failing, use CrossRef as primary and note single-source limitation.
+**Rate limits (HTTP 429, e.g. Semantic Scholar)**: a 429 is no evidence either way. Decide from the other sources; mention it only if it leaves an item undecided, and never soften a verdict because of it.
