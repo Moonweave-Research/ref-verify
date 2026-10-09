@@ -25,6 +25,7 @@ measure again after the tool is tuned against v1's misses.
   naming: `2026-10-08-34da678.json` (before #27) and `2026-10-08-7910447.json` (after #27,
   before the held-out set existed).
 - `../scripts/benchmark_references.py`: runs a set (standard library only).
+- `claims-v1.jsonl` and `../scripts/benchmark_claims.py`: the claim set and its runner (see [Claim set](#claim-set-claims-v1jsonl)).
 - `../scripts/render_scorecard.py`: draws `.github/assets/scorecard-{light,dark}.svg`
   from a held-out results file, with the development-set result as a footnote. The README chart
   is drawn from `results/2026-10-09-8170e66-holdout-v2.json` with
@@ -61,6 +62,37 @@ set, before the fix) and at `fe8e810` (after it), without `REF_VERIFY_MAILTO`.
 
 No fabricated item became PASS, no real item lost its PASS, and no retracted item lost
 `PAPER_RETRACTED` in any set. Results: `results/2026-10-09-{6f4386b,fe8e810}-*.json`.
+
+## Claim set (`claims-v1.jsonl`)
+
+60 numeric claims for measuring `ref-verify check-file` (the same check as `check-claim`):
+30 the abstract supports and 30 it does not, six each of a wrong number, a wrong unit or
+unit prefix, a reversed direction (above/below, rose/fell, more/less than), a number that
+belongs to another sample or quantity in the same abstract, and a claim with several
+quantities where one is wrong. Each of the 30 papers gives one supported and one
+unsupported claim. The papers are recent materials, chemistry, energy, sensor, water,
+concrete, and clinical papers with a CrossRef abstract; none appears in any other set,
+the E2E sets, or the test fixtures. The set was frozen at the commit that added it, before
+the claim engine was run on it.
+
+| Field | Meaning |
+|---|---|
+| `id` | `c1-NN`. |
+| `doi`, `claim` | What a user would pass to `check-claim`. |
+| `label` | `SUPPORTED` or `NOT_SUPPORTED`, by a reading of the abstract. |
+| `error_type` | For unsupported claims: `wrong_number`, `wrong_unit`, `wrong_direction`, `wrong_subject`, or `multi_quantity`. |
+| `evidence_quote` | An exact substring of the abstract that decides the label. |
+| `abstract_source`, `abstract_sha256` | The abstract the label was read from, as `ref-verify` fetches it. |
+| `verified`, `notes` | How the label was checked, and why a claim is wrong. |
+
+Scoring: `ACCEPT` is the only verdict counted as "supported"; `WARN` and `REJECT` both
+count as "not accepted". The headline is the false-ACCEPT rate on unsupported claims; the
+runner also reports ACCEPT precision and recall with 95% Wilson intervals. A row whose
+fetched abstract no longer matches `abstract_sha256` is listed under `abstract_changed`.
+
+```bash
+python3 scripts/benchmark_claims.py
+```
 
 ## Item fields
 
@@ -143,8 +175,8 @@ None so far for `references-holdout-v1.jsonl`, `references-holdout-v2.jsonl`, or
   exposed (#27) were developed against it, so the stored results are in-sample; a new,
   held-out set is the honest next measurement.
 
-- Whether a paper supports a claim (`check-claim`); only reference existence and
-  metadata are scored here.
+- Whether a paper supports a claim (`check-claim`), in the reference sets; only reference
+  existence and metadata are scored there. `claims-v1.jsonl` covers numeric claims.
 - Non-English literature beyond a handful of Korean items (journal papers, theses, and
   one paper cited by its Korean title).
 - Full text, page numbers, volume/issue, or journal names: `check-bib` compares title,
