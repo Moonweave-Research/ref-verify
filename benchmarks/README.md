@@ -103,6 +103,34 @@ python3 scripts/benchmark_claims.py
 python3 scripts/benchmark_claims.py --dataset benchmarks/claims-copy-v1.jsonl
 ```
 
+### Multi-quantity claim fix (2026-10-09)
+
+Each set was run on a fresh cache before the fix (`claims-v1` at `6c44979`,
+`claims-copy-v1` at `7d6a148`; the engine is the same in both) and after it (`2768bca`),
+without `REF_VERIFY_MAILTO`. No abstract changed between runs.
+
+| Set | Run | False ACCEPT (unsupported claims) | ACCEPT on supported claims | ACCEPT precision |
+|---|---|---|---|---|
+| claims-copy-v1 | before | 4/30 (5–30%) | 14/30 (30–64%) | 14/18 (55–91%) |
+| claims-copy-v1 | after | **0/30 (0–11%)** | 16/30 (36–70%) | 16/16 (81–100%) |
+| claims-v1 | before | 0/30 (0–11%) | 0/30 (0–11%) | no ACCEPT |
+| claims-v1 | after | 0/30 (0–11%) | 0/30 (0–11%) | no ACCEPT |
+
+Parentheses are 95% Wilson intervals. The four false ACCEPTs before the fix were one of
+each kind except a swapped subject: a cycle count changed beside a right efficiency
+(multi-quantity), an exponent changed (`10−4` to `10−3`), a unit changed in a secondary
+quantity (`42 ms` to `42 s`), and "higher than" turned into "lower than". The direction-word
+rule that catches the last one was added after this run showed it, so the
+`wrong_direction` row of the copy set is partly in-sample.
+
+On the copy set, three supported claims became ACCEPT (word-for-word claims carrying a
+percentage) and one became WARN: `cc1-27`, whose second number sits in the next clause
+of a sentence that goes on to "whereas ... (from 0.000486 to 1.17 MPa)", so the scope
+check sees "from". The paraphrased claims-v1 stays at no ACCEPT either way: `check-claim`
+accepts only claims whose wording follows the abstract, so it measures what is
+explicitly stated, not what a reader would accept as a paraphrase. Results:
+`results/2026-10-09-{6c44979,7d6a148,2768bca}-claims*.json`.
+
 ## Item fields
 
 | Field | Meaning |

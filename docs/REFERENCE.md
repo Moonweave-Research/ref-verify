@@ -305,7 +305,9 @@ the input order, and CrossRef and Semantic Scholar requests go one at a time
 because their public APIs reject parallel requests. In a terminal, a
 `Checking claims: N/M` counter on stderr shows progress (never with `--json`).
 Ctrl-C stops the run; finished lookups stay cached, so rerunning resumes quickly. Batch mode reuses the same conservative `check-claim` engine:
-`ACCEPT` means the abstract explicitly supports the numeric claim. `WARN`,
+`ACCEPT` means the abstract explicitly supports the numeric claim: every number in
+it, with its unit, sign, and direction, is supported by one clause or sentence of
+the abstract. `WARN`,
 `PARTIAL`, `REJECT`, or `UNVERIFIABLE` means the claim should not be treated as
 verified.
 
