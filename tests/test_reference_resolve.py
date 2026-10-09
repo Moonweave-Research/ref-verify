@@ -933,6 +933,67 @@ class WrongRecordTests(unittest.TestCase):
                 self.assertEqual(record.is_about_other_work, about)
 
 
+class HangulTitleTests(unittest.TestCase):
+    def _check(self, work_name, raw):
+        record = parse_crossref_work(CROSSREF_CASES[work_name])
+        entry = _plain(raw)
+        return check_reference(entry, FakeCrossref(works={entry.doi: record}))
+
+    def test_korean_title_is_not_reported_as_missing(self):
+        # E2E m7 #10: a Korean title and authors with another paper's DOI.
+        result = self._check(
+            "work_pk_2021_45_6_897",
+            '최수아, 정민호, "형상기억 하이드로젤의 온도 응답성 평가", 폴리머, 45(6), 897–903 (2021). '
+            "https://doi.org/10.7317/pk.2021.45.6.897",
+        )
+
+        self.assertNotIn("no article title", result.reason)
+        self.assertEqual(result.status, "MISMATCH")
+        self.assertIn("Evaporative Crystallization System", result.reason)
+
+    def test_correct_korean_title_with_another_doi_names_the_other_paper(self):
+        result = self._check(
+            "work_pk_2012_36_4_455",
+            "김호연, 이종휘 (2021). 온도감응성 하이드로젤 기반 증발 결정화 시스템. 폴리머, 45(6), 897-903. "
+            "https://doi.org/10.7317/pk.2012.36.4.455",
+        )
+
+        self.assertNotIn("no article title", result.reason)
+        self.assertEqual(result.status, "MISMATCH")
+
+    def test_korean_citation_without_a_title_is_still_title_less(self):
+        right = self._check(
+            "work_pk_2021_45_6_897", "김호연, 이종휘, Polym. Korea 45, 897 (2021). https://doi.org/10.7317/pk.2021.45.6.897"
+        )
+        swapped = self._check(
+            "work_pk_2012_36_4_455", "김호연, 이종휘, Polym. Korea 45, 897 (2021). https://doi.org/10.7317/pk.2012.36.4.455"
+        )
+
+        self.assertEqual(right.verdict, "PASS")
+        self.assertIn("no article title", right.reason)
+        self.assertEqual(swapped.status, "MISMATCH")
+        self.assertIn("no article title", swapped.reason)
+
+    def test_korean_title_with_spacing_variants_is_not_called_another_paper(self):
+        result = self._check(
+            "work_pk_2021_45_6_897",
+            "김호연, 이종휘. 온도 감응성 하이드로젤기반 증발결정화 시스템. 폴리머 45(6):897-903, 2021. "
+            "doi:10.7317/pk.2021.45.6.897",
+        )
+
+        self.assertNotIn("different paper", result.reason)
+        self.assertNotEqual(result.verdict, "REJECT")
+
+    def test_script_words_count_toward_a_title(self):
+        from ref_verify.reference_resolve import _script_title_words
+
+        self.assertEqual(_script_title_words("김호연, 이종휘, Polym. Korea 45, 897 (2021)."), 0)
+        self.assertEqual(_script_title_words("최수아, 정민호, \"형상기억 하이드로젤의 온도 응답성 평가\", 폴리머"), 6)
+        self.assertGreaterEqual(_script_title_words("山田太郎. 高分子ゲルの力学特性と応用. 高分子論文集"), 3)
+        self.assertFalse(_looks_titleless("김민형, 실감 콘텐츠 창작 교육 프레임워크, 한국콘텐츠학회논문지 24, 290 (2024)."))
+        self.assertTrue(_looks_titleless("김호연, 이종휘, Polym. Korea 45, 897 (2021)."))
+
+
 class SearchBibliographicTests(unittest.TestCase):
     def test_builds_query_url_and_parses_items(self):
         body = json.dumps(

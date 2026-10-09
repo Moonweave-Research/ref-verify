@@ -53,7 +53,14 @@ _DEFAULT_RATE_LIMIT_PAUSE_SECONDS = 15.0
 _MAX_RATE_LIMIT_PAUSE_SECONDS = 60.0
 _sleep = time.sleep
 _HANGUL = re.compile(r"[\uac00-\ud7a3]")
-
+# Hangul words, and runs of Han or kana characters (Chinese and Japanese titles carry no spaces).
+_SCRIPT_WORD = re.compile(r"[\uac00-\ud7a3]+|[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]+")
+# A leading list of Hangul or Han personal names ("최수아, 정민호", "김민형."): two to four
+# characters each, separated by commas or middle dots, and ending before punctuation.
+_SCRIPT_AUTHORS = re.compile(
+    r"^\s*(?:[\uac00-\ud7a3\u4e00-\u9fff]{2,4}\s*[,\u00b7\u30fb\u3001]\s*)*"
+    r"[\uac00-\ud7a3\u4e00-\u9fff]{2,4}(?=\s*(?:[,.(\"\u201c'\u2018\u300c]|$))"
+)
 
 
 class ReferenceClient(Protocol):
@@ -236,12 +243,39 @@ def _missing_from_crossref(entry: ReferenceEntry, doi: str, client: ReferenceCli
 
 
 def _text_names_another_paper(text: str, record: PaperRecord) -> bool:
-    # Hangul text cannot be compared word-for-word with a romanized English record, so it
-    # stays "could not confirm" rather than "different paper".
-    if not text or _HANGUL.search(text):
+    if not text:
         return False
+    if _HANGUL.search(text):
+        # Hangul text cannot be compared with a romanized English record, only with the
+        # record's Korean title when CrossRef has one; without it the answer stays "could
+        # not confirm" rather than "different paper".
+        korean_titles = [title for title in record_titles(record) if _HANGUL.search(title)]
+        if not korean_titles:
+            return False
+        return max(_hangul_overlap(title, text) for title in korean_titles) < _MAX_SWAPPED_TITLE_OVERLAP
     overlap = max(title_token_overlap(title, text) for title in record_titles(record))
     return overlap < _MAX_SWAPPED_TITLE_OVERLAP
+
+
+def _hangul_overlap(title: str, text: str) -> float:
+    # Share of the title's syllable pairs found in the text. Pairs rather than words, because
+    # particles attach to Korean words ("하이드로젤" in the title, "하이드로젤의" in the text).
+    def pairs(value: str) -> set[str]:
+        runs = re.findall(r"[\uac00-\ud7a3]+", value)
+        return {run[index : index + 2] for run in runs for index in range(max(1, len(run) - 1))}
+
+    title_pairs = pairs(title)
+    if not title_pairs:
+        return 0.0
+    return len(title_pairs & pairs(text)) / len(title_pairs)
+
+
+def _script_title_words(text: str) -> int:
+    # Words of a Hangul or CJK title, which the Latin word counts do not see: each Hangul
+    # word counts once, each Han or kana run once per four characters, and the leading
+    # author names are left out.
+    text = _SCRIPT_AUTHORS.sub(" ", text, count=1)
+    return sum(1 if _HANGUL.match(run) else max(1, len(run) // 4) for run in _SCRIPT_WORD.findall(text))
 
 
 def _insufficient_reason(provided: CitationInput, fetched: PaperRecord) -> str:
@@ -386,7 +420,9 @@ def _looks_titleless(text: str) -> bool:
     # Volume and page (or article number) must both follow the journal.
     if len(numbers) < 2:
         return False
-    before = tokens[: numbers[0]]
+    first_number = re.search(r"(?<![^\W\d_])\d+(?![^\W\d_])", text)
+    script_words = _script_title_words(text[: first_number.start()] if first_number else text)
+    before = [token for token in tokens[: numbers[0]] if not _SCRIPT_WORD.fullmatch(token)]
     initials = {index for index, token in enumerate(before) if token.isalpha() and token.isupper() and len(token) <= 2}
     words = [
         token
@@ -398,7 +434,7 @@ def _looks_titleless(text: str) -> bool:
         and token.isalpha()
         and token.casefold() not in _JOURNAL_STOPWORDS | _CITATION_FILLER
     ]
-    return len(words) <= _MAX_TITLELESS_JOURNAL_WORDS
+    return len(words) + script_words <= _MAX_TITLELESS_JOURNAL_WORDS
 
 
 def _bibliographic_query(entry: ReferenceEntry) -> str:
@@ -556,7 +592,7 @@ def _titleless_differences(entry: ReferenceEntry, record: PaperRecord) -> list[s
         and not token.isdigit()
         and len(token) >= 3
     ]
-    if len(leftover) >= 3:
+    if len(leftover) + _script_title_words(DOI_PATTERN.sub(" ", entry.raw)) >= 3:
         return None
     differences = []
     if not journal_run:

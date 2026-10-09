@@ -17,6 +17,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ### Fixed
 
 - `check-bib` no longer attaches a reference without a DOI to a different CrossRef record that shares its title. Supplementary-information components are never taken as the cited work; replies, comments, and retraction or correction notices ("Retraction—<title>", "Authors' reply") join review reports as records about another work; when several records match, the one whose first author agrees wins over search order (a 1998 *Lancet* letter titled like Wakefield's paper no longer hides the retraction); a title that only mostly appears in the reference must come with an agreeing first author; a reference that reads as a book (publisher or edition, no journal volume and page) matches only book records, not journal reviews of the book; and a reference that says preprint prefers the preprint record.
+- A Korean (or Chinese/Japanese) reference with a title is no longer treated as title-less: the title-less check counts Hangul words and CJK runs, not only Latin words, and leaves out a leading list of Hangul or Han author names. A Korean reference whose title disagrees with the Korean title CrossRef stores for its DOI is reported as naming another paper; before, it was explained as "The reference has no article title".
 
 ## [1.3.1] — 2026-10-08
 
