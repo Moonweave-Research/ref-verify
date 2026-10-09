@@ -1,0 +1,2676 @@
+{
+ "_source": "CrossRef REST API responses fetched 2026-10-09, trimmed to the fields ref-verify reads.",
+ "wakefield_search": [
+  {
+   "DOI": "10.1016/s0140-6736(05)77837-5",
+   "type": "journal-article",
+   "title": [
+    "Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children"
+   ],
+   "author": [
+    {
+     "given": "Aderbal",
+     "family": "Sabra"
+    },
+    {
+     "given": "Joseph A",
+     "family": "Bellanti"
+    },
+    {
+     "given": "Angel R",
+     "family": "Colón"
+    }
+   ],
+   "container-title": [
+    "The Lancet"
+   ],
+   "short-container-title": [
+    "The Lancet"
+   ],
+   "volume": "352",
+   "issue": "9123",
+   "page": "234-235",
+   "issued": {
+    "date-parts": [
+     [
+      1998,
+      7
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1998,
+      7
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1016/s0140-6736(10)60175-4",
+   "type": "journal-article",
+   "title": [
+    "Retraction—Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children"
+   ],
+   "author": [
+    {
+     "family": "The Editors of The Lancet"
+    }
+   ],
+   "container-title": [
+    "The Lancet"
+   ],
+   "short-container-title": [
+    "The Lancet"
+   ],
+   "volume": "375",
+   "issue": "9713",
+   "page": "445",
+   "issued": {
+    "date-parts": [
+     [
+      2010,
+      2
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2010,
+      2
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1016/s0140-6736(97)11096-0",
+   "type": "journal-article",
+   "title": [
+    "RETRACTED: Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children"
+   ],
+   "author": [
+    {
+     "given": "AJ",
+     "family": "Wakefield"
+    },
+    {
+     "given": "SH",
+     "family": "Murch"
+    },
+    {
+     "given": "A",
+     "family": "Anthony"
+    },
+    {
+     "given": "J",
+     "family": "Linnell"
+    },
+    {
+     "given": "DM",
+     "family": "Casson"
+    },
+    {
+     "given": "M",
+     "family": "Malik"
+    }
+   ],
+   "container-title": [
+    "The Lancet"
+   ],
+   "short-container-title": [
+    "The Lancet"
+   ],
+   "volume": "351",
+   "issue": "9103",
+   "page": "637-641",
+   "issued": {
+    "date-parts": [
+     [
+      1998,
+      2
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1998,
+      2
+     ]
+    ]
+   },
+   "updated-by": [
+    {
+     "DOI": "10.1016/s0140-6736(04)15715-2",
+     "type": "correction",
+     "source": "retraction-watch"
+    },
+    {
+     "DOI": "10.1016/s0140-6736(10)60175-4",
+     "type": "retraction",
+     "source": "retraction-watch"
+    }
+   ]
+  },
+  {
+   "DOI": "10.1016/s0140-6736(02)08948-1",
+   "type": "journal-article",
+   "title": [
+    "MMR vaccination, ileal lymphoid nodular hyperplasia, and pervasive developmental disorder"
+   ],
+   "author": [
+    {
+     "given": "Barbara A",
+     "family": "Hendrickson"
+    },
+    {
+     "given": "Jerrold R",
+     "family": "Turner"
+    }
+   ],
+   "container-title": [
+    "The Lancet"
+   ],
+   "short-container-title": [
+    "The Lancet"
+   ],
+   "volume": "359",
+   "issue": "9323",
+   "page": "2051-2052",
+   "issued": {
+    "date-parts": [
+     [
+      2002,
+      6
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2002,
+      6
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1016/s0016-5085(01)82543-9",
+   "type": "journal-article",
+   "title": [
+    "Persistent messles virus (MV) infection of lleal lymphoid tissue in children with lise-colonic lymphoid nodular hyperplasia, entero-colitis and developmental disorder"
+   ],
+   "author": [
+    {
+     "given": "V",
+     "family": "UHLMANN"
+    },
+    {
+     "given": "C",
+     "family": "MARTIN"
+    },
+    {
+     "given": "O",
+     "family": "SHIELS"
+    },
+    {
+     "given": "A",
+     "family": "ANTHONY"
+    },
+    {
+     "given": "M",
+     "family": "FOGARTY"
+    },
+    {
+     "given": "S",
+     "family": "MURCH"
+    }
+   ],
+   "container-title": [
+    "Gastroenterology"
+   ],
+   "short-container-title": [
+    "Gastroenterology"
+   ],
+   "volume": "120",
+   "issue": "5",
+   "page": "A512-A512",
+   "issued": {
+    "date-parts": [
+     [
+      2001,
+      4
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2001,
+      4
+     ]
+    ]
+   }
+  }
+ ],
+ "jcim_park_choi_search": [
+  {
+   "DOI": "10.1021/acs.jcim.6c01012.s001",
+   "type": "component",
+   "title": [
+    "Quantum-Chemically Informed Representation Learning for Molecular Crystal Property Prediction via Multimodal Graph Neural Networks"
+   ],
+   "issued": {
+    "date-parts": [
+     [
+      null
+     ]
+    ]
+   },
+   "relation": {
+    "is-component-of": [
+     {
+      "id": "10.1021/acs.jcim.6c01012"
+     }
+    ]
+   }
+  },
+  {
+   "DOI": "10.1021/acs.jcim.6c01012",
+   "type": "journal-article",
+   "title": [
+    "Quantum-Chemically\nInformed Representation Learning\nfor Molecular Crystal Property Prediction via Multimodal Graph Neural\nNetworks"
+   ],
+   "author": [
+    {
+     "given": "Ferdawss",
+     "family": "Ihiri"
+    },
+    {
+     "given": "Miguel A.",
+     "family": "Garcia-Garibay"
+    },
+    {
+     "given": "Anastassia N.",
+     "family": "Alexandrova"
+    }
+   ],
+   "container-title": [
+    "Journal of Chemical Information\nand Modeling"
+   ],
+   "volume": "66",
+   "issue": "18",
+   "page": "11631-11641",
+   "issued": {
+    "date-parts": [
+     [
+      2026,
+      9,
+      4
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2026,
+      9,
+      28
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2026,
+      9,
+      4
+     ]
+    ]
+   },
+   "relation": {
+    "has-preprint": [
+     {
+      "id": "10.26434/chemrxiv.15006367/v1"
+     }
+    ]
+   }
+  },
+  {
+   "DOI": "10.1021/acs.jcim.6c02021",
+   "type": "journal-article",
+   "title": [
+    "MMGNN: Multilevel, Multicolor Graph Neural Networks\nfor Molecular Property Prediction"
+   ],
+   "author": [
+    {
+     "given": "Trung",
+     "family": "Nguyen"
+    },
+    {
+     "given": "Duc",
+     "family": "Duy Nguyen"
+    }
+   ],
+   "container-title": [
+    "Journal of Chemical Information and Modeling"
+   ],
+   "volume": "66",
+   "issue": "18",
+   "page": "11700-11710",
+   "issued": {
+    "date-parts": [
+     [
+      2026,
+      8,
+      12
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2026,
+      9,
+      28
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2026,
+      8,
+      12
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1021/acs.jcim.5c01019.s003",
+   "type": "component",
+   "title": [
+    "Quantum-Embedded Graph Neural Network Architecture for Molecular Property Prediction"
+   ],
+   "issued": {
+    "date-parts": [
+     [
+      null
+     ]
+    ]
+   },
+   "relation": {
+    "is-component-of": [
+     {
+      "id": "10.1021/acs.jcim.5c01019"
+     }
+    ]
+   }
+  },
+  {
+   "DOI": "10.1021/acs.jcim.5c01019.s001",
+   "type": "component",
+   "title": [
+    "Quantum-Embedded Graph Neural Network Architecture for Molecular Property Prediction"
+   ],
+   "issued": {
+    "date-parts": [
+     [
+      null
+     ]
+    ]
+   },
+   "relation": {
+    "is-component-of": [
+     {
+      "id": "10.1021/acs.jcim.5c01019"
+     }
+    ]
+   }
+  }
+ ],
+ "jcim_chen_wang_search": [
+  {
+   "DOI": "10.1021/acs.jcim.9b00237.s001",
+   "type": "component",
+   "title": [
+    "Analyzing Learned Molecular Representations for Property Prediction"
+   ],
+   "issued": {
+    "date-parts": [
+     [
+      null
+     ]
+    ]
+   },
+   "relation": {
+    "is-component-of": [
+     {
+      "id": "10.1021/acs.jcim.9b00237"
+     }
+    ]
+   }
+  },
+  {
+   "DOI": "10.1039/d5re00205b",
+   "type": "journal-article",
+   "title": [
+    "An accurate and interpretable deep learning model for yield prediction using hybrid molecular representations"
+   ],
+   "author": [
+    {
+     "given": "Yingying",
+     "family": "Wang"
+    },
+    {
+     "given": "Xinyi",
+     "family": "Sun"
+    },
+    {
+     "given": "Yuanyuan",
+     "family": "Li"
+    },
+    {
+     "given": "Li",
+     "family": "Wang"
+    },
+    {
+     "given": "Jinglai",
+     "family": "Zhang"
+    }
+   ],
+   "container-title": [
+    "Reaction Chemistry &amp; Engineering"
+   ],
+   "short-container-title": [
+    "React. Chem. Eng."
+   ],
+   "volume": "10",
+   "issue": "10",
+   "page": "2334-2344",
+   "issued": {
+    "date-parts": [
+     [
+      2025
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2025
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1021/acs.jcim.9b00237",
+   "type": "journal-article",
+   "title": [
+    "Analyzing Learned Molecular Representations for Property Prediction"
+   ],
+   "author": [
+    {
+     "given": "Kevin",
+     "family": "Yang"
+    },
+    {
+     "given": "Kyle",
+     "family": "Swanson"
+    },
+    {
+     "given": "Wengong",
+     "family": "Jin"
+    },
+    {
+     "given": "Connor",
+     "family": "Coley"
+    },
+    {
+     "given": "Philipp",
+     "family": "Eiden"
+    },
+    {
+     "given": "Hua",
+     "family": "Gao"
+    }
+   ],
+   "container-title": [
+    "Journal of Chemical Information and Modeling"
+   ],
+   "short-container-title": [
+    "J. Chem. Inf. Model."
+   ],
+   "volume": "59",
+   "issue": "8",
+   "page": "3370-3388",
+   "issued": {
+    "date-parts": [
+     [
+      2019,
+      7,
+      30
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2019,
+      8,
+      26
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2019,
+      7,
+      30
+     ]
+    ]
+   },
+   "relation": {
+    "has-preprint": [
+     {
+      "id": "10.26434/chemrxiv.7940594.v3"
+     }
+    ]
+   }
+  },
+  {
+   "DOI": "10.1021/acs.jcim.9b01076",
+   "type": "journal-article",
+   "title": [
+    "Correction to Analyzing Learned Molecular Representations for Property Prediction"
+   ],
+   "author": [
+    {
+     "given": "Kevin",
+     "family": "Yang"
+    },
+    {
+     "given": "Kyle",
+     "family": "Swanson"
+    },
+    {
+     "given": "Wengong",
+     "family": "Jin"
+    },
+    {
+     "given": "Connor",
+     "family": "Coley"
+    },
+    {
+     "given": "Philipp",
+     "family": "Eiden"
+    },
+    {
+     "given": "Hua",
+     "family": "Gao"
+    }
+   ],
+   "container-title": [
+    "Journal of Chemical Information and Modeling"
+   ],
+   "short-container-title": [
+    "J. Chem. Inf. Model."
+   ],
+   "volume": "59",
+   "issue": "12",
+   "page": "5304-5305",
+   "issued": {
+    "date-parts": [
+     [
+      2019,
+      12,
+      9
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2019,
+      12,
+      23
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2019,
+      12,
+      9
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1021/acs.jcim.1c00975",
+   "type": "journal-article",
+   "title": [
+    "Machine Learning of Reaction Properties via Learned Representations of the Condensed Graph of Reaction"
+   ],
+   "author": [
+    {
+     "given": "Esther",
+     "family": "Heid"
+    },
+    {
+     "given": "William H.",
+     "family": "Green"
+    }
+   ],
+   "container-title": [
+    "Journal of Chemical Information and Modeling"
+   ],
+   "short-container-title": [
+    "J. Chem. Inf. Model."
+   ],
+   "volume": "62",
+   "issue": "9",
+   "page": "2101-2110",
+   "issued": {
+    "date-parts": [
+     [
+      2021,
+      11,
+      4
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2022,
+      5,
+      9
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2021,
+      11,
+      4
+     ]
+    ]
+   },
+   "relation": {
+    "has-preprint": [
+     {
+      "id": "10.26434/chemrxiv-2021-frfhz-v2"
+     },
+     {
+      "id": "10.26434/chemrxiv-2021-frfhz"
+     }
+    ]
+   }
+  }
+ ],
+ "feynman_search": [
+  {
+   "DOI": "10.1126/science.144.3616.280",
+   "type": "journal-article",
+   "title": [
+    "The Feynman Lectures of Physics. Richard P. Feynman. Robert B. Leighton and Matthew Sands, Eds. Addison-Wesley, Reading, Mass., 1963. Unpaged. Illus. $8.75"
+   ],
+   "author": [
+    {
+     "given": "H. H.",
+     "family": "Frank"
+    }
+   ],
+   "container-title": [
+    "Science"
+   ],
+   "short-container-title": [
+    "Science"
+   ],
+   "volume": "144",
+   "issue": "3616",
+   "page": "280-280",
+   "issued": {
+    "date-parts": [
+     [
+      1964,
+      4,
+      17
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1964,
+      4,
+      17
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1126/science.144.3616.280-a",
+   "type": "journal-article",
+   "title": [
+    "Feynman as a Lecturer:\n            <i>The Feynman Lectures of Physics</i>\n            . Richard P. Feynman. Robert B. Leighton and Matthew Sands, Eds. Addison-Wesley, Reading, Mass., 1963. Unpaged. Illus. $8.75."
+   ],
+   "author": [
+    {
+     "given": "H. H.",
+     "family": "Frank"
+    }
+   ],
+   "container-title": [
+    "Science"
+   ],
+   "short-container-title": [
+    "Science"
+   ],
+   "volume": "144",
+   "issue": "3616",
+   "page": "280-280",
+   "issued": {
+    "date-parts": [
+     [
+      1964,
+      4,
+      17
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1964,
+      4,
+      17
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1126/science.144.3616.280.a",
+   "type": "journal-article",
+   "title": [
+    "Feynman as a Lecturer:\n            <i>The Feynman Lectures of Physics</i>\n            . Richard P. Feynman. Robert B. Leighton and Matthew Sands, Eds. Addison-Wesley, Reading, Mass., 1963. Unpaged. Illus. $8.75."
+   ],
+   "author": [
+    {
+     "given": "H. H.",
+     "family": "Frank"
+    }
+   ],
+   "container-title": [
+    "Science"
+   ],
+   "short-container-title": [
+    "Science"
+   ],
+   "volume": "144",
+   "issue": "3616",
+   "page": "280-280",
+   "issued": {
+    "date-parts": [
+     [
+      1964,
+      4,
+      17
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1964,
+      4,
+      17
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1002/aic.690100602",
+   "type": "journal-article",
+   "title": [
+    "The Feynman lectures on physics, Richard P. Feynman, Robert B. Leighton, and Matthew Sands, Addison‐Wesley, Reading, Mass, Volume I, II (1964); Volume III (1965)"
+   ],
+   "author": [
+    {
+     "given": "R. B.",
+     "family": "Bird"
+    }
+   ],
+   "container-title": [
+    "AIChE Journal"
+   ],
+   "short-container-title": [
+    "AIChE Journal"
+   ],
+   "volume": "10",
+   "issue": "6",
+   "page": "794-794",
+   "issued": {
+    "date-parts": [
+     [
+      1964,
+      11
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1964,
+      11
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2004,
+      6,
+      17
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1063/1.3051743",
+   "type": "journal-article",
+   "title": [
+    "<i>The Feynman Lectures on Physics</i>"
+   ],
+   "author": [
+    {
+     "given": "Richard P.",
+     "family": "Feynman"
+    },
+    {
+     "given": "Robert B.",
+     "family": "Leighton"
+    },
+    {
+     "given": "Matthew",
+     "family": "Sands"
+    },
+    {
+     "given": "S. B.",
+     "family": "Treiman"
+    }
+   ],
+   "container-title": [
+    "Physics Today"
+   ],
+   "volume": "17",
+   "issue": "8",
+   "page": "45-46",
+   "issued": {
+    "date-parts": [
+     [
+      1964,
+      8,
+      1
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1964,
+      8,
+      1
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2009,
+      1,
+      14
+     ]
+    ]
+   }
+  }
+ ],
+ "jackson_search": [
+  {
+   "DOI": "10.1119/1.19136",
+   "type": "journal-article",
+   "title": [
+    "<i>Classical Electrodynamics, 3rd ed</i>\n                    ."
+   ],
+   "author": [
+    {
+     "given": "J. D.",
+     "family": "Jackson"
+    },
+    {
+     "given": "Ronald F.",
+     "family": "Fox"
+    }
+   ],
+   "container-title": [
+    "American Journal of Physics"
+   ],
+   "volume": "67",
+   "issue": "9",
+   "page": "841-842",
+   "issued": {
+    "date-parts": [
+     [
+      1999,
+      9,
+      1
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1999,
+      9,
+      1
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1137/1019029",
+   "type": "journal-article",
+   "title": [
+    "Classical Electrodynamics 2nd Ed. (John David Jackson)"
+   ],
+   "author": [
+    {
+     "given": "K. K.",
+     "family": "Lee"
+    }
+   ],
+   "container-title": [
+    "SIAM Review"
+   ],
+   "short-container-title": [
+    "SIAM Rev."
+   ],
+   "volume": "19",
+   "issue": "1",
+   "page": "169-170",
+   "issued": {
+    "date-parts": [
+     [
+      1977,
+      1
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1977,
+      1
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2006,
+      7,
+      18
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1023/a:1018821305089",
+   "type": "journal-article",
+   "title": [
+    "BOOK REVIEW: Classical Electrodynamics, by John David Jackson"
+   ],
+   "author": [
+    {
+     "given": "Wayne M.",
+     "family": "Saslow"
+    }
+   ],
+   "container-title": [
+    "Foundations of Physics"
+   ],
+   "short-container-title": [
+    "Foundations of Physics"
+   ],
+   "volume": "29",
+   "issue": "1",
+   "page": "133-135",
+   "issued": {
+    "date-parts": [
+     [
+      1999,
+      1
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1999,
+      1
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1002/0471206466.ch1",
+   "type": "other",
+   "title": [
+    "Introduction to Classical Electrodynamics"
+   ],
+   "container-title": [
+    "Electrodynamics of Solids and Microwave Superconductivity"
+   ],
+   "page": "1-128",
+   "issued": {
+    "date-parts": [
+     [
+      1999,
+      7,
+      9
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1999,
+      7,
+      9
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2001,
+      10,
+      5
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1126/science.136.3521.1046",
+   "type": "journal-article",
+   "title": [
+    "Modern Applications:\n            <i>Classical Electrodynamics</i>\n            . John David Jackson. Wiley, New York, 1962. xvii + 641 pp. Illus. $13."
+   ],
+   "author": [
+    {
+     "given": "Earle L.",
+     "family": "Lomon"
+    }
+   ],
+   "container-title": [
+    "Science"
+   ],
+   "short-container-title": [
+    "Science"
+   ],
+   "volume": "136",
+   "issue": "3521",
+   "page": "1046-1047",
+   "issued": {
+    "date-parts": [
+     [
+      1962,
+      6,
+      22
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1962,
+      6,
+      22
+     ]
+    ]
+   }
+  }
+ ],
+ "hastie_search": [
+  {
+   "DOI": "10.1111/j.1751-5823.2009.00095_18.x",
+   "type": "journal-article",
+   "title": [
+    "The Elements of Statistical Learning: Data Mining, Inference, and Prediction, Second Edition by Trevor Hastie, Robert Tibshirani, Jerome Friedman"
+   ],
+   "author": [
+    {
+     "given": "Klaus",
+     "family": "Nordhausen"
+    }
+   ],
+   "container-title": [
+    "International Statistical Review"
+   ],
+   "short-container-title": [
+    "Int Statistical Rev"
+   ],
+   "volume": "77",
+   "issue": "3",
+   "page": "482-482",
+   "issued": {
+    "date-parts": [
+     [
+      2009,
+      10,
+      29
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2009,
+      12
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2009,
+      10,
+      29
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1007/bf02295616",
+   "type": "journal-article",
+   "title": [
+    "T. Hastie, R. Tibshirani, and J. Friedman. The elements of statistical learning: Data mining, inference, and prediction. New York, NY: Springer, 2001, 533 + xvi pp., $79.95."
+   ],
+   "author": [
+    {
+     "given": "Jim",
+     "family": "Ramsay"
+    }
+   ],
+   "container-title": [
+    "Psychometrika"
+   ],
+   "short-container-title": [
+    "Psychometrika"
+   ],
+   "volume": "68",
+   "issue": "4",
+   "page": "611-612",
+   "issued": {
+    "date-parts": [
+     [
+      2003,
+      12
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2003,
+      12
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2025,
+      1,
+      1
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1111/j.1541-0420.2010.01516.x",
+   "type": "journal-article",
+   "title": [
+    "The Elements of Statistical Learning: Data Mining, Inference, and Prediction by HASTIE, T., TIBSHIRANI, R., and FRIEDMAN, J."
+   ],
+   "author": [
+    {
+     "given": "Guilherme J. M.",
+     "family": "Rosa"
+    }
+   ],
+   "container-title": [
+    "Biometrics"
+   ],
+   "short-container-title": [
+    "Biometrics"
+   ],
+   "volume": "66",
+   "issue": "4",
+   "page": "1315-1315",
+   "issued": {
+    "date-parts": [
+     [
+      2010,
+      12
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2010,
+      12
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2010,
+      12,
+      10
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1007/978-0-387-84858-7_8",
+   "type": "book-chapter",
+   "title": [
+    "Model Inference and Averaging"
+   ],
+   "author": [
+    {
+     "given": "Trevor",
+     "family": "Hastie"
+    },
+    {
+     "given": "Robert",
+     "family": "Tibshirani"
+    },
+    {
+     "given": "Jerome",
+     "family": "Friedman"
+    }
+   ],
+   "container-title": [
+    "Springer Series in Statistics",
+    "The Elements of Statistical Learning"
+   ],
+   "page": "261-294",
+   "issued": {
+    "date-parts": [
+     [
+      2008,
+      12,
+      24
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2009
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2008,
+      12,
+      24
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1007/978-0-387-84858-7",
+   "type": "book",
+   "title": [
+    "The Elements of Statistical Learning"
+   ],
+   "author": [
+    {
+     "given": "Trevor",
+     "family": "Hastie"
+    },
+    {
+     "given": "Robert",
+     "family": "Tibshirani"
+    },
+    {
+     "given": "Jerome",
+     "family": "Friedman"
+    }
+   ],
+   "container-title": [
+    "Springer Series in Statistics"
+   ],
+   "issued": {
+    "date-parts": [
+     [
+      2009
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2009
+     ]
+    ]
+   }
+  }
+ ],
+ "remdesivir_search": [
+  {
+   "DOI": "10.1056/nejmc2022236",
+   "type": "journal-article",
+   "title": [
+    "Remdesivir for the Treatment of Covid-19 — Preliminary Report"
+   ],
+   "container-title": [
+    "New England Journal of Medicine"
+   ],
+   "short-container-title": [
+    "N Engl J Med"
+   ],
+   "volume": "383",
+   "issue": "10",
+   "page": "992-994",
+   "issued": {
+    "date-parts": [
+     [
+      2020,
+      9,
+      3
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2020,
+      9,
+      3
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1056/nejmoa2007764",
+   "type": "journal-article",
+   "title": [
+    "Remdesivir for the Treatment of Covid-19 — Final Report"
+   ],
+   "author": [
+    {
+     "given": "John H.",
+     "family": "Beigel"
+    },
+    {
+     "given": "Kay M.",
+     "family": "Tomashek"
+    },
+    {
+     "given": "Lori E.",
+     "family": "Dodd"
+    },
+    {
+     "given": "Aneesh K.",
+     "family": "Mehta"
+    },
+    {
+     "given": "Barry S.",
+     "family": "Zingman"
+    },
+    {
+     "given": "Andre C.",
+     "family": "Kalil"
+    }
+   ],
+   "container-title": [
+    "New England Journal of Medicine"
+   ],
+   "short-container-title": [
+    "N Engl J Med"
+   ],
+   "volume": "383",
+   "issue": "19",
+   "page": "1813-1826",
+   "issued": {
+    "date-parts": [
+     [
+      2020,
+      11,
+      5
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2020,
+      11,
+      5
+     ]
+    ]
+   },
+   "relation": {
+    "has-review": [
+     {
+      "id": "10.3410/f.737996445.793581312"
+     },
+     {
+      "id": "10.3410/f.737996445.793574807"
+     }
+    ]
+   }
+  },
+  {
+   "DOI": "10.3410/f.737996445.793581312",
+   "type": "dataset",
+   "title": [
+    "Faculty Opinions recommendation of Remdesivir for the Treatment of Covid-19 - Final Report."
+   ],
+   "author": [
+    {
+     "given": "Ruediger",
+     "family": "Hehlmann"
+    }
+   ],
+   "container-title": [
+    "Faculty Opinions – Post-Publication Peer Review of the Biomedical Literature"
+   ],
+   "issued": {
+    "date-parts": [
+     [
+      2020,
+      12,
+      18
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2020,
+      12,
+      22
+     ]
+    ]
+   },
+   "relation": {
+    "is-review-of": [
+     {
+      "id": "10.1056/NEJMoa2007764"
+     }
+    ]
+   }
+  },
+  {
+   "DOI": "10.1056/nejmc2015312",
+   "type": "journal-article",
+   "title": [
+    "Compassionate Use of Remdesivir in Covid-19"
+   ],
+   "container-title": [
+    "New England Journal of Medicine"
+   ],
+   "short-container-title": [
+    "N Engl J Med"
+   ],
+   "volume": "382",
+   "issue": "25",
+   "page": "e101",
+   "issued": {
+    "date-parts": [
+     [
+      2020,
+      6,
+      18
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2020,
+      6,
+      18
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1056/nejme2018715",
+   "type": "journal-article",
+   "title": [
+    "Remdesivir — An Important First Step"
+   ],
+   "author": [
+    {
+     "given": "Raphael",
+     "family": "Dolin"
+    },
+    {
+     "given": "Martin S.",
+     "family": "Hirsch"
+    }
+   ],
+   "container-title": [
+    "New England Journal of Medicine"
+   ],
+   "short-container-title": [
+    "N Engl J Med"
+   ],
+   "volume": "383",
+   "issue": "19",
+   "page": "1886-1887",
+   "issued": {
+    "date-parts": [
+     [
+      2020,
+      11,
+      5
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2020,
+      11,
+      5
+     ]
+    ]
+   }
+  }
+ ],
+ "rubinstein_search": [
+  {
+   "DOI": "10.1002/pi.1472",
+   "type": "journal-article",
+   "title": [
+    "Polymer physics. Edited by Michael Rubinstein and Ralph H Colby Oxford University Press, Oxford, 2003. ISBN 019852059X. pp 440"
+   ],
+   "author": [
+    {
+     "given": "RA",
+     "family": "Pethrick"
+    }
+   ],
+   "container-title": [
+    "Polymer International"
+   ],
+   "short-container-title": [
+    "Polymer International"
+   ],
+   "volume": "53",
+   "issue": "9",
+   "page": "1394-1395",
+   "issued": {
+    "date-parts": [
+     [
+      2004,
+      7,
+      26
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2004,
+      9
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2004,
+      7,
+      26
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1093/oso/9780198520597.001.0001",
+   "type": "edited-book",
+   "title": [
+    "Polymer Physics"
+   ],
+   "author": [
+    {
+     "given": "Michael",
+     "family": "Rubinstein"
+    },
+    {
+     "given": "Ralph H",
+     "family": "Colby"
+    }
+   ],
+   "issued": {
+    "date-parts": [
+     [
+      2003,
+      6,
+      26
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2003,
+      6,
+      26
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2023,
+      10,
+      31
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1093/oso/9780198520597.003.0005",
+   "type": "book-chapter",
+   "title": [
+    "Polymer solutions"
+   ],
+   "author": [
+    {
+     "given": "Michael",
+     "family": "Rubinstein"
+    },
+    {
+     "given": "Ralph H",
+     "family": "Colby"
+    }
+   ],
+   "container-title": [
+    "Polymer Physics"
+   ],
+   "page": "171-196",
+   "issued": {
+    "date-parts": [
+     [
+      2003,
+      6,
+      26
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2003,
+      6,
+      26
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1093/oso/9780198520597.003.0008",
+   "type": "book-chapter",
+   "title": [
+    "Unentangled polymer dynamics"
+   ],
+   "author": [
+    {
+     "given": "Michael",
+     "family": "Rubinstein"
+    },
+    {
+     "given": "Ralph H",
+     "family": "Colby"
+    }
+   ],
+   "container-title": [
+    "Polymer Physics"
+   ],
+   "page": "309-360",
+   "issued": {
+    "date-parts": [
+     [
+      2003,
+      6,
+      26
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2003,
+      6,
+      26
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1093/oso/9780198520597.003.0009",
+   "type": "book-chapter",
+   "title": [
+    "Entangled polymer dynamics"
+   ],
+   "author": [
+    {
+     "given": "Michael",
+     "family": "Rubinstein"
+    },
+    {
+     "given": "Ralph H",
+     "family": "Colby"
+    }
+   ],
+   "container-title": [
+    "Polymer Physics"
+   ],
+   "page": "361-422",
+   "issued": {
+    "date-parts": [
+     [
+      2003,
+      6,
+      26
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2003,
+      6,
+      26
+     ]
+    ]
+   }
+  }
+ ],
+ "frank_review_search": [
+  {
+   "DOI": "10.1126/science.144.3616.280",
+   "type": "journal-article",
+   "title": [
+    "The Feynman Lectures of Physics. Richard P. Feynman. Robert B. Leighton and Matthew Sands, Eds. Addison-Wesley, Reading, Mass., 1963. Unpaged. Illus. $8.75"
+   ],
+   "author": [
+    {
+     "given": "H. H.",
+     "family": "Frank"
+    }
+   ],
+   "container-title": [
+    "Science"
+   ],
+   "short-container-title": [
+    "Science"
+   ],
+   "volume": "144",
+   "issue": "3616",
+   "page": "280-280",
+   "issued": {
+    "date-parts": [
+     [
+      1964,
+      4,
+      17
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1964,
+      4,
+      17
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1126/science.144.3616.280.a",
+   "type": "journal-article",
+   "title": [
+    "Feynman as a Lecturer:\n            <i>The Feynman Lectures of Physics</i>\n            . Richard P. Feynman. Robert B. Leighton and Matthew Sands, Eds. Addison-Wesley, Reading, Mass., 1963. Unpaged. Illus. $8.75."
+   ],
+   "author": [
+    {
+     "given": "H. H.",
+     "family": "Frank"
+    }
+   ],
+   "container-title": [
+    "Science"
+   ],
+   "short-container-title": [
+    "Science"
+   ],
+   "volume": "144",
+   "issue": "3616",
+   "page": "280-280",
+   "issued": {
+    "date-parts": [
+     [
+      1964,
+      4,
+      17
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1964,
+      4,
+      17
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1126/science.144.3616.280-a",
+   "type": "journal-article",
+   "title": [
+    "Feynman as a Lecturer:\n            <i>The Feynman Lectures of Physics</i>\n            . Richard P. Feynman. Robert B. Leighton and Matthew Sands, Eds. Addison-Wesley, Reading, Mass., 1963. Unpaged. Illus. $8.75."
+   ],
+   "author": [
+    {
+     "given": "H. H.",
+     "family": "Frank"
+    }
+   ],
+   "container-title": [
+    "Science"
+   ],
+   "short-container-title": [
+    "Science"
+   ],
+   "volume": "144",
+   "issue": "3616",
+   "page": "280-280",
+   "issued": {
+    "date-parts": [
+     [
+      1964,
+      4,
+      17
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1964,
+      4,
+      17
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1126/science.144.3616.280.b",
+   "type": "journal-article",
+   "title": [
+    "Mathematics:\n            <i>Lectures on General Algebra</i>\n            . A. G. Kurosh. Translated from the Russian edition (Moscow, 1960) by K. A. Hirsch. Chelsea, New York, 1963. 335 pp. Illus. $6.95."
+   ],
+   "author": [
+    {
+     "given": "Andrew O.",
+     "family": "Lindstrum"
+    }
+   ],
+   "container-title": [
+    "Science"
+   ],
+   "short-container-title": [
+    "Science"
+   ],
+   "volume": "144",
+   "issue": "3616",
+   "page": "280-281",
+   "issued": {
+    "date-parts": [
+     [
+      1964,
+      4,
+      17
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1964,
+      4,
+      17
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1126/science.144.3616.280-b",
+   "type": "journal-article",
+   "title": [
+    "Mathematics:\n            <i>Lectures on General Algebra</i>\n            . A. G. Kurosh. Translated from the Russian edition (Moscow, 1960) by K. A. Hirsch. Chelsea, New York, 1963. 335 pp. Illus. $6.95."
+   ],
+   "author": [
+    {
+     "given": "Andrew O.",
+     "family": "Lindstrum"
+    }
+   ],
+   "container-title": [
+    "Science"
+   ],
+   "short-container-title": [
+    "Science"
+   ],
+   "volume": "144",
+   "issue": "3616",
+   "page": "280-281",
+   "issued": {
+    "date-parts": [
+     [
+      1964,
+      4,
+      17
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1964,
+      4,
+      17
+     ]
+    ]
+   }
+  }
+ ],
+ "work_pk_2021_45_6_897": {
+  "DOI": "10.7317/pk.2021.45.6.897",
+  "type": "journal-article",
+  "title": [
+   "Evaporative Crystallization System Based on Temperature-Responsive Hydrogel"
+  ],
+  "subtitle": [],
+  "original-title": [
+   "온도감응성 하이드로젤 기반 증발 결정화 시스템"
+  ],
+  "author": [
+   {
+    "given": "Hoyeon",
+    "family": "Kim"
+   },
+   {
+    "given": "Jonghwi",
+    "family": "Lee"
+   }
+  ],
+  "container-title": [
+   "Polymer Korea"
+  ],
+  "short-container-title": [
+   "pk"
+  ],
+  "volume": "45",
+  "issue": "6",
+  "page": "897-903",
+  "issued": {
+   "date-parts": [
+    [
+     2021,
+     11,
+     30
+    ]
+   ]
+  },
+  "published-print": {
+   "date-parts": [
+    [
+     2021,
+     11,
+     30
+    ]
+   ]
+  },
+  "relation": {}
+ },
+ "sabra_search": [
+  {
+   "DOI": "10.1016/s0140-6736(05)77837-5",
+   "type": "journal-article",
+   "title": [
+    "Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children"
+   ],
+   "author": [
+    {
+     "given": "Aderbal",
+     "family": "Sabra"
+    },
+    {
+     "given": "Joseph A",
+     "family": "Bellanti"
+    },
+    {
+     "given": "Angel R",
+     "family": "Colón"
+    }
+   ],
+   "container-title": [
+    "The Lancet"
+   ],
+   "short-container-title": [
+    "The Lancet"
+   ],
+   "volume": "352",
+   "issue": "9123",
+   "page": "234-235",
+   "issued": {
+    "date-parts": [
+     [
+      1998,
+      7
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1998,
+      7
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1016/s0140-6736(10)60175-4",
+   "type": "journal-article",
+   "title": [
+    "Retraction—Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children"
+   ],
+   "author": [
+    {
+     "family": "The Editors of The Lancet"
+    }
+   ],
+   "container-title": [
+    "The Lancet"
+   ],
+   "short-container-title": [
+    "The Lancet"
+   ],
+   "volume": "375",
+   "issue": "9713",
+   "page": "445",
+   "issued": {
+    "date-parts": [
+     [
+      2010,
+      2
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2010,
+      2
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1016/s0140-6736(97)11096-0",
+   "type": "journal-article",
+   "title": [
+    "RETRACTED: Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children"
+   ],
+   "author": [
+    {
+     "given": "AJ",
+     "family": "Wakefield"
+    },
+    {
+     "given": "SH",
+     "family": "Murch"
+    },
+    {
+     "given": "A",
+     "family": "Anthony"
+    },
+    {
+     "given": "J",
+     "family": "Linnell"
+    },
+    {
+     "given": "DM",
+     "family": "Casson"
+    },
+    {
+     "given": "M",
+     "family": "Malik"
+    }
+   ],
+   "container-title": [
+    "The Lancet"
+   ],
+   "short-container-title": [
+    "The Lancet"
+   ],
+   "volume": "351",
+   "issue": "9103",
+   "page": "637-641",
+   "issued": {
+    "date-parts": [
+     [
+      1998,
+      2
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      1998,
+      2
+     ]
+    ]
+   },
+   "updated-by": [
+    {
+     "DOI": "10.1016/s0140-6736(04)15715-2",
+     "type": "correction",
+     "source": "retraction-watch"
+    },
+    {
+     "DOI": "10.1016/s0140-6736(10)60175-4",
+     "type": "retraction",
+     "source": "retraction-watch"
+    }
+   ]
+  },
+  {
+   "DOI": "10.1016/s0140-6736(02)08948-1",
+   "type": "journal-article",
+   "title": [
+    "MMR vaccination, ileal lymphoid nodular hyperplasia, and pervasive developmental disorder"
+   ],
+   "author": [
+    {
+     "given": "Barbara A",
+     "family": "Hendrickson"
+    },
+    {
+     "given": "Jerrold R",
+     "family": "Turner"
+    }
+   ],
+   "container-title": [
+    "The Lancet"
+   ],
+   "short-container-title": [
+    "The Lancet"
+   ],
+   "volume": "359",
+   "issue": "9323",
+   "page": "2051-2052",
+   "issued": {
+    "date-parts": [
+     [
+      2002,
+      6
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2002,
+      6
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.1016/s0016-5085(01)82543-9",
+   "type": "journal-article",
+   "title": [
+    "Persistent messles virus (MV) infection of lleal lymphoid tissue in children with lise-colonic lymphoid nodular hyperplasia, entero-colitis and developmental disorder"
+   ],
+   "author": [
+    {
+     "given": "V",
+     "family": "UHLMANN"
+    },
+    {
+     "given": "C",
+     "family": "MARTIN"
+    },
+    {
+     "given": "O",
+     "family": "SHIELS"
+    },
+    {
+     "given": "A",
+     "family": "ANTHONY"
+    },
+    {
+     "given": "M",
+     "family": "FOGARTY"
+    },
+    {
+     "given": "S",
+     "family": "MURCH"
+    }
+   ],
+   "container-title": [
+    "Gastroenterology"
+   ],
+   "short-container-title": [
+    "Gastroenterology"
+   ],
+   "volume": "120",
+   "issue": "5",
+   "page": "A512-A512",
+   "issued": {
+    "date-parts": [
+     [
+      2001,
+      4
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2001,
+      4
+     ]
+    ]
+   }
+  }
+ ],
+ "yang_preprint_search": [
+  {
+   "DOI": "10.1021/acs.jcim.9b00237",
+   "type": "journal-article",
+   "title": [
+    "Analyzing Learned Molecular Representations for Property Prediction"
+   ],
+   "author": [
+    {
+     "given": "Kevin",
+     "family": "Yang"
+    },
+    {
+     "given": "Kyle",
+     "family": "Swanson"
+    },
+    {
+     "given": "Wengong",
+     "family": "Jin"
+    },
+    {
+     "given": "Connor",
+     "family": "Coley"
+    },
+    {
+     "given": "Philipp",
+     "family": "Eiden"
+    },
+    {
+     "given": "Hua",
+     "family": "Gao"
+    }
+   ],
+   "container-title": [
+    "Journal of Chemical Information and Modeling"
+   ],
+   "short-container-title": [
+    "J. Chem. Inf. Model."
+   ],
+   "volume": "59",
+   "issue": "8",
+   "page": "3370-3388",
+   "issued": {
+    "date-parts": [
+     [
+      2019,
+      7,
+      30
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2019,
+      8,
+      26
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2019,
+      7,
+      30
+     ]
+    ]
+   },
+   "relation": {
+    "has-preprint": [
+     {
+      "id": "10.26434/chemrxiv.7940594.v3"
+     }
+    ]
+   }
+  },
+  {
+   "DOI": "10.26434/chemrxiv.7940594.v3",
+   "type": "posted-content",
+   "title": [
+    "Analyzing Learned Molecular Representations for Property Prediction"
+   ],
+   "author": [
+    {
+     "given": "Kevin",
+     "family": "Yang"
+    },
+    {
+     "given": "Kyle",
+     "family": "Swanson"
+    },
+    {
+     "given": "Wengong",
+     "family": "Jin"
+    },
+    {
+     "given": "Connor",
+     "family": "Coley"
+    },
+    {
+     "given": "philipp",
+     "family": "eiden"
+    },
+    {
+     "given": "Hua",
+     "family": "Gao"
+    }
+   ],
+   "issued": {
+    "date-parts": [
+     [
+      2019,
+      7,
+      30
+     ]
+    ]
+   },
+   "relation": {
+    "is-preprint-of": [
+     {
+      "id": "10.1021/acs.jcim.9b00237"
+     }
+    ],
+    "has-version": [
+     {
+      "id": "10.26434/chemrxiv.7940594.v1"
+     },
+     {
+      "id": "10.26434/chemrxiv.7940594.v2"
+     }
+    ]
+   }
+  },
+  {
+   "DOI": "10.1021/acs.jcim.9b01076",
+   "type": "journal-article",
+   "title": [
+    "Correction to Analyzing Learned Molecular Representations for Property Prediction"
+   ],
+   "author": [
+    {
+     "given": "Kevin",
+     "family": "Yang"
+    },
+    {
+     "given": "Kyle",
+     "family": "Swanson"
+    },
+    {
+     "given": "Wengong",
+     "family": "Jin"
+    },
+    {
+     "given": "Connor",
+     "family": "Coley"
+    },
+    {
+     "given": "Philipp",
+     "family": "Eiden"
+    },
+    {
+     "given": "Hua",
+     "family": "Gao"
+    }
+   ],
+   "container-title": [
+    "Journal of Chemical Information and Modeling"
+   ],
+   "short-container-title": [
+    "J. Chem. Inf. Model."
+   ],
+   "volume": "59",
+   "issue": "12",
+   "page": "5304-5305",
+   "issued": {
+    "date-parts": [
+     [
+      2019,
+      12,
+      9
+     ]
+    ]
+   },
+   "published-print": {
+    "date-parts": [
+     [
+      2019,
+      12,
+      23
+     ]
+    ]
+   },
+   "published-online": {
+    "date-parts": [
+     [
+      2019,
+      12,
+      9
+     ]
+    ]
+   }
+  },
+  {
+   "DOI": "10.26434/chemrxiv.7940594.v1",
+   "type": "posted-content",
+   "title": [
+    "Are Learned Molecular Representations Ready for Prime Time?"
+   ],
+   "author": [
+    {
+     "given": "Kevin",
+     "family": "Yang"
+    },
+    {
+     "given": "Kyle",
+     "family": "Swanson"
+    },
+    {
+     "given": "Wengong",
+     "family": "Jin"
+    },
+    {
+     "given": "Connor",
+     "family": "Coley"
+    },
+    {
+     "given": "philipp",
+     "family": "eiden"
+    },
+    {
+     "given": "Hua",
+     "family": "Gao"
+    }
+   ],
+   "issued": {
+    "date-parts": [
+     [
+      2019,
+      4,
+      3
+     ]
+    ]
+   },
+   "relation": {
+    "has-version": [
+     {
+      "id": "10.26434/chemrxiv.7940594.v2"
+     }
+    ]
+   }
+  },
+  {
+   "DOI": "10.26434/chemrxiv.7940594.v2",
+   "type": "posted-content",
+   "title": [
+    "Are Learned Molecular Representations Ready for Prime Time?"
+   ],
+   "author": [
+    {
+     "given": "Kevin",
+     "family": "Yang"
+    },
+    {
+     "given": "Kyle",
+     "family": "Swanson"
+    },
+    {
+     "given": "Wengong",
+     "family": "Jin"
+    },
+    {
+     "given": "Connor",
+     "family": "Coley"
+    },
+    {
+     "given": "philipp",
+     "family": "eiden"
+    },
+    {
+     "given": "Hua",
+     "family": "Gao"
+    }
+   ],
+   "issued": {
+    "date-parts": [
+     [
+      2019,
+      7,
+      16
+     ]
+    ]
+   },
+   "relation": {
+    "has-version": [
+     {
+      "id": "10.26434/chemrxiv.7940594.v1"
+     }
+    ]
+   }
+  }
+ ],
+ "work_pk_2012_36_4_455": {
+  "DOI": "10.7317/pk.2012.36.4.455",
+  "type": "journal-article",
+  "title": [
+   "Preparation of PNIPAM Hydrogel Containing Lipoic Acid"
+  ],
+  "subtitle": [],
+  "original-title": [
+   "리포익산을 함유한 PNIPAM 하이드로젤의 제조"
+  ],
+  "author": [
+   {
+    "given": "Hye-Ri",
+    "family": "Yoon"
+   },
+   {
+    "given": "Jong-Hwi",
+    "family": "Lee"
+   }
+  ],
+  "container-title": [
+   "Polymer Korea"
+  ],
+  "short-container-title": [
+   "Polymer Korea"
+  ],
+  "volume": "36",
+  "issue": "4",
+  "page": "455-460",
+  "issued": {
+   "date-parts": [
+    [
+     2012,
+     7,
+     25
+    ]
+   ]
+  },
+  "published-print": {
+   "date-parts": [
+    [
+     2012,
+     7,
+     25
+    ]
+   ]
+  },
+  "relation": {}
+ }
+}

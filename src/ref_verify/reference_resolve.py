@@ -55,6 +55,7 @@ _sleep = time.sleep
 _HANGUL = re.compile(r"[\uac00-\ud7a3]")
 
 
+
 class ReferenceClient(Protocol):
     def fetch_work(self, doi: str) -> PaperRecord:
         ...
@@ -288,13 +289,17 @@ def _resolve_reference(entry: ReferenceEntry, client: ReferenceClient) -> Refere
     # Five rows, because review reports and notices about a well-known paper can fill the
     # top three results ahead of the paper itself.
     candidates = client.search_bibliographic(query, rows=5) if query else []
-    for candidate in candidates:
-        if candidate.is_about_other_work:
-            continue
-        if not _candidate_matches(entry, candidate):
-            if _titleless_differences(entry, candidate) == []:
-                return _titleless_resolved(entry, candidate)
-            continue
+    candidates = [candidate for candidate in candidates if _can_be_cited_work(entry, candidate)]
+    matching: list[tuple[int, PaperRecord]] = []
+    for position, candidate in enumerate(candidates):
+        if _candidate_matches(entry, candidate):
+            matching.append((position, candidate))
+        elif not matching and _titleless_differences(entry, candidate) == []:
+            return _titleless_resolved(entry, candidate)
+    if matching:
+        # Search order is not identity: a letter, correspondence, or review can share the
+        # title and outrank the paper, so the record whose first author agrees comes first.
+        candidate = max(matching, key=lambda item: _candidate_rank(entry, item[1], item[0]))[1]
         if candidate.retraction_doi:
             return _retracted(entry, candidate, resolved_doi=candidate.doi)
         mismatches = []
@@ -325,7 +330,7 @@ def _resolve_reference(entry: ReferenceEntry, client: ReferenceClient) -> Refere
         # is accepted from it.
         query, author, year_range = structured
         for candidate in client.search_bibliographic(query, rows=5, author=author, year_range=year_range):
-            if not candidate.is_about_other_work and _titleless_differences(entry, candidate) == []:
+            if _can_be_cited_work(entry, candidate) and _titleless_differences(entry, candidate) == []:
                 return _titleless_resolved(entry, candidate)
     return ReferenceResult(
         entry=entry,
@@ -408,15 +413,90 @@ def _candidate_matches(entry: ReferenceEntry, candidate: PaperRecord) -> bool:
     if entry.title:
         if not any(titles_match(entry.title, title) for title in titles):
             return False
-    elif not any(
-        title_in_text(title, entry.raw) or title_token_overlap(title, entry.raw) >= _MIN_TEXT_TITLE_OVERLAP
-        for title in titles
-    ):
-        return False
+    elif not any(title_in_text(title, entry.raw) for title in titles):
+        if not any(title_token_overlap(title, entry.raw) >= _MIN_TEXT_TITLE_OVERLAP for title in titles):
+            return False
+        # A title that only mostly appears in the text ("... for property prediction" against
+        # "... for reaction yield prediction") names this record only if the first author
+        # agrees too; otherwise it is a similar paper, not a typo of this one.
+        if not _first_author_matches(entry, candidate):
+            return False
     candidate_years = record_years(candidate)
     if entry.year is not None and candidate_years:
         return min(abs(entry.year - year) for year in candidate_years) <= 1
     return True
+
+
+# Supplementary files and review reports share a paper's title but are never what a
+# reference list cites.
+_NEVER_CITED_TYPES = {"component", "peer-review"}
+# Records a citation of a book can point to.
+_BOOK_TYPES = {
+    "book", "book-chapter", "book-part", "book-section", "book-series", "book-set", "book-track",
+    "edited-book", "monograph", "reference-book", "other",
+}
+_PREPRINT_WORDS = re.compile(
+    r"\b(?:preprint|arxiv|biorxiv|medrxiv|chemrxiv|ssrn|research\ssquare|preprints\.org|techrxiv|osf\spreprints)\b",
+    re.IGNORECASE,
+)
+_PUBLISHER_WORDS = re.compile(
+    r"\b(?:press|publishers?|publishing|verlag|wiley|springer|elsevier|addison[-\s]wesley|mcgraw[-\s]hill|"
+    r"prentice[-\s]hall|freeman|garland|butterworth[-\s]heinemann|routledge|pearson|dover|benjamin|saunders|"
+    r"world\sscientific|crc)\b|\b\d+(?:st|nd|rd|th)\s+ed(?:\.|ition)|\brev(?:ised)?\.?\s+ed(?:\.|ition)",
+    re.IGNORECASE,
+)
+# Where a journal article sits: "144(3616), 280", "2020;383(19):1813", "vol. 42, no. 6", "60, 742-754".
+_ARTICLE_LOCATOR = re.compile(
+    r"\b\d+\s*\(\s*[\w\s.-]+\)\s*[:,]?\s*[A-Za-z]?\d+|;\s*\d+\s*(?:\([^)]*\))?\s*:\s*[A-Za-z]?\d+|"
+    r"\bvol\.?\s*\d+\s*,\s*(?:no\.|pp\.|\d)|\b\d{1,4}\s*,\s*[A-Za-z]?\d+\s*[-\u2013]\s*[A-Za-z]?\d+",
+    re.IGNORECASE,
+)
+
+
+def _can_be_cited_work(entry: ReferenceEntry, candidate: PaperRecord) -> bool:
+    if candidate.is_about_other_work or candidate.work_type in _NEVER_CITED_TYPES:
+        return False
+    # A book cited without a DOI often shares its title with journal reviews of it ("The
+    # Feynman Lectures on Physics" in Physics Today); only book records can be the book.
+    if _looks_like_book(entry):
+        return candidate.work_type is None or candidate.work_type in _BOOK_TYPES
+    return True
+
+
+def _looks_like_book(entry: ReferenceEntry) -> bool:
+    raw = entry.raw.lstrip()
+    if re.match(r"@\s*(?:book|inbook|incollection)\b", raw, re.IGNORECASE):
+        return True
+    if re.search(r"^TY\s+-\s+(?:BOOK|CHAP|EBOOK|EDBOOK)\b", raw, re.MULTILINE):
+        return True
+    if raw.startswith("@") or re.search(r"^TY\s+-", raw, re.MULTILINE):
+        return False
+    # Plain text: a publisher or an edition, and no journal volume and page.
+    return bool(_PUBLISHER_WORDS.search(raw)) and not _ARTICLE_LOCATOR.search(raw) and not entry.journal
+
+
+def _candidate_rank(entry: ReferenceEntry, candidate: PaperRecord, position: int) -> tuple[bool, bool, bool, bool, int]:
+    candidate_years = record_years(candidate)
+    preprint = bool(_PREPRINT_WORDS.search(entry.raw))
+    if preprint:
+        type_fits = candidate.work_type == "posted-content"
+    else:
+        type_fits = candidate.work_type not in {"posted-content", "reference-entry", "dataset"}
+    return (
+        _first_author_matches(entry, candidate),
+        type_fits,
+        entry.year is not None and entry.year in candidate_years,
+        _container_agrees(entry, candidate),
+        -position,
+    )
+
+
+def _container_agrees(entry: ReferenceEntry, candidate: PaperRecord) -> bool:
+    tokens = _plain_tokens(entry.journal or entry.raw)
+    return any(
+        journal and _journal_run(journal, tokens)
+        for journal in (candidate.journal, *candidate.journal_abbreviations)
+    )
 
 
 def _first_author_matches(entry: ReferenceEntry, candidate: PaperRecord) -> bool:
