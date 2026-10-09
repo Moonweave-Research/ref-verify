@@ -4,10 +4,18 @@ OK and claim items: the DOI resolves in CrossRef and is not retracted. RETRACTED
 lists a retraction. FAB_DOI: CrossRef 404 and doi.org "DOI does not exist". FAB_NODOI: no
 CrossRef search hit with the same title. DOI_SWAP / TITLELESS / WRONG_*: the true record
 exists, and for WRONG_YEAR its years exclude the cited year.
+
+Items that carry more detail (the v2 set) are checked further: WRONG_AUTHOR against the record's
+first author, TITLELESS_WRONG_VOLPAGE against its volume and first page, DOI_SWAP's cited DOI
+against a different record, every number quoted in `abstract_says` against the live CrossRef
+abstract (items with `abstract_source: crossref`), and FAB_NODOI against the item's `cited_title`.
+
+Usage: python3 verify_truth.py [--truth v2/truth.json]
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import sys
@@ -63,6 +71,39 @@ def title_of(item: dict, manuscript_text: str) -> str:
     return ""
 
 
+def numbers(text: str) -> set[str]:
+    return set(re.findall(r"\d+(?:\.\d+)?", text))
+
+
+def detail(item: dict, message: dict) -> str | None:
+    kind = item["type"]
+    doi = item["truth_doi"]
+    if kind == "WRONG_AUTHOR" and item.get("true_first_author"):
+        first = ((message.get("author") or [{}])[0].get("family") or "").casefold()
+        if first != item["true_first_author"].casefold() or first == item["cited_first_author"].casefold():
+            return f"{doi} first author {first!r} vs truth {item['true_first_author']!r} / cited {item['cited_first_author']!r}"
+    if kind == "TITLELESS_WRONG_VOLPAGE" and item.get("true_volume"):
+        first_page = re.split(r"[-–]", str(message.get("page") or message.get("article-number") or ""))[0]
+        if message.get("volume") != item["true_volume"] or first_page != item["true_page"]:
+            return f"{doi} is {message.get('volume')}, {first_page}; truth says {item['true_volume']}, {item['true_page']}"
+        if (item["cited_volume"], item["cited_page"]) == (item["true_volume"], item["true_page"]):
+            return "cited volume/page equal the true ones"
+    if kind == "DOI_SWAP" and item.get("cited_doi"):
+        other = crossref(item["cited_doi"])
+        if other is None:
+            return f"cited DOI {item['cited_doi']} not in CrossRef"
+        if (other.get("title") or [""])[0].casefold() == (message.get("title") or [""])[0].casefold():
+            return f"cited DOI {item['cited_doi']} has the same title as {doi}"
+    if item.get("abstract_source") == "crossref":
+        abstract = numbers(re.sub(r"<[^>]+>", " ", message.get("abstract") or ""))
+        missing = numbers(item["abstract_says"]) - abstract
+        if missing:
+            return f"{doi} abstract lacks {sorted(missing)} quoted in abstract_says"
+        if kind == "CLAIM_NUMBER" and numbers(" ".join(item["value"])) & abstract:
+            return f"{doi} abstract contains the planted number {item['value']}"
+    return None
+
+
 def check(item: dict, manuscript_text: str) -> str | None:
     kind = item["type"]
     doi = item.get("truth_doi")
@@ -78,7 +119,7 @@ def check(item: dict, manuscript_text: str) -> str | None:
         if kind == "WRONG_YEAR":
             if item["true_year"] not in years(message) or item["cited_year"] in years(message):
                 return f"{doi} years {sorted(years(message))} vs cited {item['cited_year']}"
-        return None
+        return detail(item, message)
     if kind == "FAB_DOI":
         candidates = re.findall(r"10\.\d{4,9}/\S+", manuscript_text)
         target = next((c.rstrip(".,}") for c in candidates for m in item["match"] if m in c), None)
@@ -90,7 +131,7 @@ def check(item: dict, manuscript_text: str) -> str | None:
         status = agency[0].get("status", "") if isinstance(agency, list) and agency else ""
         return None if "does not exist" in status else f"{target} doi.org says {agency}"
     if kind == "FAB_NODOI":
-        line = title_of(item, manuscript_text)
+        line = item.get("cited_title") or title_of(item, manuscript_text)
         data = fetch("https://api.crossref.org/works?" + urllib.parse.urlencode({"query.bibliographic": line, "rows": "5"}))
         cited = " ".join(words(line))
         for record in (data or {}).get("message", {}).get("items", []):
@@ -104,12 +145,16 @@ def check(item: dict, manuscript_text: str) -> str | None:
 
 
 def main() -> int:
-    truth = json.loads((HERE / "truth.json").read_text(encoding="utf-8"))
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--truth", type=Path, default=HERE / "truth.json")
+    args = parser.parse_args()
+    truth = json.loads(args.truth.read_text(encoding="utf-8"))
+    base = args.truth.resolve().parent
     problems = 0
     for name, manuscript in truth["manuscripts"].items():
-        text = (HERE / manuscript["path"]).read_text(encoding="utf-8")
+        text = (base / manuscript["path"]).read_text(encoding="utf-8")
         if manuscript.get("bib"):
-            text += "\n" + (HERE / manuscript["bib"]).read_text(encoding="utf-8")
+            text += "\n" + (base / manuscript["bib"]).read_text(encoding="utf-8")
         for item in manuscript["items"]:
             problem = check(item, text)
             status = "ok" if problem is None else f"PROBLEM: {problem}"
