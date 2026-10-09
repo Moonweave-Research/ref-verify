@@ -5,7 +5,8 @@ fabricated, retracted, and unindexed references against live CrossRef.
 
 | Set | Items | Role |
 |---|---|---|
-| `references-holdout-v1.jsonl` | 86 | **Held-out set.** Written and committed before the tool was run on it; no paper in it appears in the development set, and it uses other journals, fields, and citation styles (IEEE, Nature, Harvard, Chicago, biblatex, and physics/chemistry styles that omit the article title). The README headline numbers and chart come from this set. |
+| `references-holdout-v2.jsonl` | 99 | **Held-out set v2.** Written and committed before any run, after #30 and #33 were tuned on holdout-v1's misses. It shares no paper (DOI or title) with the other two sets and stresses title-less physics/chemistry citations (13 real, 8 fabricated), group authors, particle surnames, Korean-titled Korean journal papers with Hangul authors, books, conference papers, retractions marked in CrossRef only through Retraction Watch data, and retractions CrossRef cannot mark (KISTI, ISTIC, and DataCite DOIs). Measured once, on 1.3.1; the README scorecard is not yet switched to it. |
+| `references-holdout-v1.jsonl` | 86 | **Held-out set v1, now in-sample:** its misses were used to tune #30 and #33. Originally Written and committed before the tool was run on it; no paper in it appears in the development set, and it uses other journals, fields, and citation styles (IEEE, Nature, Harvard, Chicago, biblatex, and physics/chemistry styles that omit the article title). The README headline numbers and chart come from this set. |
 | `references-v1.jsonl` | 142 | **Development set (used while fixing the tool).** Its misses drove the matching fixes in #27, so its scores are in-sample and are shown only as a secondary line. |
 
 Rules for the held-out set: it is frozen at the commit that added it, and items are
@@ -16,7 +17,7 @@ measure again after the tool is tuned against v1's misses.
 
 ## Files
 
-- `references-holdout-v1.jsonl`, `references-v1.jsonl`: the labelled sets, one reference per line.
+- `references-holdout-v2.jsonl`, `references-holdout-v1.jsonl`, `references-v1.jsonl`: the labelled sets, one reference per line. Holdout-v2 items also carry `style` (citation format, for per-format breakdowns) and `titleless: true` on fabricated citations that omit the article title.
 - `results/<YYYY-MM-DD>-<short sha>-<set>.json`: one benchmark run of one set: tool
   version, commit, dataset hash, per-item verdicts and timings, and the aggregates the
   README quotes. Two earlier development-set runs keep the old
@@ -99,7 +100,7 @@ rerun on the same commit can differ slightly from a stored result.
 
 ## Label corrections
 
-None so far for `references-holdout-v1.jsonl`.
+None so far for `references-holdout-v1.jsonl` or `references-holdout-v2.jsonl`.
 
 ## What this does not measure
 
