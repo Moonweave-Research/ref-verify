@@ -5,8 +5,9 @@ fabricated, retracted, and unindexed references against live CrossRef.
 
 | Set | Items | Role |
 |---|---|---|
-| `references-holdout-v2.jsonl` | 99 | **Held-out set v2.** Written and committed before any run, after #30 and #33 were tuned on holdout-v1's misses. It shares no paper (DOI or title) with the other two sets and stresses title-less physics/chemistry citations (13 real, 8 fabricated), group authors, particle surnames, Korean-titled Korean journal papers with Hangul authors, books, conference papers, retractions marked in CrossRef only through Retraction Watch data, and retractions CrossRef cannot mark (KISTI, ISTIC, and DataCite DOIs). Measured once, on 1.3.1; the README scorecard is not yet switched to it. |
-| `references-holdout-v1.jsonl` | 86 | **Held-out set v1, now in-sample:** its misses were used to tune #30 and #33. Originally written and committed before the tool was run on it; no paper in it appears in the development set, and it uses other journals, fields, and citation styles (IEEE, Nature, Harvard, Chicago, biblatex, and physics/chemistry styles that omit the article title). The README headline numbers and chart come from this set. |
+| `references-regress-v3.jsonl` | 23 | **Regression set for the search-path and Hangul-title fixes.** Not a held-out score: it holds the failure cases found by the E2E evaluation (#37) and holdout-v2 (a same-title letter or review taken for the paper, an SI component taken for the paper, a book matched to a journal review of it, a Korean reference with a title read as title-less) and close-call controls where the cited record really is a letter, a review, a book, or a preprint. Frozen before the before/after runs. |
+| `references-holdout-v2.jsonl` | 99 | **Held-out set v2.** Written and committed before any run, after #30 and #33 were tuned on holdout-v1's misses. It shares no paper (DOI or title) with the other two sets and stresses title-less physics/chemistry citations (13 real, 8 fabricated), group authors, particle surnames, Korean-titled Korean journal papers with Hangul authors, books, conference papers, retractions marked in CrossRef only through Retraction Watch data, and retractions CrossRef cannot mark (KISTI, ISTIC, and DataCite DOIs). Measured once, on 1.3.1; the README headline numbers and chart come from this set. |
+| `references-holdout-v1.jsonl` | 86 | **Held-out set v1, now in-sample:** its misses were used to tune #30 and #33. Originally written and committed before the tool was run on it; no paper in it appears in the development set, and it uses other journals, fields, and citation styles (IEEE, Nature, Harvard, Chicago, biblatex, and physics/chemistry styles that omit the article title). |
 | `references-v1.jsonl` | 142 | **Development set (used while fixing the tool).** Its misses drove the matching fixes in #27, so its scores are in-sample and are shown only as a secondary line. |
 
 Rules for the held-out set: it is frozen at the commit that added it, and items are
@@ -25,7 +26,9 @@ measure again after the tool is tuned against v1's misses.
   before the held-out set existed).
 - `../scripts/benchmark_references.py`: runs a set (standard library only).
 - `../scripts/render_scorecard.py`: draws `.github/assets/scorecard-{light,dark}.svg`
-  from a held-out results file, with the development-set result as a footnote.
+  from a held-out results file, with the development-set result as a footnote. The README chart
+  is drawn from `results/2026-10-09-8170e66-holdout-v2.json` with
+  `--dev results/2026-10-09-8170e66-v1.json`.
 
 ## Holdout-v2 measurement (2026-10-09, ref-verify 1.3.1)
 
@@ -43,6 +46,21 @@ retractions Retraction Watch lists that CrossRef cannot mark (KISTI, ISTIC, and 
 and a FASEB abstract DOI aliased to its withdrawal notice), reported separately: none of the
 four got `PAPER_RETRACTED`. Per-item results:
 `results/2026-10-09-8170e66-{holdout-v2,holdout-v1,v1}.json`.
+
+## Wrong-record and Hangul-title fix (2026-10-09)
+
+Each set was run on a fresh cache at `6f4386b` (main `e045a86` plus the frozen regress-v3
+set, before the fix) and at `fe8e810` (after it), without `REF_VERIFY_MAILTO`.
+
+| Set | Before | After |
+|---|---|---|
+| regress-v3 | real 10/12 PASS, retracted 0/1, 1 wrong-record PASS, 2 unindexed books PASSed on a review | real 12/12 PASS, retracted 1/1, no wrong-record PASS |
+| holdout-v2 | real 40/45, fabricated 29/29, retracted 8/8, unindexed REJECT 0/13 | unchanged; 2 references no longer attach to a wrong record |
+| holdout-v1 (in-sample) | real 40/40, fabricated 26/26, retracted 10/10, unindexed REJECT 0/10 | unchanged; 2 no longer attach to a wrong record |
+| v1 (in-sample) | real 66/66, fabricated 43/43, retracted 16/16, unindexed REJECT 1/17 | unchanged; 3 no longer attach to a wrong record |
+
+No fabricated item became PASS, no real item lost its PASS, and no retracted item lost
+`PAPER_RETRACTED` in any set. Results: `results/2026-10-09-{6f4386b,fe8e810}-*.json`.
 
 ## Item fields
 
@@ -117,7 +135,7 @@ rerun on the same commit can differ slightly from a stored result.
 
 ## Label corrections
 
-None so far for `references-holdout-v1.jsonl` or `references-holdout-v2.jsonl`.
+None so far for `references-holdout-v1.jsonl`, `references-holdout-v2.jsonl`, or `references-regress-v3.jsonl`.
 
 ## What this does not measure
 

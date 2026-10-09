@@ -136,7 +136,11 @@ def render_svg(results: dict[str, Any], theme_name: str, dev: dict[str, Any] | N
         counts = composition.get(category, {"n": 0, "pass": 0, "warn": 0, "reject": 0})
         y = TOP + index * ROW_PITCH
         parts.append(_text(LABEL_X, y + 12, label, fill=theme["ink"], size=15, weight=600))
-        parts.append(_text(LABEL_X, y + 31, f"n = {counts['n']}", fill=theme["muted"], size=13))
+        # Retractions CrossRef cannot mark (DOIs at other agencies) are in the bar but not in
+        # the rate, so the label and headline say which denominator the rate uses.
+        unmarked = aggregates.get("retracted_not_marked_by_crossref", 0) if category == "RETRACTED" else 0
+        size_label = f"n = {counts['n']} ({unmarked} unmarked)" if unmarked else f"n = {counts['n']}"
+        parts.append(_text(LABEL_X, y + 31, size_label, fill=theme["muted"], size=13))
 
         nonzero = [(seg, counts[seg]) for seg, _ in SEGMENTS if counts[seg]]
         gap = 2.0
@@ -166,7 +170,10 @@ def render_svg(results: dict[str, Any], theme_name: str, dev: dict[str, Any] | N
                 )
             x += width + gap
 
-        parts.append(_text(HEADLINE_X, y + 12, _headline(aggregates, key, suffix), fill=theme["ink"], size=15, weight=600))
+        headline = _headline(aggregates, key, suffix)
+        if unmarked:
+            headline = f"{aggregates[key]['k']}/{aggregates[key]['n']} marked ones caught"
+        parts.append(_text(HEADLINE_X, y + 12, headline, fill=theme["ink"], size=15, weight=600))
         parts.append(
             _text(HEADLINE_X, y + 31, f"{rule} · {_interval(aggregates, key)}", fill=theme["muted"], size=13)
         )

@@ -1,0 +1,24 @@
+# A small reference list for trying ref-verify. The comment above each reference
+# says what it really is, so you can compare that with the verdict.
+# Lines starting with # are ignored by `ref-verify check-bib`.
+
+# Real paper, with a DOI.
+Pelrine, R., Kornbluh, R., Pei, Q., & Joseph, J. (2000). High-speed electrically actuated elastomers with strain greater than 100%. Science, 287(5454), 836–839. https://doi.org/10.1126/science.287.5454.836
+
+# Real paper, without a DOI (ref-verify finds it by searching CrossRef).
+Watts, D. J., & Strogatz, S. H. (1998). Collective dynamics of 'small-world' networks. Nature, 393(6684), 440–442.
+
+# Real Korean paper, cited by its Korean title, with a DOI.
+김가은 (2024). IPA 분석을 통한 프로스포츠 관람 제약 요인 개선 방안 연구. 한국콘텐츠학회논문지, 24(9), 361-379. https://doi.org/10.5392/jkca.2024.24.09.361
+
+# Real paper, but the year is wrong: published in 1997, cited here as 1999.
+Hochreiter, S., & Schmidhuber, J. (1999). Long short-term memory. Neural Computation, 9(8), 1735–1780. https://doi.org/10.1162/neco.1997.9.8.1735
+
+# Made up: a plausible title and real authors, but this paper and its DOI do not exist.
+Pelrine, R., Kornbluh, R., & Pei, Q. (2003). Dielectric elastomer actuators with self-healing compliant electrodes for soft robotic grippers. Advanced Materials, 15(9), 765–770. https://doi.org/10.1002/adma.200390974
+
+# Retracted: Wakefield et al. 1998, retracted by The Lancet in 2010.
+Wakefield, A. J., Murch, S. H., Anthony, A., et al. (1998). Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children. The Lancet, 351(9103), 637–641. https://doi.org/10.1016/S0140-6736(97)11096-0
+
+# Real Korean doctoral thesis that CrossRef does not index, so it cannot be confirmed automatically.
+강동휘 (2025). 폴리(비닐피리딘) 기반 블록 공중합체로부터 형성된 나노구조체 [박사학위논문, 서울대학교 대학원].

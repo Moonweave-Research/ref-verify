@@ -777,6 +777,223 @@ class SearchReferenceTests(unittest.TestCase):
         self.assertEqual(result.status, "UNVERIFIED")
 
 
+# Real CrossRef search and work responses (trimmed) for references that used to resolve to
+# the wrong record: a same-title letter, an SI component, or a journal review of a book.
+CROSSREF_CASES = json.loads(
+    (Path(__file__).resolve().parent / "fixtures" / "crossref" / "wrong_record_cases.json").read_text(encoding="utf-8")
+)
+
+
+def _search_client(name):
+    return FakeCrossref(candidates=[parse_crossref_work(item) for item in CROSSREF_CASES[name]])
+
+
+def _plain(raw):
+    from ref_verify.reference_parse import parse_plain_text
+
+    return parse_plain_text(raw)[0]
+
+
+class WrongRecordTests(unittest.TestCase):
+    def test_same_title_letter_does_not_hide_the_retracted_paper(self):
+        entry = parse_bibtex(
+            "@article{wakefield1998, author = {Wakefield, A. J. and Murch, S. H. and others}, "
+            "title = {Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental "
+            "disorder in children}, journal = {The Lancet}, volume = {351}, pages = {637--641}, year = {1998}}"
+        )[0]
+
+        result = check_reference(entry, _search_client("wakefield_search"))
+
+        self.assertEqual(result.error_code, "PAPER_RETRACTED")
+        self.assertEqual(result.resolved_doi, "10.1016/s0140-6736(97)11096-0")
+
+    def test_a_letter_cited_as_the_letter_still_passes(self):
+        entry = _plain(
+            "Sabra A, Bellanti JA, Colón AR. Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and "
+            "pervasive developmental disorder in children. Lancet. 1998;352(9123):234-235."
+        )
+
+        result = check_reference(entry, _search_client("sabra_search"))
+
+        self.assertEqual(result.verdict, "PASS")
+        self.assertEqual(result.resolved_doi, "10.1016/s0140-6736(05)77837-5")
+
+    def test_partial_title_with_another_first_author_is_not_this_record(self):
+        # "Remdesivir ... — Preliminary Report" (an author-less correspondence) shares most title
+        # words with the cited final report, which ranks second.
+        entry = _plain(
+            "Beigel JH, Tomashek KM, Dodd LE, et al. Remdesivir for the treatment of Covid-19 — final report. "
+            "N Engl J Med. 2020;383(19):1813-1826."
+        )
+
+        result = check_reference(entry, _search_client("remdesivir_search"))
+
+        self.assertEqual(result.verdict, "PASS")
+        self.assertEqual(result.resolved_doi, "10.1056/nejmoa2007764")
+
+    def test_supplementary_component_is_never_the_cited_work(self):
+        components = [
+            parse_crossref_work(item)
+            for item in CROSSREF_CASES["jcim_park_choi_search"] + CROSSREF_CASES["jcim_chen_wang_search"]
+            if item["type"] == "component"
+        ]
+        self.assertTrue(components)
+        for raw, case in (
+            (
+                "Park, S., & Choi, M. (2021). Quantum-inspired graph neural networks for molecular property "
+                "prediction. *Journal of Chemical Information and Modeling*, 61(8), 3901–3912.",
+                "jcim_park_choi_search",
+            ),
+            (
+                "Chen, L.; Wang, Y. Analyzing learned molecular representations for reaction yield prediction. "
+                "J. Chem. Inf. Model. 2020, 60, 5011-5022.",
+                "jcim_chen_wang_search",
+            ),
+        ):
+            with self.subTest(case=case):
+                result = check_reference(_plain(raw), _search_client(case))
+
+                self.assertEqual(result.error_code, "REFERENCE_UNMATCHED")
+                self.assertIsNone(result.resolved_doi)
+
+    def test_book_is_not_matched_to_a_journal_review_of_it(self):
+        for raw, case in (
+            (
+                "Feynman, R. P., Leighton, R. B., & Sands, M. (1964). The Feynman lectures on physics (Vol. 2). "
+                "Addison-Wesley.",
+                "feynman_search",
+            ),
+            ("Jackson, J. D. (1999). Classical electrodynamics (3rd ed.). Wiley.", "jackson_search"),
+        ):
+            with self.subTest(case=case):
+                result = check_reference(_plain(raw), _search_client(case))
+
+                self.assertEqual(result.error_code, "REFERENCE_UNMATCHED")
+                self.assertEqual(result.verdict, "WARN")
+
+    def test_book_prefers_the_book_record_over_reviews_with_its_title(self):
+        entry = _plain(
+            "Hastie, T., Tibshirani, R., & Friedman, J. (2009). The elements of statistical learning: Data mining, "
+            "inference, and prediction (2nd ed.). Springer."
+        )
+
+        result = check_reference(entry, _search_client("hastie_search"))
+
+        self.assertEqual(result.verdict, "PASS")
+        self.assertEqual(result.resolved_doi, "10.1007/978-0-387-84858-7")
+
+    def test_book_with_an_edited_book_record_still_passes(self):
+        entry = _plain("Rubinstein, M., & Colby, R. H. (2003). Polymer physics. Oxford University Press.")
+
+        result = check_reference(entry, _search_client("rubinstein_search"))
+
+        self.assertEqual(result.verdict, "PASS")
+        self.assertEqual(result.resolved_doi, "10.1093/oso/9780198520597.001.0001")
+
+    def test_a_cited_book_review_is_a_journal_item_not_a_book(self):
+        entry = _plain(
+            "Frank, H. H. (1964). The Feynman Lectures of Physics. Richard P. Feynman. Robert B. Leighton and "
+            "Matthew Sands, Eds. Addison-Wesley, Reading, Mass., 1963 [Book review]. Science, 144(3616), 280."
+        )
+
+        result = check_reference(entry, _search_client("frank_review_search"))
+
+        self.assertEqual(result.resolved_doi, "10.1126/science.144.3616.280")
+
+    def test_preprint_cited_as_preprint_resolves_to_the_preprint(self):
+        preprint = _plain(
+            "Yang K, Swanson K, Jin W, Coley C, Eiden P, Gao H, et al. Analyzing learned molecular representations "
+            "for property prediction. ChemRxiv [Preprint]. 2019."
+        )
+        article = _plain(
+            "Yang, K.; Swanson, K.; Jin, W.; et al. Analyzing learned molecular representations for property "
+            "prediction. J. Chem. Inf. Model. 2019, 59, 3370-3388."
+        )
+
+        self.assertEqual(
+            check_reference(preprint, _search_client("yang_preprint_search")).resolved_doi,
+            "10.26434/chemrxiv.7940594.v3",
+        )
+        self.assertEqual(
+            check_reference(article, _search_client("yang_preprint_search")).resolved_doi, "10.1021/acs.jcim.9b00237"
+        )
+
+    def test_reply_and_retraction_notices_are_about_another_work(self):
+        for title, about in (
+            ("Retraction—Ileal-lymphoid-nodular hyperplasia, non-specific colitis", True),
+            ('Comment on "Observation of a new particle"', True),
+            ("Reply to the comment by Smith et al.", True),
+            ("Authors' reply", True),
+            ("RETRACTED: Ileal-lymphoid-nodular hyperplasia", False),
+            ("Response to selection in a heterogeneous environment", False),
+            ("Correction of spherical aberration in electron microscopes", False),
+        ):
+            with self.subTest(title=title):
+                record = parse_crossref_work({"DOI": "10.1/x", "type": "journal-article", "title": [title]})
+                self.assertEqual(record.is_about_other_work, about)
+
+
+class HangulTitleTests(unittest.TestCase):
+    def _check(self, work_name, raw):
+        record = parse_crossref_work(CROSSREF_CASES[work_name])
+        entry = _plain(raw)
+        return check_reference(entry, FakeCrossref(works={entry.doi: record}))
+
+    def test_korean_title_is_not_reported_as_missing(self):
+        # E2E m7 #10: a Korean title and authors with another paper's DOI.
+        result = self._check(
+            "work_pk_2021_45_6_897",
+            '최수아, 정민호, "형상기억 하이드로젤의 온도 응답성 평가", 폴리머, 45(6), 897–903 (2021). '
+            "https://doi.org/10.7317/pk.2021.45.6.897",
+        )
+
+        self.assertNotIn("no article title", result.reason)
+        self.assertEqual(result.status, "MISMATCH")
+        self.assertIn("Evaporative Crystallization System", result.reason)
+
+    def test_correct_korean_title_with_another_doi_names_the_other_paper(self):
+        result = self._check(
+            "work_pk_2012_36_4_455",
+            "김호연, 이종휘 (2021). 온도감응성 하이드로젤 기반 증발 결정화 시스템. 폴리머, 45(6), 897-903. "
+            "https://doi.org/10.7317/pk.2012.36.4.455",
+        )
+
+        self.assertNotIn("no article title", result.reason)
+        self.assertEqual(result.status, "MISMATCH")
+
+    def test_korean_citation_without_a_title_is_still_title_less(self):
+        right = self._check(
+            "work_pk_2021_45_6_897", "김호연, 이종휘, Polym. Korea 45, 897 (2021). https://doi.org/10.7317/pk.2021.45.6.897"
+        )
+        swapped = self._check(
+            "work_pk_2012_36_4_455", "김호연, 이종휘, Polym. Korea 45, 897 (2021). https://doi.org/10.7317/pk.2012.36.4.455"
+        )
+
+        self.assertEqual(right.verdict, "PASS")
+        self.assertIn("no article title", right.reason)
+        self.assertEqual(swapped.status, "MISMATCH")
+        self.assertIn("no article title", swapped.reason)
+
+    def test_korean_title_with_spacing_variants_is_not_called_another_paper(self):
+        result = self._check(
+            "work_pk_2021_45_6_897",
+            "김호연, 이종휘. 온도 감응성 하이드로젤기반 증발결정화 시스템. 폴리머 45(6):897-903, 2021. "
+            "doi:10.7317/pk.2021.45.6.897",
+        )
+
+        self.assertNotIn("different paper", result.reason)
+        self.assertNotEqual(result.verdict, "REJECT")
+
+    def test_script_words_count_toward_a_title(self):
+        from ref_verify.reference_resolve import _script_title_words
+
+        self.assertEqual(_script_title_words("김호연, 이종휘, Polym. Korea 45, 897 (2021)."), 0)
+        self.assertEqual(_script_title_words("최수아, 정민호, \"형상기억 하이드로젤의 온도 응답성 평가\", 폴리머"), 6)
+        self.assertGreaterEqual(_script_title_words("山田太郎. 高分子ゲルの力学特性と応用. 高分子論文集"), 3)
+        self.assertFalse(_looks_titleless("김민형, 실감 콘텐츠 창작 교육 프레임워크, 한국콘텐츠학회논문지 24, 290 (2024)."))
+        self.assertTrue(_looks_titleless("김호연, 이종휘, Polym. Korea 45, 897 (2021)."))
+
+
 class SearchBibliographicTests(unittest.TestCase):
     def test_builds_query_url_and_parses_items(self):
         body = json.dumps(
