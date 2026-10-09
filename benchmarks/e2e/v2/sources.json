@@ -1,0 +1,3314 @@
+{
+ "10.1088/1361-665x/adb18d": {
+  "doi": "10.1088/1361-665x/adb18d",
+  "title": "Dielectric elastomer actuator based mechanical counterpressure space suit cuff",
+  "original_title": "",
+  "authors": [
+   [
+    "Veloso",
+    "Eugenio"
+   ],
+   [
+    "Cohen",
+    "Andy J"
+   ],
+   [
+    "Wood",
+    "Robert J"
+   ]
+  ],
+  "journal": "Smart Materials and Structures",
+  "short": "Smart Mater. Struct.",
+  "volume": "34",
+  "issue": "3",
+  "page": "035028",
+  "article_number": null,
+  "years": {
+   "published-print": 2025,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 2,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/app.70135": {
+  "doi": "10.1002/app.70135",
+  "title": "Fabrication, Dielectric Mechanism, and Actuated Performance of Onion‐Like Carbons ( OLCs )/Silicone Rubber Flexible Dielectric Elastomer Nanocomposites",
+  "original_title": "",
+  "authors": [
+   [
+    "Zeng",
+    "Yu"
+   ],
+   [
+    "Tang",
+    "Lu"
+   ]
+  ],
+  "journal": "Journal of Applied Polymer Science",
+  "short": "J of Applied Polymer Sci",
+  "volume": "143",
+  "issue": "9",
+  "page": null,
+  "article_number": "e70135",
+  "years": {
+   "published-print": 2026,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 7,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/admt.202502275": {
+  "doi": "10.1002/admt.202502275",
+  "title": "High‐Performance Dielectric Liquid Crystal Elastomer Actuator Enabled by Its Unique Strain Softening",
+  "original_title": "",
+  "authors": [
+   [
+    "Annapooranan",
+    "Raja"
+   ],
+   [
+    "Chambers",
+    "Robert J."
+   ],
+   [
+    "Cai",
+    "Shengqiang"
+   ]
+  ],
+  "journal": "Advanced Materials Technologies",
+  "short": "Adv Materials Technologies",
+  "volume": "11",
+  "issue": "8",
+  "page": null,
+  "article_number": "e02275",
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 2,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1088/2631-8695/ae924e": {
+  "doi": "10.1088/2631-8695/ae924e",
+  "title": "Engineering design and performance evaluation of a soft crawling robot driven by a rolled dielectric elastomer actuator",
+  "original_title": "",
+  "authors": [
+   [
+    "Wang",
+    "Sijiao"
+   ],
+   [
+    "Chen",
+    "Yanlin"
+   ],
+   [
+    "Jiang",
+    "Yuxin"
+   ],
+   [
+    "Yang",
+    "Le"
+   ],
+   [
+    "Wang",
+    "Hongxi"
+   ]
+  ],
+  "journal": "Engineering Research Express",
+  "short": "Eng. Res. Express",
+  "volume": "8",
+  "issue": "15",
+  "page": "155228",
+  "article_number": null,
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/pssa.70504": {
+  "doi": "10.1002/pssa.70504",
+  "title": "Fabrication of Silicone Rubber/MXene/Onion‐Like Carbon Dielectric Elastomer Composites With Enhanced Dielectric and Actuation Performances Under Low Electric Field Without Prestretching",
+  "original_title": "",
+  "authors": [
+   [
+    "Tang",
+    "Lu"
+   ],
+   [
+    "Zeng",
+    "Yu"
+   ]
+  ],
+  "journal": "physica status solidi (a)",
+  "short": "Physica Status Solidi (a)",
+  "volume": "223",
+  "issue": "17",
+  "page": null,
+  "article_number": "e70504",
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/adem.202502157": {
+  "doi": "10.1002/adem.202502157",
+  "title": "Polyvinyl Chloride Gel Incorporated by ZnO Core‐Shell Nanoparticles for Dielectric Elastomer Actuator With Enhanced Electromechanical Response",
+  "original_title": "",
+  "authors": [
+   [
+    "Mei",
+    "Longxiang"
+   ],
+   [
+    "Huang",
+    "Jianjian"
+   ],
+   [
+    "Fan",
+    "Yibin"
+   ],
+   [
+    "Song",
+    "Xiangyu"
+   ],
+   [
+    "Ma",
+    "Li"
+   ],
+   [
+    "Guo",
+    "Dongjie"
+   ]
+  ],
+  "journal": "Advanced Engineering Materials",
+  "short": "Adv Eng Mater",
+  "volume": "28",
+  "issue": "6",
+  "page": null,
+  "article_number": "e202502157",
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1088/1361-665x/aea942": {
+  "doi": "10.1088/1361-665x/aea942",
+  "title": "Conical dielectric elastomer generators for wave energy harvesting: hyperelastic parametric modelling, experimental characterization and lab scale demonstration",
+  "original_title": "",
+  "authors": [
+   [
+    "Gurjar",
+    "Krishna Veer Singh"
+   ],
+   [
+    "Patra",
+    "Karali"
+   ]
+  ],
+  "journal": "Smart Materials and Structures",
+  "short": "Smart Mater. Struct.",
+  "volume": "35",
+  "issue": "10",
+  "page": "105004",
+  "article_number": null,
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1088/1361-665x/ae7b8f": {
+  "doi": "10.1088/1361-665x/ae7b8f",
+  "title": "A bistable dielectric elastomer actuator regulated by shape memory polymer composite",
+  "original_title": "",
+  "authors": [
+   [
+    "Niu",
+    "Chenguang"
+   ],
+   [
+    "Zeng",
+    "Qingxiang"
+   ],
+   [
+    "Liu",
+    "Kui"
+   ],
+   [
+    "Tang",
+    "Jian"
+   ],
+   [
+    "Geng",
+    "Fangjie"
+   ],
+   [
+    "Xiong",
+    "Xiaoyan"
+   ],
+   [
+    "Zhang",
+    "Jinzhu"
+   ]
+  ],
+  "journal": "Smart Materials and Structures",
+  "short": "Smart Mater. Struct.",
+  "volume": "35",
+  "issue": "6",
+  "page": "065047",
+  "article_number": null,
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1088/1361-665x/add067": {
+  "doi": "10.1088/1361-665x/add067",
+  "title": "Fast-moving thin soft-rigid hybrid robot driven by in-plane dielectric elastomer actuator",
+  "original_title": "",
+  "authors": [
+   [
+    "Wang",
+    "Xi"
+   ],
+   [
+    "Chang",
+    "Jung-che"
+   ],
+   [
+    "Li",
+    "Siqian"
+   ],
+   [
+    "He",
+    "Cheng"
+   ],
+   [
+    "Wang",
+    "Feiran"
+   ],
+   [
+    "Axinte",
+    "Dragos"
+   ],
+   [
+    "Dong",
+    "Xin"
+   ]
+  ],
+  "journal": "Smart Materials and Structures",
+  "short": "Smart Mater. Struct.",
+  "volume": "34",
+  "issue": "5",
+  "page": "055005",
+  "article_number": null,
+  "years": {
+   "published-print": 2025,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 2,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/act14110544": {
+  "doi": "10.3390/act14110544",
+  "title": "Cooperative Systems Based on Arrays of Dielectric Elastomer Actuators",
+  "original_title": "",
+  "authors": [
+   [
+    "Neu",
+    "Julian"
+   ],
+   [
+    "Croce",
+    "Sipontina"
+   ],
+   [
+    "Schagaew",
+    "Andrej"
+   ],
+   [
+    "Seelecke",
+    "Stefan"
+   ],
+   [
+    "Rizzello",
+    "Gianluca"
+   ]
+  ],
+  "journal": "Actuators",
+  "short": "Actuators",
+  "volume": "14",
+  "issue": "11",
+  "page": "544",
+  "article_number": null,
+  "years": {
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 2,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/technologies14010068": {
+  "doi": "10.3390/technologies14010068",
+  "title": "Data-Driven Interactive Lens Control System Based on Dielectric Elastomer",
+  "original_title": "",
+  "authors": [
+   [
+    "Zhang",
+    "Hui"
+   ],
+   [
+    "Xia",
+    "Zhijie"
+   ],
+   [
+    "Zhang",
+    "Zhisheng"
+   ],
+   [
+    "Zhu",
+    "Jianxiong"
+   ]
+  ],
+  "journal": "Technologies",
+  "short": "Technologies",
+  "volume": "14",
+  "issue": "1",
+  "page": "68",
+  "article_number": null,
+  "years": {
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 1,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1371/journal.pone.0352654": {
+  "doi": "10.1371/journal.pone.0352654",
+  "title": "Research on design of soft gripper by dielectric elastomer actuator based on quadrangular star honeycomb support",
+  "original_title": "",
+  "authors": [
+   [
+    "Guan",
+    "Yuanlin"
+   ],
+   [
+    "Liu",
+    "Ziyin"
+   ],
+   [
+    "Cheng",
+    "Qi"
+   ],
+   [
+    "Yang",
+    "Xixin"
+   ],
+   [
+    "Yu",
+    "Chunyu"
+   ],
+   [
+    "Cheng",
+    "Yibo"
+   ],
+   [
+    "Gu",
+    "Xunzhe"
+   ]
+  ],
+  "journal": "PLOS One",
+  "short": "PLoS One",
+  "volume": "21",
+  "issue": "7",
+  "page": "e0352654",
+  "article_number": null,
+  "years": {
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/app.57410": {
+  "doi": "10.1002/app.57410",
+  "title": "Study on Electrochemical and Response Characteristics of Genipin‐Crosslinked Chitosan‐Based Biogel Actuator",
+  "original_title": "",
+  "authors": [
+   [
+    "Lv",
+    "Yanzhuo"
+   ],
+   [
+    "Lei",
+    "Mingao"
+   ],
+   [
+    "Xu",
+    "Yan"
+   ],
+   [
+    "Zheng",
+    "Jinxing"
+   ],
+   [
+    "Wen",
+    "Xuan"
+   ],
+   [
+    "Wang",
+    "Lan"
+   ]
+  ],
+  "journal": "Journal of Applied Polymer Science",
+  "short": "J of Applied Polymer Sci",
+  "volume": "142",
+  "issue": "36",
+  "page": null,
+  "article_number": "e57410",
+  "years": {
+   "published-print": 2025,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 1,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/mi17080983": {
+  "doi": "10.3390/mi17080983",
+  "title": "A Flexible Capacitive Pressure Sensor with Broad-Range High Sensitivity Based on 3D Porous Ionogel for Wearable Health Monitoring",
+  "original_title": "",
+  "authors": [
+   [
+    "Chen",
+    "Yi"
+   ],
+   [
+    "Xie",
+    "Xuedan"
+   ],
+   [
+    "Wang",
+    "Yonghua"
+   ],
+   [
+    "Liu",
+    "Dan"
+   ]
+  ],
+  "journal": "Micromachines",
+  "short": "Micromachines",
+  "volume": "17",
+  "issue": "8",
+  "page": "983",
+  "article_number": null,
+  "years": {
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/jcs10010058": {
+  "doi": "10.3390/jcs10010058",
+  "title": "Functionalization of BaTiO3 Nanoparticles to Optimize the Dielectric Performance of Electroactive Polymer Nanocomposites Based on PDMS Matrix",
+  "original_title": "",
+  "authors": [
+   [
+    "Zamperlin",
+    "Nico"
+   ],
+   [
+    "Sylvestre",
+    "Alain"
+   ],
+   [
+    "Pegoretti",
+    "Alessandro"
+   ],
+   [
+    "Fontana",
+    "Marco"
+   ],
+   [
+    "Dirè",
+    "Sandra"
+   ]
+  ],
+  "journal": "Journal of Composites Science",
+  "short": "J. Compos. Sci.",
+  "volume": "10",
+  "issue": "1",
+  "page": "58",
+  "article_number": null,
+  "years": {
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 7,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/polym17070921": {
+  "doi": "10.3390/polym17070921",
+  "title": "Self-Adhesive and Reprocessable Ionogel Sensor from Controllable Ionized Corncob Cellulose",
+  "original_title": "",
+  "authors": [
+   [
+    "Jian",
+    "Jialin"
+   ],
+   [
+    "Su",
+    "Jiaqi"
+   ],
+   [
+    "Song",
+    "Yujian"
+   ],
+   [
+    "Wang",
+    "Jingshun"
+   ],
+   [
+    "Cong",
+    "Jie"
+   ],
+   [
+    "Wei",
+    "Shuangying"
+   ],
+   [
+    "Gao",
+    "Zhenhua"
+   ],
+   [
+    "Han",
+    "Shuaiyuan"
+   ]
+  ],
+  "journal": "Polymers",
+  "short": "Polymers",
+  "volume": "17",
+  "issue": "7",
+  "page": "921",
+  "article_number": null,
+  "years": {
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 4,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1016/j.carbpol.2025.123278": {
+  "doi": "10.1016/j.carbpol.2025.123278",
+  "title": "RETRACTED: Ion-conductive hydrogel sensor prepared with alginate crosslinker for wide-range motion and temperature monitoring",
+  "original_title": "",
+  "authors": [
+   [
+    "Zhang",
+    "Long"
+   ],
+   [
+    "Zhao",
+    "Benbo"
+   ],
+   [
+    "Du",
+    "Wenhao"
+   ],
+   [
+    "Liu",
+    "Quantian"
+   ],
+   [
+    "Jiao",
+    "Chenglong"
+   ],
+   [
+    "Liu",
+    "Haoyu"
+   ],
+   [
+    "Sun",
+    "Shixiong"
+   ]
+  ],
+  "journal": "Carbohydrate Polymers",
+  "short": "Carbohydrate Polymers",
+  "volume": "354",
+  "issue": null,
+  "page": "123278",
+  "article_number": "123278",
+  "years": {
+   "published-print": 2025,
+   "issued": 2025
+  },
+  "cited_by": 8,
+  "retraction": [
+   "retraction"
+  ],
+  "type": "journal-article"
+ },
+ "10.1002/pol.20250372": {
+  "doi": "10.1002/pol.20250372",
+  "title": "The Critical Role of Functionalised Filler in Li‐Polymer Composite Electrolyte: Ionic Conductivity and Dielectric Relaxation Behavior Study",
+  "original_title": "",
+  "authors": [
+   [
+    "Reinoso",
+    "D. M."
+   ],
+   [
+    "Frechero",
+    "M. A."
+   ]
+  ],
+  "journal": "Journal of Polymer Science",
+  "short": "Journal of Polymer Science",
+  "volume": "63",
+  "issue": "18",
+  "page": "3762-3776",
+  "article_number": null,
+  "years": {
+   "published-print": 2025,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 2,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/app.57294": {
+  "doi": "10.1002/app.57294",
+  "title": "Microwave Absorption and Energy Harvesting Performance of Electroactive PVDF ‐ CoFe 2 O 4 Nanocomposites",
+  "original_title": "",
+  "authors": [
+   [
+    "Tyagi",
+    "Sabatini"
+   ],
+   [
+    "Chauhan",
+    "Divya"
+   ],
+   [
+    "Choudhary",
+    "Shivam"
+   ],
+   [
+    "Siddiqui",
+    "Mohd Gulman"
+   ],
+   [
+    "Kumar",
+    "Arvind"
+   ],
+   [
+    "Srivastava",
+    "Manish Kumar"
+   ]
+  ],
+  "journal": "Journal of Applied Polymer Science",
+  "short": "J of Applied Polymer Sci",
+  "volume": "142",
+  "issue": "32",
+  "page": null,
+  "article_number": "e57294",
+  "years": {
+   "published-print": 2025,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 6,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/smll.202511861": {
+  "doi": "10.1002/smll.202511861",
+  "title": "Synergistic Thermoelectric‐Piezoionic Ionogel for Multimodal Energy Harvesting",
+  "original_title": "",
+  "authors": [
+   [
+    "Lu",
+    "Rong"
+   ],
+   [
+    "Yang",
+    "Mingchen"
+   ],
+   [
+    "Dong",
+    "Qingyu"
+   ],
+   [
+    "Hu",
+    "Yin"
+   ],
+   [
+    "Yan",
+    "Feng"
+   ]
+  ],
+  "journal": "Small",
+  "short": "Small",
+  "volume": "22",
+  "issue": "4",
+  "page": null,
+  "article_number": "e11861",
+  "years": {
+   "published-print": 2026,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 3,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1177/09673911251327811": {
+  "doi": "10.1177/09673911251327811",
+  "title": "Thermal stability, mechanical strength, and ionic conductivity of hematite nanoparticle/CS nanocomposites",
+  "original_title": "",
+  "authors": [
+   [
+    "Ahmed",
+    "Emad M"
+   ],
+   [
+    "Mostafa",
+    "Nasser Y"
+   ]
+  ],
+  "journal": "Polymers and Polymer Composites",
+  "short": "Polymers and Polymer Composites",
+  "volume": "33",
+  "issue": null,
+  "page": null,
+  "article_number": "09673911251327811",
+  "years": {
+   "published-print": 2025,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 2,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/smll.202512882": {
+  "doi": "10.1002/smll.202512882",
+  "title": "Controllable Crosslinking Enables High‐Ionic‐Conductivity Polymer Electrolyte for Solid‐State Sodium Metal Batteries",
+  "original_title": "",
+  "authors": [
+   [
+    "Lin",
+    "Mingcan"
+   ],
+   [
+    "Li",
+    "Fupeng"
+   ],
+   [
+    "Hou",
+    "Minjie"
+   ],
+   [
+    "Zhang",
+    "Hongkun"
+   ],
+   [
+    "Li",
+    "Fujun"
+   ],
+   [
+    "Liang",
+    "Feng"
+   ]
+  ],
+  "journal": "Small",
+  "short": "Small",
+  "volume": "22",
+  "issue": "16",
+  "page": null,
+  "article_number": "e12882",
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 3,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/cssc.71126": {
+  "doi": "10.1002/cssc.71126",
+  "title": "Ultrathin PTFE‐Supported Composite Polymer Electrolyte Enabled by Metal–Organic Framework‐Assisted Dual‐Salt Regulation for Solid‐State Lithium Metal Batteries",
+  "original_title": "",
+  "authors": [
+   [
+    "Wang",
+    "Dehua"
+   ],
+   [
+    "Pan",
+    "Wenhao"
+   ],
+   [
+    "Chen",
+    "Xiaoli"
+   ],
+   [
+    "Tang",
+    "Mi"
+   ],
+   [
+    "Wang",
+    "Zhengbang"
+   ]
+  ],
+  "journal": "ChemSusChem",
+  "short": "ChemSusChem",
+  "volume": "19",
+  "issue": "19",
+  "page": null,
+  "article_number": "e71126",
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/app.57209": {
+  "doi": "10.1002/app.57209",
+  "title": "Influence of Six Plasticizers on the Morphology, Crystallinity, and Thermal Properties of Poly(Vinylidene Difluoride) Films",
+  "original_title": "",
+  "authors": [
+   [
+    "Sonnendecker",
+    "Anya"
+   ],
+   [
+    "Mametja",
+    "Matome W."
+   ],
+   [
+    "Labuschagne",
+    "Johan"
+   ]
+  ],
+  "journal": "Journal of Applied Polymer Science",
+  "short": "J of Applied Polymer Sci",
+  "volume": "142",
+  "issue": "30",
+  "page": null,
+  "article_number": "e57209",
+  "years": {
+   "published-print": 2025,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 6,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/pol.20250882": {
+  "doi": "10.1002/pol.20250882",
+  "title": "Hydrogen Permeation in Polyethylene: Effect of Crystallinity on Gas Transport Coefficients at Different Temperatures",
+  "original_title": "",
+  "authors": [
+   [
+    "Merlonghi",
+    "Lorenzo"
+   ],
+   [
+    "Giacinti Baschetti",
+    "Marco"
+   ],
+   [
+    "De Angelis",
+    "Maria Grazia"
+   ],
+   [
+    "Barbosa",
+    "Silvia Elena"
+   ]
+  ],
+  "journal": "Journal of Polymer Science",
+  "short": "Journal of Polymer Science",
+  "volume": "64",
+  "issue": "3",
+  "page": "608-621",
+  "article_number": null,
+  "years": {
+   "published-print": 2026,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 6,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/pat.70664": {
+  "doi": "10.1002/pat.70664",
+  "title": "Regulation of Crystallization and Performance of Poly( l ‐lactic acid) by Melt Crystallization and Boron Nitride Nanosheets' Dosing",
+  "original_title": "",
+  "authors": [
+   [
+    "Chen",
+    "Li"
+   ],
+   [
+    "Pang",
+    "Xiujiang"
+   ]
+  ],
+  "journal": "Polymers for Advanced Technologies",
+  "short": "Polymers for Advanced Techs",
+  "volume": "37",
+  "issue": "7",
+  "page": null,
+  "article_number": "e70664",
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/s26092680": {
+  "doi": "10.3390/s26092680",
+  "title": "Investigation of Rapid Non-Isothermal Crystallization Kinetics of Polyamide 66 Using a Fast-Scanning Chip-Based DSC",
+  "original_title": "",
+  "authors": [
+   [
+    "Tan",
+    "Shaokui"
+   ],
+   [
+    "Li",
+    "Ming"
+   ],
+   [
+    "Li",
+    "Zechun"
+   ],
+   [
+    "Yan",
+    "Jun"
+   ],
+   [
+    "Zhang",
+    "Zhihao"
+   ],
+   [
+    "Xu",
+    "Pengcheng"
+   ],
+   [
+    "Wu",
+    "Peide"
+   ],
+   [
+    "Li",
+    "Xinxin"
+   ]
+  ],
+  "journal": "Sensors",
+  "short": "Sensors",
+  "volume": "26",
+  "issue": "9",
+  "page": "2680",
+  "article_number": null,
+  "years": {
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/polym17172390": {
+  "doi": "10.3390/polym17172390",
+  "title": "Measurement Error Analysis and Thermal Degradation Kinetic Model Improvement for Thermogravimetric Analyzers",
+  "original_title": "",
+  "authors": [
+   [
+    "Xie",
+    "Guixiang"
+   ],
+   [
+    "Lu",
+    "Yaqi"
+   ],
+   [
+    "Lu",
+    "Xiaochun"
+   ],
+   [
+    "Zhang",
+    "Zhusen"
+   ],
+   [
+    "Lin",
+    "Shuidong"
+   ]
+  ],
+  "journal": "Polymers",
+  "short": "Polymers",
+  "volume": "17",
+  "issue": "17",
+  "page": "2390",
+  "article_number": null,
+  "years": {
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 14,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/app.57524": {
+  "doi": "10.1002/app.57524",
+  "title": "Construction of Open‐Cellular Poly( l ‐Lactic Acid)/Poly( d ‐Lactic Acid)/Poly(Tetrafluoroethylene) Foams for Oil–Water Separation Under Excellent Compressive Property and Heat Resistance",
+  "original_title": "",
+  "authors": [
+   [
+    "Yang",
+    "Hailong"
+   ],
+   [
+    "Zhang",
+    "Guijiang"
+   ],
+   [
+    "Chai",
+    "Yibing"
+   ],
+   [
+    "Xu",
+    "Guohe"
+   ],
+   [
+    "Yu",
+    "Kesong"
+   ],
+   [
+    "Wang",
+    "Linyan"
+   ]
+  ],
+  "journal": "Journal of Applied Polymer Science",
+  "short": "J of Applied Polymer Sci",
+  "volume": "142",
+  "issue": "39",
+  "page": null,
+  "article_number": "e57524",
+  "years": {
+   "published-print": 2025,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 2,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/pc.71040": {
+  "doi": "10.1002/pc.71040",
+  "title": "Crystallinity, Porosity, and Microstructure of Polyphenylene Sulfide Composite Parts Fabricated by Filament‐Extrusion Additive Manufacturing",
+  "original_title": "",
+  "authors": [
+   [
+    "Arslan",
+    "Dogan"
+   ],
+   [
+    "Mihai",
+    "Mihaela"
+   ],
+   [
+    "Therriault",
+    "Daniel"
+   ],
+   [
+    "Lévesque",
+    "Martin"
+   ]
+  ],
+  "journal": "Polymer Composites",
+  "short": "Polymer Composites",
+  "volume": "47",
+  "issue": "13",
+  "page": "11579-11596",
+  "article_number": null,
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/adem.202503161": {
+  "doi": "10.1002/adem.202503161",
+  "title": "Tailored Mechanical Properties of the Poly(L‐Lactic Acid) Lattice Structure by Polymorphic Isothermal Crystallization Kinetics Control During Laser Powder Bed Fusion Process",
+  "original_title": "",
+  "authors": [
+   [
+    "Li",
+    "Jingpeng"
+   ],
+   [
+    "Liu",
+    "Kai"
+   ],
+   [
+    "Chen",
+    "Peng"
+   ],
+   [
+    "Yan",
+    "Chunze"
+   ],
+   [
+    "Wang",
+    "Ming"
+   ],
+   [
+    "Xie",
+    "Qing"
+   ],
+   [
+    "Yang",
+    "Yihu"
+   ],
+   [
+    "Huang",
+    "Yong"
+   ],
+   [
+    "Chen",
+    "Rui"
+   ],
+   [
+    "Shi",
+    "Yusheng"
+   ]
+  ],
+  "journal": "Advanced Engineering Materials",
+  "short": "Adv Eng Mater",
+  "volume": "28",
+  "issue": "13",
+  "page": null,
+  "article_number": "e202503161",
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/pen.26716": {
+  "doi": "10.1002/pen.26716",
+  "title": "RETRACTED: Studies on improved stability and electrochemical activity of metal oxides/sulfides‐based polymer nanocomposites for energy storage applications",
+  "original_title": "",
+  "authors": [
+   [
+    "Xavier",
+    "Joseph Raj"
+   ]
+  ],
+  "journal": "Polymer Engineering &amp; Science",
+  "short": "Polymer Engineering &amp; Sci",
+  "volume": "64",
+  "issue": "6",
+  "page": "2640-2661",
+  "article_number": null,
+  "years": {
+   "published-print": 2024,
+   "published-online": 2024,
+   "issued": 2024
+  },
+  "cited_by": 6,
+  "retraction": [
+   "retraction",
+   "retraction"
+  ],
+  "type": "journal-article"
+ },
+ "10.1002/pc.70772": {
+  "doi": "10.1002/pc.70772",
+  "title": "Tensile Properties and Thermal Cycling Effects on Basalt Fiber Reinforced Polymer Composite Naval Ordnance Laboratory Rings for Composite Pressure Vessels",
+  "original_title": "",
+  "authors": [
+   [
+    "Liu",
+    "Jialin"
+   ],
+   [
+    "Liu",
+    "Jianxun"
+   ],
+   [
+    "Liu",
+    "Ruifei"
+   ],
+   [
+    "Yao",
+    "Shufei"
+   ],
+   [
+    "Dong",
+    "Xiaoqian"
+   ],
+   [
+    "Li",
+    "Haixia"
+   ]
+  ],
+  "journal": "Polymer Composites",
+  "short": "Polymer Composites",
+  "volume": "47",
+  "issue": "10",
+  "page": "9493-9503",
+  "article_number": null,
+  "years": {
+   "published-print": 2026,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.7317/pk.2025.49.4.450": {
+  "doi": "10.7317/pk.2025.49.4.450",
+  "title": "Semicrystalline Ion Gels: Synthesis, Characterization, and Application in Strain Sensors",
+  "original_title": "결정성 이온젤: 합성, 특성 분석 및 스트레인 센서 응용",
+  "authors": [
+   [
+    "Choi",
+    "Sohyun"
+   ],
+   [
+    "Park",
+    "Moonsung"
+   ],
+   [
+    "Kim",
+    "Minjun"
+   ],
+   [
+    "Seon",
+    "Hobin"
+   ],
+   [
+    "Kim",
+    "Sangwon"
+   ]
+  ],
+  "journal": "Polymer Korea",
+  "short": "pk",
+  "volume": "49",
+  "issue": "4",
+  "page": "450-457",
+  "article_number": null,
+  "years": {
+   "published-print": 2025,
+   "issued": 2025
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.7317/pk.2025.49.5.536": {
+  "doi": "10.7317/pk.2025.49.5.536",
+  "title": "Preparation of MXenes/epoxy Composites and Curing Kinetics Study",
+  "original_title": "MXenes/에폭시 복합재의 제조 및 경화 동역학 연구",
+  "authors": [
+   [
+    "Xu",
+    "Wei"
+   ]
+  ],
+  "journal": "Polymer Korea",
+  "short": "pk",
+  "volume": "49",
+  "issue": "5",
+  "page": "536-547",
+  "article_number": null,
+  "years": {
+   "published-print": 2025,
+   "issued": 2025
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.7317/pk.2025.49.1.17": {
+  "doi": "10.7317/pk.2025.49.1.17",
+  "title": "Enhancing Properties of Reclaimed Rubber via Supercritical Fluid-Assisted Shear Desulfurization and Calcium Carbonate Modification",
+  "original_title": "초임계 기반 전단 탈황 및 탄산칼슘 개질을 통한 재생 고무특성 향상 연구",
+  "authors": [
+   [
+    "Jing",
+    "Yuan"
+   ],
+   [
+    "Ma",
+    "Huazhang"
+   ],
+   [
+    "Zhao",
+    "Meng"
+   ],
+   [
+    "Lin",
+    "Zetao"
+   ],
+   [
+    "Chen",
+    "Weiquan"
+   ],
+   [
+    "Lin",
+    "Guangyi"
+   ]
+  ],
+  "journal": "Polymer Korea",
+  "short": "pk",
+  "volume": "49",
+  "issue": "1",
+  "page": "17-26",
+  "article_number": null,
+  "years": {
+   "published-print": 2025,
+   "issued": 2025
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.7317/pk.2025.49.2.205": {
+  "doi": "10.7317/pk.2025.49.2.205",
+  "title": "Electrical, Thermal, Mechanical and Morphological Properties of Poly(4-methyl-1- pentene) Nanocomposites Filled with Electrically Conductive Tin Dioxide",
+  "original_title": "전기전도성 산화주석으로 충전된 폴리(4-메틸-1-펜텐) 나노복합체의 전기적, 열적, 기계적 및 형태학적 특성",
+  "authors": [
+   [
+    "Koo",
+    "Hyung-Woo"
+   ],
+   [
+    "Kim",
+    "Young-Jun"
+   ],
+   [
+    "Ku",
+    "Anihc Chin A"
+   ],
+   [
+    "Jong",
+    "Young Seob"
+   ],
+   [
+    "Park",
+    "Eun-Soo"
+   ]
+  ],
+  "journal": "Polymer Korea",
+  "short": "pk",
+  "volume": "49",
+  "issue": "2",
+  "page": "205-213",
+  "article_number": null,
+  "years": {
+   "published-print": 2025,
+   "issued": 2025
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.7317/pk.2025.49.3.325": {
+  "doi": "10.7317/pk.2025.49.3.325",
+  "title": "Improved Mechanical Properties : Composite of Surface-modified Cellulose Nanofiber and Ultra-High Molecular Weight Polypropylene",
+  "original_title": "향상된 기계적 특성 : 표면 개질 셀룰로오스 나노섬유와 초고분자량 폴리프로필렌의 복합체",
+  "authors": [
+   [
+    "Lee",
+    "Jae-Ryong"
+   ],
+   [
+    "Lee",
+    "Ju-Hong"
+   ],
+   [
+    "Lim",
+    "Won-Bin"
+   ],
+   [
+    "Min",
+    "Jin-Gyu"
+   ],
+   [
+    "Byun",
+    "Sang-Wook"
+   ],
+   [
+    "Kim",
+    "Seoung-Ho"
+   ],
+   [
+    "Kim",
+    "Yi-Cheon"
+   ],
+   [
+    "Bae",
+    "Ji-Hong"
+   ],
+   [
+    "Huh",
+    "PilHo"
+   ]
+  ],
+  "journal": "Polymer Korea",
+  "short": "pk",
+  "volume": "49",
+  "issue": "3",
+  "page": "325-333",
+  "article_number": null,
+  "years": {
+   "published-print": 2025,
+   "issued": 2025
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.7317/pk.2025.49.5.626": {
+  "doi": "10.7317/pk.2025.49.5.626",
+  "title": "Improvement of Impact Strength of Phenyl-Terminated Polyphenylene Sulfide/Poly(ethylene-co-glycidyl methacrylate) Blends Using Carboxylation",
+  "original_title": "카복실화를 이용한 Phenyl Terminated-Polyphenylene Sulfide/Poly(ethylene-co-glycidyl methacrylate) 블렌드의 충격강도 향상",
+  "authors": [
+   [
+    "Hong",
+    "Seheum"
+   ],
+   [
+    "Lee",
+    "Sangmook"
+   ]
+  ],
+  "journal": "Polymer Korea",
+  "short": "pk",
+  "volume": "49",
+  "issue": "5",
+  "page": "626-633",
+  "article_number": null,
+  "years": {
+   "published-print": 2025,
+   "issued": 2025
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.7317/pk.2025.49.4.387": {
+  "doi": "10.7317/pk.2025.49.4.387",
+  "title": "Zn&lt;sup&gt;2+&lt;/sup&gt;-releasing Bioactive Hydrogels for Endogenous Tissue Regeneration",
+  "original_title": "내인성 조직 재생을 위한 아연 이온 방출 생체활성 하이드로젤",
+  "authors": [
+   [
+    "Kim",
+    "Yeonjeong"
+   ],
+   [
+    "Park",
+    "Kyung-Min"
+   ]
+  ],
+  "journal": "Polymer Korea",
+  "short": "pk",
+  "volume": "49",
+  "issue": "4",
+  "page": "387-394",
+  "article_number": null,
+  "years": {
+   "published-print": 2025,
+   "issued": 2025
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.7317/pk.2025.49.5.556": {
+  "doi": "10.7317/pk.2025.49.5.556",
+  "title": "Pyridoquinolinedione as a New Building Block for Semiconducting Polymer Donors in Organic Solar Cells",
+  "original_title": "유기태양전지를 위한 새로운 빌딩블록인 Pyridoquinolinedione와 고분자 도너의 합성",
+  "authors": [
+   [
+    "Lee",
+    "Suha"
+   ],
+   [
+    "Kwak",
+    "Seon-Lee"
+   ],
+   [
+    "Park",
+    "Hea Jung"
+   ],
+   [
+    "Hwang",
+    "Do-Hoon"
+   ]
+  ],
+  "journal": "Polymer Korea",
+  "short": "pk",
+  "volume": "49",
+  "issue": "5",
+  "page": "556-563",
+  "article_number": null,
+  "years": {
+   "published-print": 2025,
+   "issued": 2025
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/act14040171": {
+  "doi": "10.3390/act14040171",
+  "title": "Photo-Responsive Liquid Crystal Elastomer Coils Inspired by Tropism Movements of Plants",
+  "original_title": "",
+  "authors": [
+   [
+    "Zhan",
+    "Xiyun"
+   ],
+   [
+    "Ran",
+    "Zhiyu"
+   ],
+   [
+    "Li",
+    "Jiajun"
+   ],
+   [
+    "Zhu",
+    "Jiaqi"
+   ],
+   [
+    "Zhang",
+    "Zhibo"
+   ],
+   [
+    "Yang",
+    "Kun-Lin"
+   ]
+  ],
+  "journal": "Actuators",
+  "short": "Actuators",
+  "volume": "14",
+  "issue": "4",
+  "page": "171",
+  "article_number": null,
+  "years": {
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 5,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/polym17040494": {
+  "doi": "10.3390/polym17040494",
+  "title": "Generation of Liquid Crystal Elastomer Fibers via a Wet Spinning Technology with Two-Stage Crosslinking",
+  "original_title": "",
+  "authors": [
+   [
+    "Benecke",
+    "Lukas"
+   ],
+   [
+    "Schwingshackl",
+    "Sina Anna"
+   ],
+   [
+    "Schyra",
+    "Peter"
+   ],
+   [
+    "Cherif",
+    "Chokri"
+   ],
+   [
+    "Aibibu",
+    "Dilbar"
+   ]
+  ],
+  "journal": "Polymers",
+  "short": "Polymers",
+  "volume": "17",
+  "issue": "4",
+  "page": "494",
+  "article_number": null,
+  "years": {
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 6,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/est2.70461": {
+  "doi": "10.1002/est2.70461",
+  "title": "Study of Dielectric and Piezoelectric Properties of Reduced Graphene Oxide‐Reinforced Poly (Vinylidene Fluoride‐Co‐Hexafluoropropylene) Based Three Phase Composite Films for Energy Storage and Harvesting Applications",
+  "original_title": "",
+  "authors": [
+   [
+    "Parthasarathy",
+    "S."
+   ],
+   [
+    "Behera",
+    "S."
+   ],
+   [
+    "Moharana",
+    "Srikanta"
+   ],
+   [
+    "Chouhan",
+    "Harshavardhan"
+   ]
+  ],
+  "journal": "Energy Storage",
+  "short": "Energy Storage",
+  "volume": "8",
+  "issue": "5",
+  "page": null,
+  "article_number": "e70461",
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/polym18050617": {
+  "doi": "10.3390/polym18050617",
+  "title": "Effect of Hot-Pressing Temperature on β-Phase Formulation in 3D-Printed Polyvinylidene Fluoride (PVDF)",
+  "original_title": "",
+  "authors": [
+   [
+    "Toru",
+    "Sadia Rahman"
+   ],
+   [
+    "Jung",
+    "Imjoo"
+   ],
+   [
+    "Lee",
+    "Sunhee"
+   ]
+  ],
+  "journal": "Polymers",
+  "short": "Polymers",
+  "volume": "18",
+  "issue": "5",
+  "page": "617",
+  "article_number": null,
+  "years": {
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.51435/turkjac.1760136": {
+  "doi": "10.51435/turkjac.1760136",
+  "title": "Synthesis of high beta-phase content granules from recycled PVDF material: Effect of process parameters and ceramic fillers",
+  "original_title": "",
+  "authors": [
+   [
+    "Sezer",
+    "Raşit"
+   ],
+   [
+    "Başer",
+    "Ahmet Buğra"
+   ]
+  ],
+  "journal": "Turkish Journal of Analytical Chemistry",
+  "short": "",
+  "volume": "8",
+  "issue": "1",
+  "page": "20-28",
+  "article_number": null,
+  "years": {
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/adma.202516047": {
+  "doi": "10.1002/adma.202516047",
+  "title": "Biocompatible Liquid Crystal Elastomer Optical Fiber Actuator for In Vivo Endoscopic Navigation and Laser Ablation Therapy",
+  "original_title": "",
+  "authors": [
+   [
+    "Luo",
+    "Jiajia"
+   ],
+   [
+    "Liu",
+    "Haojun"
+   ],
+   [
+    "He",
+    "Yongcheng"
+   ],
+   [
+    "Li",
+    "Nuo"
+   ],
+   [
+    "Wang",
+    "Tanxi"
+   ],
+   [
+    "Yang",
+    "Zhongqiang"
+   ],
+   [
+    "Guo",
+    "Qianyi"
+   ],
+   [
+    "Gan",
+    "Jiulin"
+   ],
+   [
+    "Yang",
+    "Zhongmin"
+   ]
+  ],
+  "journal": "Advanced Materials",
+  "short": "Advanced Materials",
+  "volume": "38",
+  "issue": "8",
+  "page": null,
+  "article_number": "e16047",
+  "years": {
+   "published-print": 2026,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 11,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/app16199732": {
+  "doi": "10.3390/app16199732",
+  "title": "Liquid Crystal Elastomer Bistable Metastructures for Zero-Holding-Power Beam-Steering Antennas",
+  "original_title": "",
+  "authors": [
+   [
+    "Yang",
+    "Yan"
+   ],
+   [
+    "Chen",
+    "Xi"
+   ]
+  ],
+  "journal": "Applied Sciences",
+  "short": "Appl. Sci.",
+  "volume": "16",
+  "issue": "19",
+  "page": "9732",
+  "article_number": null,
+  "years": {
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1038/s41598-026-54707-6": {
+  "doi": "10.1038/s41598-026-54707-6",
+  "title": "Cytocompatible liquid crystal elastomer fibers for potential application as artificial skeletal or cardiac muscle",
+  "original_title": "",
+  "authors": [
+   [
+    "Benecke",
+    "Lukas"
+   ],
+   [
+    "Aibibu",
+    "Dilbar"
+   ],
+   [
+    "Cherif",
+    "Chokri"
+   ]
+  ],
+  "journal": "Scientific Reports",
+  "short": "Sci Rep",
+  "volume": "16",
+  "issue": "1",
+  "page": null,
+  "article_number": "17321",
+  "years": {
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1002/ente.202502400": {
+  "doi": "10.1002/ente.202502400",
+  "title": "Strategies for β‐Phase Enhancement in PVDF Toward Advanced Flexible Ferroelectric and Piezoelectric Devices",
+  "original_title": "",
+  "authors": [
+   [
+    "Ali",
+    "Numan"
+   ],
+   [
+    "Ali",
+    "Asghar"
+   ],
+   [
+    "Yousaf",
+    "Jasim"
+   ],
+   [
+    "Khan",
+    "Sajid"
+   ],
+   [
+    "Din",
+    "Jouhar Ud"
+   ],
+   [
+    "Shah",
+    "Said Karim"
+   ],
+   [
+    "Hayat",
+    "Khizar"
+   ]
+  ],
+  "journal": "Energy Technology",
+  "short": "Energy Tech",
+  "volume": "14",
+  "issue": "4",
+  "page": null,
+  "article_number": "e202502400",
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 2,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1007/s00289-023-04888-1": {
+  "doi": "10.1007/s00289-023-04888-1",
+  "title": "RETRACTED ARTICLE: Effects of silane-functionalized nanocomposites in superabsorbent polymer and its reinforcing effects in cementitious materials",
+  "original_title": "",
+  "authors": [
+   [
+    "Sujitha",
+    "V. S."
+   ],
+   [
+    "Ramesh",
+    "B."
+   ],
+   [
+    "Xavier",
+    "Joseph Raj"
+   ]
+  ],
+  "journal": "Polymer Bulletin",
+  "short": "Polym. Bull.",
+  "volume": "81",
+  "issue": "4",
+  "page": "3479-3512",
+  "article_number": null,
+  "years": {
+   "published-print": 2024,
+   "published-online": 2023,
+   "issued": 2023
+  },
+  "cited_by": 19,
+  "retraction": [
+   "retraction"
+  ],
+  "type": "journal-article"
+ },
+ "10.1186/s13018-025-06193-1": {
+  "doi": "10.1186/s13018-025-06193-1",
+  "title": "Reduced opioids after total joint replacement surgery (REPAIRS): a pilot randomized controlled trial",
+  "original_title": "",
+  "authors": [
+   [
+    "Yang",
+    "Zhiwei"
+   ],
+   [
+    "The REPAIRS Pilot Trial Team",
+    ""
+   ]
+  ],
+  "journal": "Journal of Orthopaedic Surgery and Research",
+  "short": "J Orthop Surg Res",
+  "volume": "20",
+  "issue": "1",
+  "page": null,
+  "article_number": "774",
+  "years": {
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 2,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1186/s12877-026-07192-5": {
+  "doi": "10.1186/s12877-026-07192-5",
+  "title": "Frailty and functional recovery after cardiac surgery: a randomized pilot trial of extended exercise-based rehabilitation",
+  "original_title": "",
+  "authors": [
+   [
+    "Tamuleviciute -Prasciene",
+    "Egle"
+   ],
+   [
+    "Balne",
+    "Kristina"
+   ],
+   [
+    "Kuznecova",
+    "Inesa"
+   ],
+   [
+    "Beigiene",
+    "Aurelija"
+   ],
+   [
+    "Stonkuviene",
+    "Vitalija"
+   ],
+   [
+    "Kubilius",
+    "Raimondas"
+   ]
+  ],
+  "journal": "BMC Geriatrics",
+  "short": "BMC Geriatr",
+  "volume": "26",
+  "issue": "1",
+  "page": null,
+  "article_number": "433",
+  "years": {
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.12965/jer.2550446.223": {
+  "doi": "10.12965/jer.2550446.223",
+  "title": "Effects of modified sit-to-stand training on load asymmetry in patients with hip fracture: a pilot quasi-randomized controlled trial",
+  "original_title": "",
+  "authors": [
+   [
+    "Noda",
+    "Atsushi"
+   ],
+   [
+    "Ochi",
+    "Akira"
+   ]
+  ],
+  "journal": "Journal of Exercise Rehabilitation",
+  "short": "J Exerc Rehabil",
+  "volume": "21",
+  "issue": "4",
+  "page": "210-218",
+  "article_number": null,
+  "years": {
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1097/md.0000000000050120": {
+  "doi": "10.1097/md.0000000000050120",
+  "title": "Robot-assisted rehabilitation therapy for adhesive capsulitis",
+  "original_title": "",
+  "authors": [
+   [
+    "Ryu",
+    "Seung Min"
+   ],
+   [
+    "Park",
+    "Jeong Hee"
+   ],
+   [
+    "Choi",
+    "Woosung"
+   ],
+   [
+    "Hong",
+    "Joonhyoung"
+   ],
+   [
+    "Ben",
+    "Hui"
+   ],
+   [
+    "Shin",
+    "Hangsik"
+   ],
+   [
+    "Jeon",
+    "In-Ho"
+   ]
+  ],
+  "journal": "Medicine",
+  "short": "",
+  "volume": "105",
+  "issue": "34",
+  "page": "e50120",
+  "article_number": null,
+  "years": {
+   "published-print": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1186/s12984-025-01716-7": {
+  "doi": "10.1186/s12984-025-01716-7",
+  "title": "Virtual reality-assisted rehabilitation for postoperative C5 palsy: a pilot exploratory randomized controlled trial",
+  "original_title": "",
+  "authors": [
+   [
+    "Suk",
+    "Kyung-Soo"
+   ],
+   [
+    "Park",
+    "Jinyoung"
+   ],
+   [
+    "Choi",
+    "Taeyeon"
+   ],
+   [
+    "Lee",
+    "Byung Ho"
+   ],
+   [
+    "Ahn",
+    "Yongjin"
+   ],
+   [
+    "Yun",
+    "Sunung"
+   ],
+   [
+    "Park",
+    "Si Young"
+   ],
+   [
+    "Kim",
+    "Hak Sun"
+   ],
+   [
+    "Moon",
+    "Seoung-Hwan"
+   ],
+   [
+    "Kwon",
+    "Ji-Won"
+   ]
+  ],
+  "journal": "Journal of NeuroEngineering and Rehabilitation",
+  "short": "J NeuroEngineering Rehabil",
+  "volume": "22",
+  "issue": "1",
+  "page": null,
+  "article_number": "178",
+  "years": {
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 6,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.2196/78091": {
+  "doi": "10.2196/78091",
+  "title": "Effects of Technology-Assisted Rehabilitation After Spinal Cord Injury: Pilot Randomized Controlled Crossover Trial",
+  "original_title": "",
+  "authors": [
+   [
+    "Kilkki",
+    "Mia Maria"
+   ],
+   [
+    "Poutanen",
+    "Joonas"
+   ],
+   [
+    "Kauranen",
+    "Kari"
+   ],
+   [
+    "Arokoski",
+    "Jari"
+   ],
+   [
+    "Hiekkala",
+    "Sinikka"
+   ]
+  ],
+  "journal": "JMIR Rehabilitation and Assistive Technologies",
+  "short": "JMIR Rehabil Assist Technol",
+  "volume": "12",
+  "issue": null,
+  "page": "e78091-e78091",
+  "article_number": "v12i21e78091",
+  "years": {
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 4,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1213/xaa.0000000000001891": {
+  "doi": "10.1213/xaa.0000000000001891",
+  "title": "Hip Fracture Intervention Study for Prevention of Hypotension Trial: a Pilot Randomized Controlled Trial",
+  "original_title": "",
+  "authors": [
+   [
+    "Luney",
+    "Matthew S."
+   ],
+   [
+    "White",
+    "Stuart M."
+   ],
+   [
+    "Moppett",
+    "Iain K."
+   ]
+  ],
+  "journal": "A&amp;A Practice",
+  "short": "",
+  "volume": "19",
+  "issue": "1",
+  "page": "e01891",
+  "article_number": null,
+  "years": {
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/healthcare13192465": {
+  "doi": "10.3390/healthcare13192465",
+  "title": "Outcomes of Fenestrating vs. Reconstituting Laparoscopic Subtotal Cholecystectomy: A Single-Center Retrospective Study",
+  "original_title": "",
+  "authors": [
+   [
+    "Aloraini",
+    "Abdullah"
+   ],
+   [
+    "Alanezi",
+    "Tariq"
+   ],
+   [
+    "Madkhali",
+    "Ahmad"
+   ]
+  ],
+  "journal": "Healthcare",
+  "short": "Healthcare",
+  "volume": "13",
+  "issue": "19",
+  "page": "2465",
+  "article_number": null,
+  "years": {
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 3,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/medicina61040602": {
+  "doi": "10.3390/medicina61040602",
+  "title": "Outcomes of Staphylococcal Prosthetic Joint Infection After Hip Hemiarthroplasty: Single Center Retrospective Study",
+  "original_title": "",
+  "authors": [
+   [
+    "Mahmoud",
+    "Ahmed Nageeb"
+   ],
+   [
+    "Brule",
+    "Nicholas R."
+   ],
+   [
+    "Suk",
+    "Michael"
+   ],
+   [
+    "Horwitz",
+    "Daniel Scott"
+   ]
+  ],
+  "journal": "Medicina",
+  "short": "Medicina",
+  "volume": "61",
+  "issue": "4",
+  "page": "602",
+  "article_number": null,
+  "years": {
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 5,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1016/j.clgc.2025.102422": {
+  "doi": "10.1016/j.clgc.2025.102422",
+  "title": "RETRACTED: Impact of Upstaging From cT2a-b to pT3a on Overall Survival Among Patients With Renal Cell Carcinoma",
+  "original_title": "",
+  "authors": [
+   [
+    "Goodstein",
+    "Taylor"
+   ],
+   [
+    "Goradia",
+    "Rajvi"
+   ],
+   [
+    "Srivastava",
+    "Arnav"
+   ],
+   [
+    "Sood",
+    "Akshay"
+   ],
+   [
+    "Dason",
+    "Shawn"
+   ],
+   [
+    "Master",
+    "Viraj A."
+   ],
+   [
+    "Singer",
+    "Eric A."
+   ]
+  ],
+  "journal": "Clinical Genitourinary Cancer",
+  "short": "Clinical Genitourinary Cancer",
+  "volume": "23",
+  "issue": "6",
+  "page": "102422",
+  "article_number": "102422",
+  "years": {
+   "published-print": 2025,
+   "issued": 2025
+  },
+  "cited_by": 0,
+  "retraction": [
+   "retraction"
+  ],
+  "type": "journal-article"
+ },
+ "10.3390/geriatrics10040095": {
+  "doi": "10.3390/geriatrics10040095",
+  "title": "Age-Related Differences in Clinical Outcomes of Patients with Pleural Empyema: A Retrospective Single-Center Study",
+  "original_title": "",
+  "authors": [
+   [
+    "Yayan",
+    "Josef"
+   ],
+   [
+    "Biancosino",
+    "Christian"
+   ]
+  ],
+  "journal": "Geriatrics",
+  "short": "Geriatrics",
+  "volume": "10",
+  "issue": "4",
+  "page": "95",
+  "article_number": null,
+  "years": {
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 1,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1007/s43207-025-00545-7": {
+  "doi": "10.1007/s43207-025-00545-7",
+  "title": "Exploring the potential of halide perovskites in designing resistive switching memory systems for next-generation electronic devices",
+  "original_title": "",
+  "authors": [
+   [
+    "Kim",
+    "Hyerim"
+   ],
+   [
+    "Sohn",
+    "Woonbae"
+   ],
+   [
+    "Hilal",
+    "Muhammad"
+   ],
+   [
+    "Cai",
+    "Zhicheng"
+   ],
+   [
+    "Hou",
+    "Jian"
+   ],
+   [
+    "Shin",
+    "Wonseop"
+   ],
+   [
+    "Kim",
+    "Geon"
+   ],
+   [
+    "Shim",
+    "Young-Seok"
+   ],
+   [
+    "Moon",
+    "Cheon Woo"
+   ],
+   [
+    "Kim",
+    "Hyojung"
+   ]
+  ],
+  "journal": "Journal of the Korean Ceramic Society",
+  "short": "J. Korean Ceram. Soc.",
+  "volume": "62",
+  "issue": "6",
+  "page": "1099-1120",
+  "article_number": null,
+  "years": {
+   "published-print": 2025,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 8,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1007/s43207-025-00478-1": {
+  "doi": "10.1007/s43207-025-00478-1",
+  "title": "Enhanced photocatalytic performance for TiO2/g-C3N4 catalysts by coupling with Gd-doped CaAl2O4:Eu2+, Nd3+ phosphor",
+  "original_title": "",
+  "authors": [
+   [
+    "Kang",
+    "Hyun-Sung"
+   ],
+   [
+    "Xu",
+    "Qiushi"
+   ],
+   [
+    "Kim",
+    "Jung-Sik"
+   ]
+  ],
+  "journal": "Journal of the Korean Ceramic Society",
+  "short": "J. Korean Ceram. Soc.",
+  "volume": "62",
+  "issue": "2",
+  "page": "370-377",
+  "article_number": null,
+  "years": {
+   "published-print": 2025,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 5,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1007/s43207-025-00576-0": {
+  "doi": "10.1007/s43207-025-00576-0",
+  "title": "Impact of intrinsic trap states on the electrical and optoelectronic behavior of ReS2 and ReSe2",
+  "original_title": "",
+  "authors": [
+   [
+    "Seo",
+    "Gyeong Deok"
+   ],
+   [
+    "Shim",
+    "Gi Dan"
+   ],
+   [
+    "Back",
+    "Seung Yong"
+   ],
+   [
+    "Park",
+    "Sungjune"
+   ],
+   [
+    "Bae",
+    "Hagyoul"
+   ],
+   [
+    "Kim",
+    "TaeWan"
+   ]
+  ],
+  "journal": "Journal of the Korean Ceramic Society",
+  "short": "J. Korean Ceram. Soc.",
+  "volume": "63",
+  "issue": "2",
+  "page": "312-320",
+  "article_number": null,
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1007/s43207-025-00570-6": {
+  "doi": "10.1007/s43207-025-00570-6",
+  "title": "Sustainable resource utilization: repurposing alumina from petrochemical catalysts for LED phosphors",
+  "original_title": "",
+  "authors": [
+   [
+    "Kwon",
+    "Seok Bin"
+   ],
+   [
+    "Lee",
+    "Seon Yeong"
+   ],
+   [
+    "Lee",
+    "Jae Hyeok"
+   ],
+   [
+    "Jeon",
+    "Sie-Wook"
+   ],
+   [
+    "Lee",
+    "Min-hyung"
+   ],
+   [
+    "Lee",
+    "Ho-se"
+   ],
+   [
+    "Kim",
+    "Yong Tack"
+   ],
+   [
+    "Choi",
+    "Seung Hee"
+   ],
+   [
+    "Kang",
+    "Bong Kyun"
+   ],
+   [
+    "Song",
+    "Young Hyun"
+   ]
+  ],
+  "journal": "Journal of the Korean Ceramic Society",
+  "short": "J. Korean Ceram. Soc.",
+  "volume": "63",
+  "issue": "3",
+  "page": "371-380",
+  "article_number": null,
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1007/s43207-026-00612-7": {
+  "doi": "10.1007/s43207-026-00612-7",
+  "title": "Hybrid humidity gas sensors based on P3HT-CdSe tetrapod nanocomposites",
+  "original_title": "",
+  "authors": [
+   [
+    "Kim",
+    "Seo-Yeon"
+   ],
+   [
+    "Lee",
+    "Jae-Hyoung"
+   ],
+   [
+    "Park",
+    "Jimyeong"
+   ],
+   [
+    "Choi",
+    "Myung Sik"
+   ],
+   [
+    "Jung",
+    "Jaehan"
+   ]
+  ],
+  "journal": "Journal of the Korean Ceramic Society",
+  "short": "J. Korean Ceram. Soc.",
+  "volume": "63",
+  "issue": "5",
+  "page": "959-968",
+  "article_number": null,
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3311/ppch.38835": {
+  "doi": "10.3311/ppch.38835",
+  "title": "Investigation of the Thermal Stability of High Energy Ball Milled SiC Nanoparticles Using Thermogravimetric and Differential Thermal Analysis",
+  "original_title": "",
+  "authors": [
+   [
+    "Sekar",
+    "Manikandan"
+   ],
+   [
+    "Balakrishna",
+    "Vinodhkumar"
+   ],
+   [
+    "Rajavelu",
+    "Vivek"
+   ],
+   [
+    "Parthiban",
+    "Mohanram"
+   ]
+  ],
+  "journal": "Periodica Polytechnica Chemical Engineering",
+  "short": "Period. Polytech. Chem. Eng.",
+  "volume": "69",
+  "issue": "2",
+  "page": "163-172",
+  "article_number": null,
+  "years": {
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 2,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1590/1517-7076-rmat-2024-0777": {
+  "doi": "10.1590/1517-7076-rmat-2024-0777",
+  "title": "Magnetic modulation in epitaxial EuTiO3 thin film via oxygen vacancies",
+  "original_title": "",
+  "authors": [
+   [
+    "Sun",
+    "Guangyao"
+   ],
+   [
+    "Chen",
+    "Gaoyuan"
+   ]
+  ],
+  "journal": "Matéria (Rio de Janeiro)",
+  "short": "Matéria (Rio J.)",
+  "volume": "30",
+  "issue": null,
+  "page": null,
+  "article_number": "e20240777",
+  "years": {
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/mi17050537": {
+  "doi": "10.3390/mi17050537",
+  "title": "Flexible Surface Acoustic Wave (SAW) Magnetic Sensor Based on Terfenol-D Grating-Arrayed Thin Polymer Film",
+  "original_title": "",
+  "authors": [
+   [
+    "Qadir",
+    "Akeel"
+   ],
+   [
+    "Muhammad",
+    "Fayyaz"
+   ],
+   [
+    "Karim",
+    "Shahid"
+   ],
+   [
+    "Chen",
+    "Jinkai"
+   ],
+   [
+    "Xu",
+    "Hongsheng"
+   ],
+   [
+    "Farooq",
+    "Umar"
+   ]
+  ],
+  "journal": "Micromachines",
+  "short": "Micromachines",
+  "volume": "17",
+  "issue": "5",
+  "page": "537",
+  "article_number": null,
+  "years": {
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/plasma9030026": {
+  "doi": "10.3390/plasma9030026",
+  "title": "Technological Capabilities of Hollow Cathode Glow Discharge",
+  "original_title": "",
+  "authors": [
+   [
+    "Metel",
+    "Alexander S."
+   ],
+   [
+    "Volosova",
+    "Marina A."
+   ],
+   [
+    "Mustafaev",
+    "Enver S."
+   ],
+   [
+    "Melnik",
+    "Yury A."
+   ],
+   [
+    "Grigoriev",
+    "Sergey N."
+   ]
+  ],
+  "journal": "Plasma",
+  "short": "Plasma",
+  "volume": "9",
+  "issue": "3",
+  "page": "26",
+  "article_number": null,
+  "years": {
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1007/s40042-025-01537-w": {
+  "doi": "10.1007/s40042-025-01537-w",
+  "title": "Surface chemical state evolution of hydrogen-exposed amorphous IGZO thin films investigated by synchrotron XPS",
+  "original_title": "",
+  "authors": [
+   [
+    "Kang",
+    "Se Jun"
+   ],
+   [
+    "Baik",
+    "Jaeyoon"
+   ],
+   [
+    "Shin",
+    "Hyun-Joon"
+   ]
+  ],
+  "journal": "Journal of the Korean Physical Society",
+  "short": "J. Korean Phys. Soc.",
+  "volume": "88",
+  "issue": "6",
+  "page": "652-657",
+  "article_number": null,
+  "years": {
+   "published-print": 2026,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1088/1361-6463/add7e9": {
+  "doi": "10.1088/1361-6463/add7e9",
+  "title": "Multi-temperature cooling performance of GdFeCo thin films with high magnetic entropy change and evolution of perpendicular magnetic anisotropy with thickness",
+  "original_title": "",
+  "authors": [
+   [
+    "Galivarapu",
+    "Jagadish Kumar"
+   ],
+   [
+    "Gu",
+    "Lisha"
+   ],
+   [
+    "Fu",
+    "Xiaoyong"
+   ],
+   [
+    "Wang",
+    "Zhiwen"
+   ],
+   [
+    "Wang",
+    "Aixing"
+   ],
+   [
+    "Wang",
+    "Ke"
+   ]
+  ],
+  "journal": "Journal of Physics D: Applied Physics",
+  "short": "J. Phys. D: Appl. Phys.",
+  "volume": "58",
+  "issue": "23",
+  "page": "235002",
+  "article_number": null,
+  "years": {
+   "published-print": 2025,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 2,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1088/1361-6595/adaa9b": {
+  "doi": "10.1088/1361-6595/adaa9b",
+  "title": "On the Ar I 419.8 nm/751.5 nm (3p 5 /2p 5 ) line intensity ratio for electric field measurement in dielectric barrier discharge in argon at atmospheric pressure",
+  "original_title": "",
+  "authors": [
+   [
+    "Navrátil",
+    "Zdeněk"
+   ],
+   [
+    "Kusýn",
+    "Lukáš"
+   ],
+   [
+    "Prokop",
+    "David"
+   ],
+   [
+    "Hoder",
+    "Tomáš"
+   ]
+  ],
+  "journal": "Plasma Sources Science and Technology",
+  "short": "Plasma Sources Sci. Technol.",
+  "volume": "34",
+  "issue": "1",
+  "page": "015013",
+  "article_number": null,
+  "years": {
+   "published-print": 2025,
+   "published-online": 2025,
+   "issued": 2025
+  },
+  "cited_by": 4,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1088/1361-6595/ae5d6a": {
+  "doi": "10.1088/1361-6595/ae5d6a",
+  "title": "A study of Xe metastable neutrals in an electrodeless plasma thruster discharge",
+  "original_title": "",
+  "authors": [
+   [
+    "Zhou",
+    "J"
+   ],
+   [
+    "Cichocki",
+    "F"
+   ],
+   [
+    "Ahedo",
+    "E"
+   ],
+   [
+    "Taccogna",
+    "F"
+   ]
+  ],
+  "journal": "Plasma Sources Science and Technology",
+  "short": "Plasma Sources Sci. Technol.",
+  "volume": "35",
+  "issue": "4",
+  "page": "045013",
+  "article_number": null,
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/nano16090558": {
+  "doi": "10.3390/nano16090558",
+  "title": "Impact of Annealing on Perpendicular Magnetic Anisotropy and Interfacial Diffusion in Ultrathin [CoFeB/Pd]×n Multilayer Film",
+  "original_title": "",
+  "authors": [
+   [
+    "Saravanan",
+    "Lakshmanan"
+   ],
+   [
+    "Kumar",
+    "Murugesan Praveen"
+   ],
+   [
+    "Ravikumar",
+    "Ayyanuservai"
+   ],
+   [
+    "Murugadoss",
+    "Govindhasamy"
+   ],
+   [
+    "Rodríguez-Suárez",
+    "Roberto"
+   ],
+   [
+    "Vojkovic",
+    "Smiljan"
+   ],
+   [
+    "Prabhu",
+    "Delhibabu"
+   ],
+   [
+    "Peera",
+    "Shaik Gouse"
+   ],
+   [
+    "Garcia",
+    "Carlos"
+   ]
+  ],
+  "journal": "Nanomaterials",
+  "short": "Nanomaterials",
+  "volume": "16",
+  "issue": "9",
+  "page": "558",
+  "article_number": null,
+  "years": {
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 1,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/plasma9030036": {
+  "doi": "10.3390/plasma9030036",
+  "title": "Non-Monotonic Electron Temperature Variation in Coaxial Dielectric Barrier Discharge: Combined Simulation and Experimental Study",
+  "original_title": "",
+  "authors": [
+   [
+    "Huang",
+    "Jiaxinyi"
+   ],
+   [
+    "Liu",
+    "Zhuo"
+   ],
+   [
+    "Tan",
+    "Aiguo"
+   ]
+  ],
+  "journal": "Plasma",
+  "short": "Plasma",
+  "volume": "9",
+  "issue": "3",
+  "page": "36",
+  "article_number": null,
+  "years": {
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.3390/ma19143012": {
+  "doi": "10.3390/ma19143012",
+  "title": "Lithium-Ion Migration-Induced Magnetic Anisotropy Transition in CoNi Thin Films",
+  "original_title": "",
+  "authors": [
+   [
+    "Han",
+    "Zhen"
+   ],
+   [
+    "Liu",
+    "Senmiao"
+   ],
+   [
+    "Xie",
+    "Ronghuan"
+   ],
+   [
+    "Meng",
+    "Ziwen"
+   ],
+   [
+    "Li",
+    "Yawen"
+   ],
+   [
+    "Cao",
+    "Qiang"
+   ]
+  ],
+  "journal": "Materials",
+  "short": "Materials",
+  "volume": "19",
+  "issue": "14",
+  "page": "3012",
+  "article_number": null,
+  "years": {
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1063/5.0326956": {
+  "doi": "10.1063/5.0326956",
+  "title": "High perpendicular magnetic anisotropy and voltage-controlled magnetic anisotropy coefficients in crystalline CoFe/Fe-based top-free multilayers fabricated using cryogenic temperature deposition",
+  "original_title": "",
+  "authors": [
+   [
+    "Ichinose",
+    "Tomohiro"
+   ],
+   [
+    "Yamamoto",
+    "Tatsuya"
+   ],
+   [
+    "Nozaki",
+    "Takayuki"
+   ],
+   [
+    "Yakushiji",
+    "Kay"
+   ],
+   [
+    "Tamaru",
+    "Shingo"
+   ],
+   [
+    "Yuasa",
+    "Shinji"
+   ]
+  ],
+  "journal": "APL Materials",
+  "short": "",
+  "volume": "14",
+  "issue": "8",
+  "page": null,
+  "article_number": "081102",
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1007/s40042-026-01566-z": {
+  "doi": "10.1007/s40042-026-01566-z",
+  "title": "Characterization of coherent X-ray beam using Young’s double-slit experiment at PAL-XFEL",
+  "original_title": "",
+  "authors": [
+   [
+    "Hwang",
+    "Junha"
+   ],
+   [
+    "Kim",
+    "Sangsoo"
+   ],
+   [
+    "Nam",
+    "Daewoong"
+   ]
+  ],
+  "journal": "Journal of the Korean Physical Society",
+  "short": "J. Korean Phys. Soc.",
+  "volume": "88",
+  "issue": "10",
+  "page": "1027-1031",
+  "article_number": null,
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1007/s40042-026-01570-3": {
+  "doi": "10.1007/s40042-026-01570-3",
+  "title": "Orbital anisotropy in a mixed-ligand system $${\\text{CsV}}_{2}{\\text{Se}}_{2}\\text{O}$$",
+  "original_title": "",
+  "authors": [
+   [
+    "Park",
+    "Sudong"
+   ],
+   [
+    "Won",
+    "Choong-Jae"
+   ],
+   [
+    "Noh",
+    "Woo-Suk"
+   ],
+   [
+    "Park",
+    "Jae-Hoon"
+   ]
+  ],
+  "journal": "Journal of the Korean Physical Society",
+  "short": "J. Korean Phys. Soc.",
+  "volume": "88",
+  "issue": "9",
+  "page": "927-932",
+  "article_number": null,
+  "years": {
+   "published-print": 2026,
+   "published-online": 2026,
+   "issued": 2026
+  },
+  "cited_by": 0,
+  "retraction": [],
+  "type": "journal-article"
+ },
+ "10.1007/s10904-024-03325-8": {
+  "doi": "10.1007/s10904-024-03325-8",
+  "title": "RETRACTED ARTICLE: Analyzing the Influence of Varying Film Thickness on the Structural and Optical Properties of Ge15Se75Zn10 Thin Films",
+  "original_title": "",
+  "authors": [
+   [
+    "Alwany",
+    "Abduelwhab B."
+   ],
+   [
+    "Hassan",
+    "Belqees"
+   ],
+   [
+    "Alajlani",
+    "Yahya"
+   ],
+   [
+    "Alnakhlani",
+    "Ali"
+   ],
+   [
+    "Fouad",
+    "Rehab. A."
+   ]
+  ],
+  "journal": "Journal of Inorganic and Organometallic Polymers and Materials",
+  "short": "J Inorg Organomet Polym",
+  "volume": "35",
+  "issue": "2",
+  "page": "838-845",
+  "article_number": null,
+  "years": {
+   "published-print": 2025,
+   "published-online": 2024,
+   "issued": 2024
+  },
+  "cited_by": 5,
+  "retraction": [
+   "retraction"
+  ],
+  "type": "journal-article"
+ },
+ "arxiv:2604.11706": {
+  "arxiv": "2604.11706",
+  "title": "Effect of Pre-Shear and Dispersity on Crystallization of a Model Polymer with Soft Pair Interactions using Molecular Dynamics Simulations",
+  "authors": [
+   "Tzortzis Koulaxizis",
+   "Antonia Statt"
+  ],
+  "published": "2026-04-13",
+  "primary": "cond-mat.soft"
+ },
+ "arxiv:2510.20370": {
+  "arxiv": "2510.20370",
+  "title": "Polymorphic self-poisoning in poly(lactic acid): a new phenomenon in polymer crystallization",
+  "authors": [
+   "Shu-Gui Yang",
+   "Xiang-bing Zeng",
+   "Feng Liu",
+   "Goran Ungar"
+  ],
+  "published": "2025-10-23",
+  "primary": "cond-mat.soft"
+ },
+ "arxiv:2609.05383": {
+  "arxiv": "2609.05383",
+  "title": "Customized spin spirals in ferromagnetic thin films",
+  "authors": [
+   "Anjali Panchwanee",
+   "Kai Schlage",
+   "Dieter Lott",
+   "Sven Velten",
+   "Thomas Saerbeck",
+   "David L. Cortie",
+   "Sakshath Sadashivaiah",
+   "Ilya Sergeev",
+   "Guido Meier",
+   "Lars Bocklage",
+   "Ralf Röhlsberger"
+  ],
+  "published": "2026-09-04",
+  "primary": "cond-mat.mtrl-sci"
+ },
+ "arxiv:2608.00369": {
+  "arxiv": "2608.00369",
+  "title": "A Robotic System for Automated Manufacturing of Dielectric Elastomer Actuators",
+  "authors": [
+   "Van Remenar",
+   "Anatol Gogoj",
+   "Ang Li",
+   "Tomas Verardi",
+   "Matei Mandoiu",
+   "Victor Jimenez Santiago",
+   "Mihai Duduta"
+  ],
+  "published": "2026-08-01",
+  "primary": "cs.RO"
+ }
+}

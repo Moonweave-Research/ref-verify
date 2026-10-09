@@ -1,0 +1,3671 @@
+{
+  "summary": {
+    "A": {
+      "runs": 16,
+      "recall_by_type": {
+        "CLAIM_UNIT": [
+          14,
+          14
+        ],
+        "CLAIM_NUMBER": [
+          14,
+          14
+        ],
+        "CLAIM_DIRECTION": [
+          16,
+          16
+        ],
+        "WRONG_YEAR": [
+          10,
+          10
+        ],
+        "WRONG_AUTHOR": [
+          10,
+          10
+        ],
+        "DOI_SWAP": [
+          8,
+          8
+        ],
+        "FAB_DOI": [
+          10,
+          10
+        ],
+        "RETRACTED": [
+          10,
+          10
+        ],
+        "FAB_NODOI": [
+          6,
+          6
+        ],
+        "TITLELESS_WRONG_VOLPAGE": [
+          6,
+          6
+        ]
+      },
+      "recall_overall": [
+        104,
+        104
+      ],
+      "false_alarms": {
+        "correct_reference": [
+          0,
+          114
+        ],
+        "unindexed_reference": [
+          0,
+          12
+        ],
+        "correct_claim": [
+          0,
+          16
+        ]
+      },
+      "engine_invoked": 16,
+      "skill_loaded": 16,
+      "web_tool_runs": 2,
+      "wall_seconds_median": 74.9,
+      "wall_seconds_mean": 76.2,
+      "usable": 16,
+      "pending_review": 0
+    },
+    "B": {
+      "runs": 16,
+      "recall_by_type": {
+        "CLAIM_UNIT": [
+          14,
+          14
+        ],
+        "CLAIM_NUMBER": [
+          14,
+          14
+        ],
+        "CLAIM_DIRECTION": [
+          16,
+          16
+        ],
+        "WRONG_YEAR": [
+          10,
+          10
+        ],
+        "WRONG_AUTHOR": [
+          10,
+          10
+        ],
+        "DOI_SWAP": [
+          8,
+          8
+        ],
+        "FAB_DOI": [
+          10,
+          10
+        ],
+        "RETRACTED": [
+          10,
+          10
+        ],
+        "FAB_NODOI": [
+          6,
+          6
+        ],
+        "TITLELESS_WRONG_VOLPAGE": [
+          6,
+          6
+        ]
+      },
+      "recall_overall": [
+        104,
+        104
+      ],
+      "false_alarms": {
+        "correct_reference": [
+          1,
+          114
+        ],
+        "unindexed_reference": [
+          0,
+          12
+        ],
+        "correct_claim": [
+          0,
+          16
+        ]
+      },
+      "engine_invoked": 0,
+      "skill_loaded": 0,
+      "web_tool_runs": 11,
+      "wall_seconds_median": 68.8,
+      "wall_seconds_mean": 76.9,
+      "usable": 16,
+      "pending_review": 0
+    },
+    "C": {
+      "runs": 8,
+      "recall_by_type": {
+        "CLAIM_UNIT": [
+          7,
+          7
+        ],
+        "CLAIM_NUMBER": [
+          1,
+          7
+        ],
+        "CLAIM_DIRECTION": [
+          5,
+          8
+        ],
+        "WRONG_YEAR": [
+          5,
+          5
+        ],
+        "WRONG_AUTHOR": [
+          1,
+          5
+        ],
+        "DOI_SWAP": [
+          4,
+          4
+        ],
+        "FAB_DOI": [
+          5,
+          5
+        ],
+        "RETRACTED": [
+          0,
+          5
+        ],
+        "FAB_NODOI": [
+          3,
+          3
+        ],
+        "TITLELESS_WRONG_VOLPAGE": [
+          1,
+          3
+        ]
+      },
+      "recall_overall": [
+        32,
+        52
+      ],
+      "false_alarms": {
+        "correct_reference": [
+          5,
+          57
+        ],
+        "unindexed_reference": [
+          0,
+          6
+        ],
+        "correct_claim": [
+          0,
+          8
+        ]
+      },
+      "engine_invoked": 0,
+      "skill_loaded": 0,
+      "web_tool_runs": 0,
+      "wall_seconds_median": 30.0,
+      "wall_seconds_mean": 33.2,
+      "usable": 8,
+      "pending_review": 0
+    }
+  },
+  "runs": [
+    {
+      "run_id": "v2m1_dea_en__A__1",
+      "manuscript": "v2m1_dea_en",
+      "condition": "A",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m1_dea_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 73.9,
+      "hook_event_lines": 0,
+      "answer_chars": 2838,
+      "usage": {
+        "mode": "engine",
+        "skill_loaded": true,
+        "engine_calls": 1,
+        "engine_subcommands": [
+          "check-bib"
+        ],
+        "web_tool_calls": 0,
+        "shell_http_calls": 2,
+        "tool_calls": 7
+      },
+      "usable": true,
+      "note": "Not counted: 'Remenar et al.: incomplete author list' is a correct APA remark about the set.",
+      "decisions": {
+        "v2m1_dea_en#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#08": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#10": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#11": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#12": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#13": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#14": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m1_dea_en#15": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#16": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#17": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m1_dea_en__B__1",
+      "manuscript": "v2m1_dea_en",
+      "condition": "B",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m1_dea_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 72.8,
+      "hook_event_lines": 0,
+      "answer_chars": 2369,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 1,
+        "shell_http_calls": 4,
+        "tool_calls": 8
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m1_dea_en#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#08": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#10": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#11": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#12": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#13": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#14": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m1_dea_en#15": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#16": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#17": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m2_ionic_en__A__1",
+      "manuscript": "v2m2_ionic_en",
+      "condition": "A",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m2_ionic_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 63.3,
+      "hook_event_lines": 0,
+      "answer_chars": 2332,
+      "usage": {
+        "mode": "engine",
+        "skill_loaded": true,
+        "engine_calls": 2,
+        "engine_subcommands": [
+          "check-bib"
+        ],
+        "web_tool_calls": 0,
+        "shell_http_calls": 3,
+        "tool_calls": 9
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m2_ionic_en#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#09": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#11": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#12": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#13": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#14": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#15": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#16": {
+          "auto": "caught",
+          "final": "caught"
+        }
+      }
+    },
+    {
+      "run_id": "v2m2_ionic_en__B__1",
+      "manuscript": "v2m2_ionic_en",
+      "condition": "B",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m2_ionic_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 49.9,
+      "hook_event_lines": 0,
+      "answer_chars": 1872,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 0,
+        "shell_http_calls": 3,
+        "tool_calls": 6
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m2_ionic_en#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#08": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#09": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#10": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#11": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#12": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#13": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#14": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#15": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#16": {
+          "auto": "review",
+          "final": "caught"
+        }
+      }
+    },
+    {
+      "run_id": "v2m3_crystal_latex__A__1",
+      "manuscript": "v2m3_crystal_latex",
+      "condition": "A",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 73.4,
+      "hook_event_lines": 0,
+      "answer_chars": 2411,
+      "usage": {
+        "mode": "engine",
+        "skill_loaded": true,
+        "engine_calls": 2,
+        "engine_subcommands": [
+          "check-bib"
+        ],
+        "web_tool_calls": 0,
+        "shell_http_calls": 2,
+        "tool_calls": 7
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m3_crystal_latex#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#06": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#07": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#11": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#12": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#13": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#14": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#15": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m3_crystal_latex__B__1",
+      "manuscript": "v2m3_crystal_latex",
+      "condition": "B",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 59.0,
+      "hook_event_lines": 0,
+      "answer_chars": 1538,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 0,
+        "shell_http_calls": 3,
+        "tool_calls": 6
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m3_crystal_latex#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#06": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#07": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#10": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#11": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#12": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#13": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#14": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#15": {
+          "auto": "clean",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m4_polymer_ko__A__1",
+      "manuscript": "v2m4_polymer_ko",
+      "condition": "A",
+      "repeat": 1,
+      "prompt": "투고 전에 이 원고(v2m4_polymer_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+      "exit_code": 0,
+      "wall_seconds": 106.5,
+      "hook_event_lines": 0,
+      "answer_chars": 1593,
+      "usage": {
+        "mode": "engine",
+        "skill_loaded": true,
+        "engine_calls": 2,
+        "engine_subcommands": [
+          "check-bib"
+        ],
+        "web_tool_calls": 1,
+        "shell_http_calls": 4,
+        "tool_calls": 12
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m4_polymer_ko#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#03": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#04": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#05": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#06": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#07": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#11": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#12": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#13": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#14": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#15": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m4_polymer_ko__B__1",
+      "manuscript": "v2m4_polymer_ko",
+      "condition": "B",
+      "repeat": 1,
+      "prompt": "투고 전에 이 원고(v2m4_polymer_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+      "exit_code": 0,
+      "wall_seconds": 135.8,
+      "hook_event_lines": 0,
+      "answer_chars": 1227,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 3,
+        "shell_http_calls": 2,
+        "tool_calls": 8
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m4_polymer_ko#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#03": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#04": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#06": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#09": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#11": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#12": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#13": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#14": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#15": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m5_pvdf_lce_en__A__1",
+      "manuscript": "v2m5_pvdf_lce_en",
+      "condition": "A",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m5_pvdf_lce_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 75.9,
+      "hook_event_lines": 0,
+      "answer_chars": 2164,
+      "usage": {
+        "mode": "engine",
+        "skill_loaded": true,
+        "engine_calls": 4,
+        "engine_subcommands": [
+          "check-bib"
+        ],
+        "web_tool_calls": 0,
+        "shell_http_calls": 2,
+        "tool_calls": 8
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m5_pvdf_lce_en#01": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#03": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#04": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#10": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#11": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#12": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#13": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m5_pvdf_lce_en__B__1",
+      "manuscript": "v2m5_pvdf_lce_en",
+      "condition": "B",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m5_pvdf_lce_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 53.0,
+      "hook_event_lines": 0,
+      "answer_chars": 2204,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 3,
+        "shell_http_calls": 3,
+        "tool_calls": 9
+      },
+      "usable": true,
+      "note": "Not counted: '[6] Ali et al.: the title doesn't match what the paper is' (under 'Serious'); it is the paper's real title and the answer does not call the entry wrong.",
+      "decisions": {
+        "v2m5_pvdf_lce_en#01": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#03": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#04": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#05": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#06": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#10": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#11": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#12": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#13": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m6_rehab_latex__A__1",
+      "manuscript": "v2m6_rehab_latex",
+      "condition": "A",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 53.0,
+      "hook_event_lines": 0,
+      "answer_chars": 2660,
+      "usage": {
+        "mode": "engine",
+        "skill_loaded": true,
+        "engine_calls": 1,
+        "engine_subcommands": [
+          "check-bib"
+        ],
+        "web_tool_calls": 0,
+        "shell_http_calls": 2,
+        "tool_calls": 7
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m6_rehab_latex#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#07": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#09": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#11": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#12": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#13": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#14": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#15": {
+          "auto": "caught",
+          "final": "caught"
+        }
+      }
+    },
+    {
+      "run_id": "v2m6_rehab_latex__B__1",
+      "manuscript": "v2m6_rehab_latex",
+      "condition": "B",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 71.2,
+      "hook_event_lines": 0,
+      "answer_chars": 2828,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 1,
+        "shell_http_calls": 2,
+        "tool_calls": 8
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m6_rehab_latex#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#05": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#07": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#08": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#09": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#10": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#11": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#12": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#13": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#14": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#15": {
+          "auto": "caught",
+          "final": "caught"
+        }
+      }
+    },
+    {
+      "run_id": "v2m7_ceramic_ko__A__1",
+      "manuscript": "v2m7_ceramic_ko",
+      "condition": "A",
+      "repeat": 1,
+      "prompt": "투고 전에 이 원고(v2m7_ceramic_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+      "exit_code": 0,
+      "wall_seconds": 61.5,
+      "hook_event_lines": 0,
+      "answer_chars": 1665,
+      "usage": {
+        "mode": "engine",
+        "skill_loaded": true,
+        "engine_calls": 3,
+        "engine_subcommands": [
+          "check-bib"
+        ],
+        "web_tool_calls": 0,
+        "shell_http_calls": 3,
+        "tool_calls": 8
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m7_ceramic_ko#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#02": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#04": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#06": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#11": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#12": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#13": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#14": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#15": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#16": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m7_ceramic_ko__B__1",
+      "manuscript": "v2m7_ceramic_ko",
+      "condition": "B",
+      "repeat": 1,
+      "prompt": "투고 전에 이 원고(v2m7_ceramic_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+      "exit_code": 0,
+      "wall_seconds": 78.0,
+      "hook_event_lines": 0,
+      "answer_chars": 2134,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 1,
+        "shell_http_calls": 4,
+        "tool_calls": 8
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m7_ceramic_ko#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#02": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#06": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#11": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#12": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#13": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#14": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#15": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#16": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m8_magnetism_en__A__1",
+      "manuscript": "v2m8_magnetism_en",
+      "condition": "A",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m8_magnetism_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 76.3,
+      "hook_event_lines": 0,
+      "answer_chars": 2308,
+      "usage": {
+        "mode": "engine",
+        "skill_loaded": true,
+        "engine_calls": 3,
+        "engine_subcommands": [
+          "check-bib"
+        ],
+        "web_tool_calls": 0,
+        "shell_http_calls": 3,
+        "tool_calls": 8
+      },
+      "usable": true,
+      "note": "Not counted: [6] Zhou is a simulation, not a measurement; the answer is right and the set's wording was loose (also noted in A2 and B2).",
+      "decisions": {
+        "v2m8_magnetism_en#01": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#09": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#11": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#12": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#13": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#14": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#15": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#16": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m8_magnetism_en__B__1",
+      "manuscript": "v2m8_magnetism_en",
+      "condition": "B",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m8_magnetism_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 110.6,
+      "hook_event_lines": 0,
+      "answer_chars": 1871,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 28,
+        "shell_http_calls": 0,
+        "tool_calls": 31
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m8_magnetism_en#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#04": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#09": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#11": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#12": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#13": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#14": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#15": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#16": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m1_dea_en__A__2",
+      "manuscript": "v2m1_dea_en",
+      "condition": "A",
+      "repeat": 2,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m1_dea_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 71.9,
+      "hook_event_lines": 0,
+      "answer_chars": 3123,
+      "usage": {
+        "mode": "engine",
+        "skill_loaded": true,
+        "engine_calls": 4,
+        "engine_subcommands": [
+          "check-bib",
+          "check-claim"
+        ],
+        "web_tool_calls": 0,
+        "shell_http_calls": 2,
+        "tool_calls": 8
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m1_dea_en#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#08": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#11": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#12": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#13": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#14": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m1_dea_en#15": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#16": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#17": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m1_dea_en__B__2",
+      "manuscript": "v2m1_dea_en",
+      "condition": "B",
+      "repeat": 2,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m1_dea_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 73.1,
+      "hook_event_lines": 0,
+      "answer_chars": 2739,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 1,
+        "shell_http_calls": 3,
+        "tool_calls": 7
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m1_dea_en#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#08": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#11": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#12": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#13": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#14": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m1_dea_en#15": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#16": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#17": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m2_ionic_en__A__2",
+      "manuscript": "v2m2_ionic_en",
+      "condition": "A",
+      "repeat": 2,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m2_ionic_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 57.8,
+      "hook_event_lines": 0,
+      "answer_chars": 2359,
+      "usage": {
+        "mode": "engine",
+        "skill_loaded": true,
+        "engine_calls": 2,
+        "engine_subcommands": [
+          "check-bib"
+        ],
+        "web_tool_calls": 0,
+        "shell_http_calls": 2,
+        "tool_calls": 7
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m2_ionic_en#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#09": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#10": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#11": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#12": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#13": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#14": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#15": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#16": {
+          "auto": "caught",
+          "final": "caught"
+        }
+      }
+    },
+    {
+      "run_id": "v2m2_ionic_en__B__2",
+      "manuscript": "v2m2_ionic_en",
+      "condition": "B",
+      "repeat": 2,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m2_ionic_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 59.3,
+      "hook_event_lines": 0,
+      "answer_chars": 2749,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 1,
+        "shell_http_calls": 2,
+        "tool_calls": 6
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m2_ionic_en#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#09": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#11": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#12": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#13": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#14": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#15": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#16": {
+          "auto": "caught",
+          "final": "caught"
+        }
+      }
+    },
+    {
+      "run_id": "v2m3_crystal_latex__A__2",
+      "manuscript": "v2m3_crystal_latex",
+      "condition": "A",
+      "repeat": 2,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 79.5,
+      "hook_event_lines": 0,
+      "answer_chars": 3008,
+      "usage": {
+        "mode": "engine",
+        "skill_loaded": true,
+        "engine_calls": 2,
+        "engine_subcommands": [
+          "check-bib"
+        ],
+        "web_tool_calls": 0,
+        "shell_http_calls": 1,
+        "tool_calls": 5
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m3_crystal_latex#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#04": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#06": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#07": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#11": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#12": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#13": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#14": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#15": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m3_crystal_latex__B__2",
+      "manuscript": "v2m3_crystal_latex",
+      "condition": "B",
+      "repeat": 2,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 55.9,
+      "hook_event_lines": 0,
+      "answer_chars": 1951,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 0,
+        "shell_http_calls": 3,
+        "tool_calls": 6
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m3_crystal_latex#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#06": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#11": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#12": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#13": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#14": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#15": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m4_polymer_ko__A__2",
+      "manuscript": "v2m4_polymer_ko",
+      "condition": "A",
+      "repeat": 2,
+      "prompt": "투고 전에 이 원고(v2m4_polymer_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+      "exit_code": 0,
+      "wall_seconds": 82.1,
+      "hook_event_lines": 0,
+      "answer_chars": 1936,
+      "usage": {
+        "mode": "engine",
+        "skill_loaded": true,
+        "engine_calls": 3,
+        "engine_subcommands": [
+          "check-bib",
+          "check-claim"
+        ],
+        "web_tool_calls": 1,
+        "shell_http_calls": 1,
+        "tool_calls": 8
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m4_polymer_ko#01": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#03": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#04": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#06": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#08": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#11": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#12": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#13": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#14": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#15": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m4_polymer_ko__B__2",
+      "manuscript": "v2m4_polymer_ko",
+      "condition": "B",
+      "repeat": 2,
+      "prompt": "투고 전에 이 원고(v2m4_polymer_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+      "exit_code": 0,
+      "wall_seconds": 65.6,
+      "hook_event_lines": 0,
+      "answer_chars": 1542,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 13,
+        "shell_http_calls": 2,
+        "tool_calls": 18
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m4_polymer_ko#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#03": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#04": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#06": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#11": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#12": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#13": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#14": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#15": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m5_pvdf_lce_en__A__2",
+      "manuscript": "v2m5_pvdf_lce_en",
+      "condition": "A",
+      "repeat": 2,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m5_pvdf_lce_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 62.5,
+      "hook_event_lines": 0,
+      "answer_chars": 2198,
+      "usage": {
+        "mode": "engine",
+        "skill_loaded": true,
+        "engine_calls": 3,
+        "engine_subcommands": [
+          "check-bib",
+          "check-claim"
+        ],
+        "web_tool_calls": 0,
+        "shell_http_calls": 1,
+        "tool_calls": 7
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m5_pvdf_lce_en#01": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#03": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#04": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#10": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#11": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#12": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#13": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m5_pvdf_lce_en__B__2",
+      "manuscript": "v2m5_pvdf_lce_en",
+      "condition": "B",
+      "repeat": 2,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m5_pvdf_lce_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 62.0,
+      "hook_event_lines": 0,
+      "answer_chars": 2118,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 0,
+        "shell_http_calls": 3,
+        "tool_calls": 5
+      },
+      "usable": true,
+      "note": "False alarm: '[4] Luo et al. - the year is probably wrong', listed as problem 6 of 7, although the entry (2026, vol. 38 no. 8) is correct; the answer then says 2026 is fine.",
+      "decisions": {
+        "v2m5_pvdf_lce_en#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#03": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#05": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#06": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#07": {
+          "auto": "review",
+          "final": "false_alarm"
+        },
+        "v2m5_pvdf_lce_en#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#10": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#11": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#12": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#13": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m6_rehab_latex__A__2",
+      "manuscript": "v2m6_rehab_latex",
+      "condition": "A",
+      "repeat": 2,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 94.0,
+      "hook_event_lines": 0,
+      "answer_chars": 2620,
+      "usage": {
+        "mode": "engine",
+        "skill_loaded": true,
+        "engine_calls": 4,
+        "engine_subcommands": [
+          "check-bib"
+        ],
+        "web_tool_calls": 0,
+        "shell_http_calls": 2,
+        "tool_calls": 10
+      },
+      "usable": true,
+      "note": "#03 caught without naming Ryu: 'Robot-assisted therapy (line 12): the paper says the opposite of what you wrote' with the abstract quote.",
+      "decisions": {
+        "v2m6_rehab_latex#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#03": {
+          "auto": "missed",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#05": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#07": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#08": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#09": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#10": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#11": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#12": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#13": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#14": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#15": {
+          "auto": "caught",
+          "final": "caught"
+        }
+      }
+    },
+    {
+      "run_id": "v2m6_rehab_latex__B__2",
+      "manuscript": "v2m6_rehab_latex",
+      "condition": "B",
+      "repeat": 2,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 66.4,
+      "hook_event_lines": 0,
+      "answer_chars": 2510,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 0,
+        "shell_http_calls": 3,
+        "tool_calls": 5
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m6_rehab_latex#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#03": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#05": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#07": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#08": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#09": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#10": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#11": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#12": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#13": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#14": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#15": {
+          "auto": "caught",
+          "final": "caught"
+        }
+      }
+    },
+    {
+      "run_id": "v2m7_ceramic_ko__A__2",
+      "manuscript": "v2m7_ceramic_ko",
+      "condition": "A",
+      "repeat": 2,
+      "prompt": "투고 전에 이 원고(v2m7_ceramic_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+      "exit_code": 0,
+      "wall_seconds": 105.5,
+      "hook_event_lines": 0,
+      "answer_chars": 1936,
+      "usage": {
+        "mode": "engine",
+        "skill_loaded": true,
+        "engine_calls": 2,
+        "engine_subcommands": [
+          "check-bib"
+        ],
+        "web_tool_calls": 0,
+        "shell_http_calls": 7,
+        "tool_calls": 11
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m7_ceramic_ko#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#02": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#04": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#06": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#11": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#12": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#13": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#14": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#15": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#16": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m7_ceramic_ko__B__2",
+      "manuscript": "v2m7_ceramic_ko",
+      "condition": "B",
+      "repeat": 2,
+      "prompt": "투고 전에 이 원고(v2m7_ceramic_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+      "exit_code": 0,
+      "wall_seconds": 93.5,
+      "hook_event_lines": 0,
+      "answer_chars": 1929,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 7,
+        "shell_http_calls": 4,
+        "tool_calls": 14
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m7_ceramic_ko#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#02": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#06": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#11": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#12": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#13": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#14": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#15": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#16": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m8_magnetism_en__A__2",
+      "manuscript": "v2m8_magnetism_en",
+      "condition": "A",
+      "repeat": 2,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m8_magnetism_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 81.4,
+      "hook_event_lines": 0,
+      "answer_chars": 2450,
+      "usage": {
+        "mode": "engine",
+        "skill_loaded": true,
+        "engine_calls": 3,
+        "engine_subcommands": [
+          "check-bib"
+        ],
+        "web_tool_calls": 0,
+        "shell_http_calls": 3,
+        "tool_calls": 8
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m8_magnetism_en#01": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#09": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#11": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#12": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#13": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#14": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#15": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#16": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m8_magnetism_en__B__2",
+      "manuscript": "v2m8_magnetism_en",
+      "condition": "B",
+      "repeat": 2,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m8_magnetism_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 124.1,
+      "hook_event_lines": 0,
+      "answer_chars": 2342,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 4,
+        "shell_http_calls": 6,
+        "tool_calls": 15
+      },
+      "usable": true,
+      "note": null,
+      "decisions": {
+        "v2m8_magnetism_en#01": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#09": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#11": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#12": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#13": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#14": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#15": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#16": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m1_dea_en__C__1",
+      "manuscript": "v2m1_dea_en",
+      "condition": "C",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m1_dea_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 33.5,
+      "hook_event_lines": 0,
+      "answer_chars": 3640,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 0,
+        "shell_http_calls": 0,
+        "tool_calls": 2
+      },
+      "usable": true,
+      "note": "Hedged catches: #03 ('only' may reverse the finding), #16 (may not exist). #02: repeats 25.9% as fact in the Results comparison. False alarms: Wang 8(15) 155228 'doesn't fit ... probably 8(1), 015xxx' and Mei 'e202502157 doesn't follow Wiley's pattern ... should be e02157'; both match CrossRef.",
+      "decisions": {
+        "v2m1_dea_en#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#02": {
+          "auto": "caught",
+          "final": "missed"
+        },
+        "v2m1_dea_en#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#08": {
+          "auto": "clean",
+          "final": "false_alarm"
+        },
+        "v2m1_dea_en#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m1_dea_en#10": {
+          "auto": "review",
+          "final": "false_alarm"
+        },
+        "v2m1_dea_en#11": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#12": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#13": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m1_dea_en#14": {
+          "auto": "review",
+          "final": "missed"
+        },
+        "v2m1_dea_en#15": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#16": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m1_dea_en#17": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m2_ionic_en__C__1",
+      "manuscript": "v2m2_ionic_en",
+      "condition": "C",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m2_ionic_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 28.1,
+      "hook_event_lines": 0,
+      "answer_chars": 2492,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 0,
+        "shell_http_calls": 0,
+        "tool_calls": 1
+      },
+      "usable": true,
+      "note": "Hedged catches: #03 (may be backwards), #16 (may not be a real paper).",
+      "decisions": {
+        "v2m2_ionic_en#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#02": {
+          "auto": "review",
+          "final": "missed"
+        },
+        "v2m2_ionic_en#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#08": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#09": {
+          "auto": "missed",
+          "final": "missed"
+        },
+        "v2m2_ionic_en#10": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#11": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m2_ionic_en#12": {
+          "auto": "review",
+          "final": "missed"
+        },
+        "v2m2_ionic_en#13": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#14": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#15": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m2_ionic_en#16": {
+          "auto": "review",
+          "final": "caught"
+        }
+      }
+    },
+    {
+      "run_id": "v2m3_crystal_latex__C__1",
+      "manuscript": "v2m3_crystal_latex",
+      "condition": "C",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 31.9,
+      "hook_event_lines": 0,
+      "answer_chars": 3365,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 0,
+        "shell_http_calls": 0,
+        "tool_calls": 2
+      },
+      "usable": true,
+      "note": "Hedged catches: #11 (possible author-order problem), #14 (looks generic, confirm it exists). #01 and #03 only 'check the figures'. False alarm: li2026lattice 'e202503161 doesn't follow Wiley's usual article-number format'; it matches CrossRef.",
+      "decisions": {
+        "v2m3_crystal_latex#01": {
+          "auto": "review",
+          "final": "missed"
+        },
+        "v2m3_crystal_latex#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#03": {
+          "auto": "caught",
+          "final": "missed"
+        },
+        "v2m3_crystal_latex#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#06": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#09": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m3_crystal_latex#11": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#12": {
+          "auto": "review",
+          "final": "false_alarm"
+        },
+        "v2m3_crystal_latex#13": {
+          "auto": "review",
+          "final": "missed"
+        },
+        "v2m3_crystal_latex#14": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m3_crystal_latex#15": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m4_polymer_ko__C__1",
+      "manuscript": "v2m4_polymer_ko",
+      "condition": "C",
+      "repeat": 1,
+      "prompt": "투고 전에 이 원고(v2m4_polymer_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+      "exit_code": 0,
+      "wall_seconds": 23.1,
+      "hook_event_lines": 0,
+      "answer_chars": 1137,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 0,
+        "shell_http_calls": 0,
+        "tool_calls": 2
+      },
+      "usable": true,
+      "note": "Hedged catches: #01 (375 µm일 수 있음), #02 (보통 수축), #13 and #14 (흔한 이름, 실존 확인 권장).",
+      "decisions": {
+        "v2m4_polymer_ko#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#03": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#04": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#06": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#07": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#08": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#09": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#11": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#12": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m4_polymer_ko#13": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#14": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m4_polymer_ko#15": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m5_pvdf_lce_en__C__1",
+      "manuscript": "v2m5_pvdf_lce_en",
+      "condition": "C",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m5_pvdf_lce_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 24.6,
+      "hook_event_lines": 0,
+      "answer_chars": 2341,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 0,
+        "shell_http_calls": 0,
+        "tool_calls": 1
+      },
+      "usable": true,
+      "note": "Hedged catches: #01 (looks reversed, check), #12 (make sure it exists). False alarm: 'Ali et al. This is a review article ... cite the original study instead'; it is a primary study.",
+      "decisions": {
+        "v2m5_pvdf_lce_en#01": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#02": {
+          "auto": "review",
+          "final": "missed"
+        },
+        "v2m5_pvdf_lce_en#03": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#04": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m5_pvdf_lce_en#09": {
+          "auto": "review",
+          "final": "false_alarm"
+        },
+        "v2m5_pvdf_lce_en#10": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#11": {
+          "auto": "review",
+          "final": "missed"
+        },
+        "v2m5_pvdf_lce_en#12": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m5_pvdf_lce_en#13": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m6_rehab_latex__C__1",
+      "manuscript": "v2m6_rehab_latex",
+      "condition": "C",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (main.tex, references.bib). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 24.9,
+      "hook_event_lines": 0,
+      "answer_chars": 2868,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 0,
+        "shell_http_calls": 0,
+        "tool_calls": 2
+      },
+      "usable": true,
+      "note": "Hedged catches: #03 (reads like the opposite, check), #15 (possibly made up). #02 only 'check 41%'. False alarm: \"'all participants' probably misstates it. The regimen likely applied to one arm only\"; the abstract says all participants received it.",
+      "decisions": {
+        "v2m6_rehab_latex#01": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#02": {
+          "auto": "caught",
+          "final": "missed"
+        },
+        "v2m6_rehab_latex#03": {
+          "auto": "missed",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#04": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#05": {
+          "auto": "clean",
+          "final": "false_alarm"
+        },
+        "v2m6_rehab_latex#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#07": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#08": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#09": {
+          "auto": "missed",
+          "final": "missed"
+        },
+        "v2m6_rehab_latex#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#11": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m6_rehab_latex#12": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#13": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m6_rehab_latex#14": {
+          "auto": "review",
+          "final": "missed"
+        },
+        "v2m6_rehab_latex#15": {
+          "auto": "review",
+          "final": "caught"
+        }
+      }
+    },
+    {
+      "run_id": "v2m7_ceramic_ko__C__1",
+      "manuscript": "v2m7_ceramic_ko",
+      "condition": "C",
+      "repeat": 1,
+      "prompt": "투고 전에 이 원고(v2m7_ceramic_ko.md)의 참고문헌과 인용을 검사해줘. 문제 있는 것만 알려줘.",
+      "exit_code": 0,
+      "wall_seconds": 54.0,
+      "hook_event_lines": 0,
+      "answer_chars": 1617,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 0,
+        "shell_http_calls": 0,
+        "tool_calls": 2
+      },
+      "usable": true,
+      "note": "Hedged catches: #03 (4.1 K를 잘못 옮겼을 가능성), #15 (존재하지 않는 문헌일 수 있음).",
+      "decisions": {
+        "v2m7_ceramic_ko#01": {
+          "auto": "review",
+          "final": "missed"
+        },
+        "v2m7_ceramic_ko#02": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#04": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#06": {
+          "auto": "review",
+          "final": "missed"
+        },
+        "v2m7_ceramic_ko#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#09": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#11": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#12": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#13": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m7_ceramic_ko#14": {
+          "auto": "review",
+          "final": "missed"
+        },
+        "v2m7_ceramic_ko#15": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m7_ceramic_ko#16": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    },
+    {
+      "run_id": "v2m8_magnetism_en__C__1",
+      "manuscript": "v2m8_magnetism_en",
+      "condition": "C",
+      "repeat": 1,
+      "prompt": "Before I submit, please check the references and citations in this manuscript (v2m8_magnetism_en.md). Only tell me about the problems.",
+      "exit_code": 0,
+      "wall_seconds": 45.5,
+      "hook_event_lines": 0,
+      "answer_chars": 2250,
+      "usage": {
+        "mode": "no_skill",
+        "skill_loaded": false,
+        "engine_calls": 0,
+        "engine_subcommands": [],
+        "web_tool_calls": 0,
+        "shell_http_calls": 0,
+        "tool_calls": 2
+      },
+      "usable": true,
+      "note": "Hedged catch: #15 (couldn't confirm it exists). #01 and #02 only 'worth checking'.",
+      "decisions": {
+        "v2m8_magnetism_en#01": {
+          "auto": "caught",
+          "final": "missed"
+        },
+        "v2m8_magnetism_en#02": {
+          "auto": "caught",
+          "final": "missed"
+        },
+        "v2m8_magnetism_en#03": {
+          "auto": "caught",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#04": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#05": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#06": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#07": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#08": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#09": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#10": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#11": {
+          "auto": "clean",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#12": {
+          "auto": "review",
+          "final": "missed"
+        },
+        "v2m8_magnetism_en#13": {
+          "auto": "review",
+          "final": "clean"
+        },
+        "v2m8_magnetism_en#14": {
+          "auto": "review",
+          "final": "missed"
+        },
+        "v2m8_magnetism_en#15": {
+          "auto": "review",
+          "final": "caught"
+        },
+        "v2m8_magnetism_en#16": {
+          "auto": "review",
+          "final": "clean"
+        }
+      }
+    }
+  ]
+}

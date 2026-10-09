@@ -1,0 +1,93 @@
+v2m1_dea_en#05         OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m1_dea_en#06         OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m1_dea_en#07         OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m1_dea_en#08         OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m1_dea_en#09         OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m1_dea_en#10         OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m1_dea_en#11         OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m1_dea_en#12         WRONG_YEAR               WARN                              DOI matches, but the year differs (reference: 2023; CrossRef: 2026).
+v2m1_dea_en#13         OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m1_dea_en#14         WRONG_AUTHOR             UNVERIFIED                        The DOI and title match CrossRef, but its first author (Neu) was not found in the referenc
+v2m1_dea_en#15         DOI_SWAP                 WARN                              This DOI belongs to "Research on design of soft gripper by dielectric elastomer actuator b
+v2m1_dea_en#16         FAB_DOI                  REJECT     DOI_NOT_FOUND          CrossRef has no record for this DOI (HTTP 404), and doi.org does not list it either.
+v2m1_dea_en#17         UNINDEXED_OK             UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+v2m2_ionic_en#05       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m2_ionic_en#06       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m2_ionic_en#07       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m2_ionic_en#08       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m2_ionic_en#09       RETRACTED                REJECT     PAPER_RETRACTED        CrossRef records this paper as retracted (notice DOI 10.1016/j.carbpol.2025.123278); do no
+v2m2_ionic_en#10       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m2_ionic_en#11       WRONG_YEAR               WARN                              DOI matches, but the year differs (reference: 2022; CrossRef: 2025).
+v2m2_ionic_en#12       WRONG_AUTHOR             UNVERIFIED                        The DOI and title match CrossRef, but its first author (Tyagi) was not found in the refere
+v2m2_ionic_en#13       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m2_ionic_en#14       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m2_ionic_en#15       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m2_ionic_en#16       FAB_NODOI                UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+v2m3_crystal_latex#05  OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m3_crystal_latex#06  DOI_SWAP                 REJECT                            DOI resolves to a materially different paper than provided: the title differs (CrossRef: "
+v2m3_crystal_latex#07  OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m3_crystal_latex#08  OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m3_crystal_latex#09  OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m3_crystal_latex#10  OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m3_crystal_latex#11  WRONG_AUTHOR             REJECT                            DOI resolves to a materially different paper than provided: the first author differs (refe
+v2m3_crystal_latex#12  OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m3_crystal_latex#13  RETRACTED                REJECT     PAPER_RETRACTED        CrossRef records this paper as retracted (notice DOI 10.1002/pen.27105); do not use it as 
+v2m3_crystal_latex#14  FAB_DOI                  REJECT     DOI_NOT_FOUND          CrossRef has no record for this DOI (HTTP 404), and doi.org does not list it either.
+v2m3_crystal_latex#15  UNINDEXED_OK             PASS       REFERENCE_RESOLVED     Matched CrossRef record 10.1063/5.0338581 by bibliographic search.
+v2m4_polymer_ko#04     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m4_polymer_ko#05     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m4_polymer_ko#06     WRONG_YEAR               WARN                              DOI matches, but the year differs (reference: 2023; CrossRef: 2025).
+v2m4_polymer_ko#07     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m4_polymer_ko#08     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m4_polymer_ko#09     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m4_polymer_ko#10     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m4_polymer_ko#11     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m4_polymer_ko#12     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m4_polymer_ko#13     DOI_SWAP                 WARN                              The reference has no article title, and CrossRef's record for this DOI differs in journal 
+v2m4_polymer_ko#14     FAB_DOI                  REJECT     DOI_NOT_FOUND          CrossRef has no record for this DOI (HTTP 404), and doi.org does not list it either.
+v2m4_polymer_ko#15     UNINDEXED_OK             UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+v2m5_pvdf_lce_en#04    OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m5_pvdf_lce_en#05    OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m5_pvdf_lce_en#06    OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m5_pvdf_lce_en#07    OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m5_pvdf_lce_en#08    OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m5_pvdf_lce_en#09    OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m5_pvdf_lce_en#10    WRONG_YEAR               WARN                              DOI matches, but the year differs (reference: 2023; CrossRef: 2026).
+v2m5_pvdf_lce_en#11    RETRACTED                REJECT     PAPER_RETRACTED        CrossRef records this paper as retracted (notice DOI 10.1007/s00289-026-06701-1); do not u
+v2m5_pvdf_lce_en#12    FAB_DOI                  REJECT     DOI_NOT_FOUND          CrossRef has no record for this DOI (HTTP 404), and doi.org does not list it either.
+v2m5_pvdf_lce_en#13    UNINDEXED_OK             WARN       REFERENCE_RESOLVED     Matched CrossRef record 10.1103/yf56-tfhd by bibliographic search, but the year differs (r
+v2m6_rehab_latex#05    OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m6_rehab_latex#06    OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m6_rehab_latex#07    WRONG_YEAR               WARN                              DOI matches, but the year differs (reference: 2022; CrossRef: 2025).
+v2m6_rehab_latex#08    OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m6_rehab_latex#09    WRONG_AUTHOR             REJECT                            DOI resolves to a materially different paper than provided: the first author differs (refe
+v2m6_rehab_latex#10    OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m6_rehab_latex#11    DOI_SWAP                 REJECT                            DOI resolves to a materially different paper than provided: the title differs (CrossRef: "
+v2m6_rehab_latex#12    OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m6_rehab_latex#13    OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m6_rehab_latex#14    RETRACTED                REJECT     PAPER_RETRACTED        CrossRef records this paper as retracted (notice DOI 10.1016/j.clgc.2025.102422); do not u
+v2m6_rehab_latex#15    FAB_NODOI                UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+v2m7_ceramic_ko#05     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m7_ceramic_ko#06     WRONG_AUTHOR             UNVERIFIED                        The DOI and title match CrossRef, but its first author (Kang) was not found in the referen
+v2m7_ceramic_ko#07     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m7_ceramic_ko#08     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m7_ceramic_ko#09     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m7_ceramic_ko#10     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m7_ceramic_ko#11     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m7_ceramic_ko#12     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m7_ceramic_ko#13     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+v2m7_ceramic_ko#14     TITLELESS_WRONG_VOLPAGE  UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+v2m7_ceramic_ko#15     FAB_DOI                  REJECT     DOI_NOT_FOUND          CrossRef has no record for this DOI (HTTP 404), and doi.org does not list it either.
+v2m7_ceramic_ko#16     UNINDEXED_OK             UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+v2m8_magnetism_en#05   OK                       PASS       REFERENCE_RESOLVED     Matched CrossRef record 10.1088/1361-6463/add7e9 by bibliographic search; the reference ha
+v2m8_magnetism_en#06   OK                       PASS       REFERENCE_RESOLVED     Matched CrossRef record 10.1063/5.0326956 by bibliographic search; the reference has no ar
+v2m8_magnetism_en#07   OK                       PASS       REFERENCE_RESOLVED     Matched CrossRef record 10.3390/ma19143012 by bibliographic search; the reference has no a
+v2m8_magnetism_en#08   OK                       PASS       REFERENCE_RESOLVED     Matched CrossRef record 10.3390/nano16090558 by bibliographic search; the reference has no
+v2m8_magnetism_en#09   TITLELESS_WRONG_VOLPAGE  UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+v2m8_magnetism_en#10   OK                       PASS       REFERENCE_RESOLVED     Matched CrossRef record 10.1088/1361-6595/ae5d6a by bibliographic search; the reference ha
+v2m8_magnetism_en#11   OK                       PASS       REFERENCE_RESOLVED     Matched CrossRef record 10.3390/plasma9030036 by bibliographic search; the reference has n
+v2m8_magnetism_en#12   TITLELESS_WRONG_VOLPAGE  UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+v2m8_magnetism_en#13   OK                       PASS       REFERENCE_RESOLVED     Matched CrossRef record 10.1007/s40042-026-01570-3 by bibliographic search; the reference 
+v2m8_magnetism_en#14   RETRACTED                REJECT     PAPER_RETRACTED        CrossRef records this paper as retracted (notice DOI 10.1007/s10904-025-04009-7); do not u
+v2m8_magnetism_en#15   FAB_NODOI                UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+v2m8_magnetism_en#16   UNINDEXED_OK             UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.

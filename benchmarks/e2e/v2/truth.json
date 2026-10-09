@@ -1,0 +1,2570 @@
+{
+  "description": "v2: planted errors and correct references in manuscripts built only from obscure papers; see README.md.",
+  "selection_rule": "real cited papers: 2025-2026 (two retracted papers 2023-2024), CrossRef is-referenced-by-count <= 30, not recognised by the set's author before fetching; plus arXiv preprints and Korean theses that CrossRef lacks",
+  "fetched": "2026-10-09",
+  "max_cited_by": 19,
+  "error_types": [
+    "FAB_DOI",
+    "FAB_NODOI",
+    "DOI_SWAP",
+    "RETRACTED",
+    "WRONG_YEAR",
+    "WRONG_AUTHOR",
+    "TITLELESS_WRONG_VOLPAGE",
+    "CLAIM_NUMBER",
+    "CLAIM_UNIT",
+    "CLAIM_DIRECTION"
+  ],
+  "counts": {
+    "CLAIM_UNIT": 7,
+    "CLAIM_NUMBER": 7,
+    "CLAIM_DIRECTION": 8,
+    "CLAIM_OK": 8,
+    "OK": 57,
+    "WRONG_YEAR": 5,
+    "WRONG_AUTHOR": 5,
+    "DOI_SWAP": 4,
+    "FAB_DOI": 5,
+    "UNINDEXED_OK": 6,
+    "RETRACTED": 5,
+    "FAB_NODOI": 3,
+    "TITLELESS_WRONG_VOLPAGE": 3
+  },
+  "manuscripts": {
+    "v2m1_dea_en": {
+      "language": "en",
+      "domain": "materials / dielectric elastomers",
+      "format": "markdown (APA, author-date)",
+      "path": "manuscripts/v2m1_dea_en.md",
+      "items": [
+        {
+          "ref": "Veloso et al., 2025",
+          "type": "CLAIM_UNIT",
+          "match": [
+            "Veloso"
+          ],
+          "value": [
+            "19.52 MPa",
+            "MPa"
+          ],
+          "claim_text": "a counterpressure of 19.52 MPa",
+          "abstract_says": "The final cuff design achieves an MCP of 19.52 kPa",
+          "abstract_source": "crossref",
+          "truth_doi": "10.1088/1361-665x/adb18d",
+          "cited_by": 2,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m1_dea_en#01",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "Zeng & Tang, 2026",
+          "type": "CLAIM_NUMBER",
+          "match": [
+            "Zeng"
+          ],
+          "value": [
+            "25.9"
+          ],
+          "claim_text": "a maximum actuated strain of 25.9% at 32 kV/mm",
+          "abstract_says": "it delivers a maximum actuated strain of 15.9% at a low electric field of 32 kV/mm",
+          "abstract_source": "crossref",
+          "truth_doi": "10.1002/app.70135",
+          "cited_by": 7,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m1_dea_en#02",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "Annapooranan et al., 2026",
+          "type": "CLAIM_DIRECTION",
+          "match": [
+            "Annapooranan"
+          ],
+          "value": [
+            "below 1.5",
+            "small loads"
+          ],
+          "claim_text": "enhanced work output only under small loads below 1.5 MPa",
+          "abstract_says": "significantly enhanced work output under large loads (>1.5 MPa)",
+          "abstract_source": "crossref",
+          "truth_doi": "10.1002/admt.202502275",
+          "cited_by": 2,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m1_dea_en#03",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "Wang et al., 2026",
+          "type": "CLAIM_OK",
+          "match": [
+            "4 mm/s"
+          ],
+          "value": [
+            "4 mm/s"
+          ],
+          "claim_text": "4 mm/s at 7 kV and 2 Hz",
+          "abstract_says": "maximum measured crawling speed of 4 mm s−1 at 7 kV and 2 Hz",
+          "abstract_source": "crossref",
+          "truth_doi": "10.1088/2631-8695/ae924e",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m1_dea_en#04",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "Veloso et al., 2025",
+          "type": "OK",
+          "match": [
+            "Veloso"
+          ],
+          "truth_doi": "10.1088/1361-665x/adb18d",
+          "cited_by": 2,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m1_dea_en#05",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "Zeng & Tang, 2026",
+          "type": "OK",
+          "match": [
+            "Zeng"
+          ],
+          "truth_doi": "10.1002/app.70135",
+          "cited_by": 7,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m1_dea_en#06",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "Annapooranan et al., 2026",
+          "type": "OK",
+          "match": [
+            "Annapooranan"
+          ],
+          "truth_doi": "10.1002/admt.202502275",
+          "cited_by": 2,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m1_dea_en#07",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "Wang et al., 2026 (crawling robot)",
+          "type": "OK",
+          "match": [
+            "crawling"
+          ],
+          "truth_doi": "10.1088/2631-8695/ae924e",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m1_dea_en#08",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "Tang & Zeng, 2026",
+          "type": "OK",
+          "match": [
+            "Tang"
+          ],
+          "truth_doi": "10.1002/pssa.70504",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m1_dea_en#09",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "Mei et al., 2026",
+          "type": "OK",
+          "match": [
+            "Mei"
+          ],
+          "truth_doi": "10.1002/adem.202502157",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m1_dea_en#10",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "Gurjar & Patra, 2026",
+          "type": "OK",
+          "match": [
+            "Gurjar"
+          ],
+          "truth_doi": "10.1088/1361-665x/aea942",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m1_dea_en#11",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "Niu et al., 2023",
+          "type": "WRONG_YEAR",
+          "match": [
+            "Niu"
+          ],
+          "problem": "Smart Mater. Struct. 35(6) 065047 was published in 2026, not 2023.",
+          "fix": "Change the year to 2026.",
+          "truth_doi": "10.1088/1361-665x/ae7b8f",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "cited_year": 2023,
+          "true_year": 2026,
+          "id": "v2m1_dea_en#12",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "Wang et al., 2025 (in-plane DEA robot)",
+          "type": "OK",
+          "match": [
+            "in-plane",
+            "add067"
+          ],
+          "truth_doi": "10.1088/1361-665x/add067",
+          "cited_by": 2,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m1_dea_en#13",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "Croce et al., 2025",
+          "type": "WRONG_AUTHOR",
+          "match": [
+            "Croce",
+            "Neu"
+          ],
+          "problem": "First author is Neu, J.; the reference lists Croce first.",
+          "fix": "Put Neu, J. first.",
+          "truth_doi": "10.3390/act14110544",
+          "cited_by": 2,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m1_dea_en#14",
+          "true_first_author": "Neu",
+          "cited_first_author": "Croce",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "Zhang et al., 2026",
+          "type": "DOI_SWAP",
+          "match": [
+            "Zhang",
+            "lens",
+            "pone.0352654"
+          ],
+          "problem": "The DOI 10.1371/journal.pone.0352654 is Guan et al. (2026), a PLOS One soft-gripper paper; the lens paper is 10.3390/technologies14010068.",
+          "fix": "Use 10.3390/technologies14010068.",
+          "truth_doi": "10.3390/technologies14010068",
+          "cited_by": 1,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "cited_doi": "10.1371/journal.pone.0352654",
+          "id": "v2m1_dea_en#15",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "Hartmann et al., 2025",
+          "type": "FAB_DOI",
+          "match": [
+            "Hartmann",
+            "ade5f1"
+          ],
+          "problem": "DOI 10.1088/1361-665X/ade5f1 does not exist (CrossRef 404, doi.org 'DOI does not exist'); no such paper.",
+          "fix": "Remove the reference and the sentence.",
+          "truth_doi": null,
+          "id": "v2m1_dea_en#16",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "Remenar et al., 2026",
+          "type": "UNINDEXED_OK",
+          "match": [
+            "Remenar",
+            "2608.00369"
+          ],
+          "truth_doi": null,
+          "source": "https://arxiv.org/abs/2608.00369",
+          "id": "v2m1_dea_en#17",
+          "expected": "NOT_FLAG"
+        }
+      ]
+    },
+    "v2m2_ionic_en": {
+      "language": "en",
+      "domain": "materials / ionic polymer actuators",
+      "format": "markdown (Vancouver)",
+      "path": "manuscripts/v2m2_ionic_en.md",
+      "items": [
+        {
+          "ref": "[1]",
+          "type": "CLAIM_UNIT",
+          "match": [
+            "[1]",
+            "Lv",
+            "genipin"
+          ],
+          "value": [
+            "2.93 N"
+          ],
+          "claim_text": "an output force of 2.93 N",
+          "abstract_says": "a 0.1 wt% crosslinking concentration leads to a 2.68-fold increase in output force (2.93 mN)",
+          "abstract_source": "crossref",
+          "truth_doi": "10.1002/app.57410",
+          "cited_by": 1,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m2_ionic_en#01",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[2]",
+          "type": "CLAIM_NUMBER",
+          "match": [
+            "[2]",
+            "Chen"
+          ],
+          "value": [
+            "26.45"
+          ],
+          "claim_text": "a normalized sensitivity of 26.45 kPa⁻¹",
+          "abstract_says": "the sensor achieves a high normalized sensitivity of 62.45 kPa−1 (2–10 kPa)",
+          "abstract_source": "crossref",
+          "truth_doi": "10.3390/mi17080983",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m2_ionic_en#02",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[3]",
+          "type": "CLAIM_DIRECTION",
+          "match": [
+            "[3]",
+            "Zamperlin"
+          ],
+          "value": [
+            "lowered",
+            "42.1 to 33.8"
+          ],
+          "claim_text": "lowered the breakdown strength of PDMS nanocomposites from 42.1 to 33.8 kV/mm",
+          "abstract_says": "increasing permittivity from 2.8 to 7.5, EBD from 33.8 to 42.1 kV/mm",
+          "abstract_source": "crossref",
+          "truth_doi": "10.3390/jcs10010058",
+          "cited_by": 7,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m2_ionic_en#03",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[4]",
+          "type": "CLAIM_OK",
+          "match": [
+            "573"
+          ],
+          "value": [
+            "573"
+          ],
+          "claim_text": "1.28 MPa tensile strength with 573% elongation",
+          "abstract_says": "robust mechanical strength (1.28 MPa tensile strength with 573% elongation)",
+          "abstract_source": "crossref",
+          "truth_doi": "10.3390/polym17070921",
+          "cited_by": 4,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m2_ionic_en#04",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[1]",
+          "type": "OK",
+          "match": [
+            "[1]",
+            "Lv"
+          ],
+          "truth_doi": "10.1002/app.57410",
+          "cited_by": 1,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m2_ionic_en#05",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[2]",
+          "type": "OK",
+          "match": [
+            "[2]",
+            "Chen Y"
+          ],
+          "truth_doi": "10.3390/mi17080983",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m2_ionic_en#06",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[3]",
+          "type": "OK",
+          "match": [
+            "[3]",
+            "Zamperlin"
+          ],
+          "truth_doi": "10.3390/jcs10010058",
+          "cited_by": 7,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m2_ionic_en#07",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[4]",
+          "type": "OK",
+          "match": [
+            "[4]",
+            "Jian"
+          ],
+          "truth_doi": "10.3390/polym17070921",
+          "cited_by": 4,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m2_ionic_en#08",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[5]",
+          "type": "RETRACTED",
+          "match": [
+            "[5]",
+            "Zhang L",
+            "alginate"
+          ],
+          "problem": "Retracted (CrossRef updated-by: retraction).",
+          "fix": "Remove it.",
+          "truth_doi": "10.1016/j.carbpol.2025.123278",
+          "cited_by": 8,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m2_ionic_en#09",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[6]",
+          "type": "OK",
+          "match": [
+            "[6]",
+            "Lu R"
+          ],
+          "truth_doi": "10.1002/smll.202511861",
+          "cited_by": 3,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m2_ionic_en#10",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[7]",
+          "type": "WRONG_YEAR",
+          "match": [
+            "[7]",
+            "Reinoso"
+          ],
+          "problem": "J Polym Sci 63(18) was published in 2025, not 2022.",
+          "fix": "Change the year to 2025.",
+          "truth_doi": "10.1002/pol.20250372",
+          "cited_by": 2,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "cited_year": 2022,
+          "true_year": 2025,
+          "id": "v2m2_ionic_en#11",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[8]",
+          "type": "WRONG_AUTHOR",
+          "match": [
+            "[8]",
+            "Chauhan",
+            "Tyagi"
+          ],
+          "problem": "First author is Tyagi S; the reference lists Chauhan D first.",
+          "fix": "Put Tyagi S first.",
+          "truth_doi": "10.1002/app.57294",
+          "cited_by": 6,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m2_ionic_en#12",
+          "true_first_author": "Tyagi",
+          "cited_first_author": "Chauhan",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[9]",
+          "type": "OK",
+          "match": [
+            "[9]",
+            "Ahmed"
+          ],
+          "truth_doi": "10.1177/09673911251327811",
+          "cited_by": 2,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m2_ionic_en#13",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[10]",
+          "type": "OK",
+          "match": [
+            "[10]",
+            "Lin M"
+          ],
+          "truth_doi": "10.1002/smll.202512882",
+          "cited_by": 3,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m2_ionic_en#14",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[11]",
+          "type": "OK",
+          "match": [
+            "[11]",
+            "Wang D"
+          ],
+          "truth_doi": "10.1002/cssc.71126",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m2_ionic_en#15",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[12]",
+          "type": "FAB_NODOI",
+          "match": [
+            "[12]",
+            "Okafor",
+            "Nafion-free"
+          ],
+          "problem": "No such paper (no CrossRef record with this title).",
+          "fix": "Remove the reference and the sentence.",
+          "truth_doi": null,
+          "cited_title": "Recycled platinum electrodes for Nafion-free IPMC bending actuators",
+          "id": "v2m2_ionic_en#16",
+          "expected": "FLAG"
+        }
+      ]
+    },
+    "v2m3_crystal_latex": {
+      "language": "en",
+      "domain": "materials / thermal analysis and crystallization",
+      "format": "LaTeX + BibTeX",
+      "path": "manuscripts/v2m3_crystal_latex/main.tex",
+      "bib": "manuscripts/v2m3_crystal_latex/references.bib",
+      "items": [
+        {
+          "ref": "sonnendecker2025",
+          "type": "CLAIM_DIRECTION",
+          "match": [
+            "sonnendecker2025",
+            "Sonnendecker"
+          ],
+          "value": [
+            "34% to 31%",
+            "34\\% to 31\\%",
+            "reduced"
+          ],
+          "claim_text": "the plasticizer di(propylene glycol) dibenzoate reduced the degree of crystallinity from 34% to 31%",
+          "abstract_says": "P2 raised the degree of crystallinity from 31% in the reference film to 34%",
+          "abstract_source": "crossref",
+          "truth_doi": "10.1002/app.57209",
+          "cited_by": 6,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m3_crystal_latex#01",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "tan2026pa66",
+          "type": "CLAIM_UNIT",
+          "match": [
+            "tan2026pa66",
+            "Tan"
+          ],
+          "value": [
+            "172.3 J",
+            "J/mol",
+            "\\joule\\per\\mole"
+          ],
+          "claim_text": "an apparent activation energy of 172.3 J/mol",
+          "abstract_says": "reaching 172.3 kJ·mol−1",
+          "abstract_source": "crossref",
+          "truth_doi": "10.3390/s26092680",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m3_crystal_latex#02",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "xie2025tga",
+          "type": "CLAIM_NUMBER",
+          "match": [
+            "xie2025tga",
+            "Xie"
+          ],
+          "value": [
+            "61 years",
+            "61"
+          ],
+          "claim_text": "a service lifetime of 61 years at 80 °C",
+          "abstract_says": "the service lifetime of the SGP membrane sample is 16 years at 80 °C",
+          "abstract_source": "crossref",
+          "truth_doi": "10.3390/polym17172390",
+          "cited_by": 14,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m3_crystal_latex#03",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "li2026lattice",
+          "type": "CLAIM_OK",
+          "match": [
+            "23.46",
+            "34.93"
+          ],
+          "value": [
+            "34.93"
+          ],
+          "claim_text": "increased the crystallinity of PLLA lattices from 23.46% to 34.93%",
+          "abstract_says": "the crystallinity increases from 23.46% to 34.93%",
+          "abstract_source": "crossref",
+          "truth_doi": "10.1002/adem.202503161",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m3_crystal_latex#04",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "sonnendecker2025",
+          "type": "OK",
+          "match": [
+            "sonnendecker2025"
+          ],
+          "truth_doi": "10.1002/app.57209",
+          "cited_by": 6,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m3_crystal_latex#05",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "merlonghi2026",
+          "type": "DOI_SWAP",
+          "match": [
+            "merlonghi2026",
+            "Merlonghi"
+          ],
+          "problem": "The DOI 10.1002/pc.70772 is Liu et al. (2026), basalt fibre composites; Merlonghi et al. is 10.1002/pol.20250882.",
+          "fix": "Use 10.1002/pol.20250882.",
+          "truth_doi": "10.1002/pol.20250882",
+          "cited_by": 6,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "cited_doi": "10.1002/pc.70772",
+          "id": "v2m3_crystal_latex#06",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "chen2026pllla",
+          "type": "OK",
+          "match": [
+            "chen2026pllla"
+          ],
+          "truth_doi": "10.1002/pat.70664",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m3_crystal_latex#07",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "tan2026pa66",
+          "type": "OK",
+          "match": [
+            "tan2026pa66"
+          ],
+          "truth_doi": "10.3390/s26092680",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m3_crystal_latex#08",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "xie2025tga",
+          "type": "OK",
+          "match": [
+            "xie2025tga"
+          ],
+          "truth_doi": "10.3390/polym17172390",
+          "cited_by": 14,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m3_crystal_latex#09",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "yang2025foam",
+          "type": "OK",
+          "match": [
+            "yang2025foam"
+          ],
+          "truth_doi": "10.1002/app.57524",
+          "cited_by": 2,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m3_crystal_latex#10",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "arslan2026pps",
+          "type": "WRONG_AUTHOR",
+          "match": [
+            "arslan2026pps"
+          ],
+          "problem": "First author is Arslan, D.; the entry lists Mihai, M. first.",
+          "fix": "Put Arslan, Dogan first.",
+          "truth_doi": "10.1002/pc.71040",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m3_crystal_latex#11",
+          "true_first_author": "Arslan",
+          "cited_first_author": "Mihai",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "li2026lattice",
+          "type": "OK",
+          "match": [
+            "li2026lattice"
+          ],
+          "truth_doi": "10.1002/adem.202503161",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m3_crystal_latex#12",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "xavier2024oxide",
+          "type": "RETRACTED",
+          "match": [
+            "xavier2024oxide",
+            "Xavier"
+          ],
+          "problem": "Retracted (CrossRef updated-by: retraction).",
+          "fix": "Remove it.",
+          "truth_doi": "10.1002/pen.26716",
+          "cited_by": 6,
+          "year": 2024,
+          "years": {
+            "published-print": 2024,
+            "published-online": 2024,
+            "issued": 2024
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m3_crystal_latex#13",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "novak2025",
+          "type": "FAB_DOI",
+          "match": [
+            "novak2025",
+            "app.58913",
+            "PLA/PBS"
+          ],
+          "problem": "DOI 10.1002/app.58913 does not exist; no such paper.",
+          "fix": "Remove the entry and the sentence.",
+          "truth_doi": null,
+          "id": "v2m3_crystal_latex#14",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "2604_11706",
+          "type": "UNINDEXED_OK",
+          "match": [
+            "2604_11706",
+            "2604.11706",
+            "Koulaxizis"
+          ],
+          "truth_doi": null,
+          "source": "https://arxiv.org/abs/2604.11706",
+          "id": "v2m3_crystal_latex#15",
+          "expected": "NOT_FLAG"
+        }
+      ]
+    },
+    "v2m4_polymer_ko": {
+      "language": "ko",
+      "domain": "materials / Korean polymer journals",
+      "format": "markdown (Korean, numbered)",
+      "path": "manuscripts/v2m4_polymer_ko.md",
+      "items": [
+        {
+          "ref": "[8]",
+          "type": "CLAIM_UNIT",
+          "match": [
+            "[8]",
+            "Zhan",
+            "LCE 코일"
+          ],
+          "value": [
+            "375 mm"
+          ],
+          "claim_text": "지름 375 mm로 제작",
+          "abstract_says": "photopolymerized under UV light to form an LCE coil with a diameter of 375 µm",
+          "abstract_source": "crossref",
+          "truth_doi": "10.3390/act14040171",
+          "cited_by": 5,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m4_polymer_ko#01",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[8]",
+          "type": "CLAIM_DIRECTION",
+          "match": [
+            "[8]",
+            "Zhan",
+            "455 nm"
+          ],
+          "value": [
+            "늘어난다",
+            "30% 늘",
+            "팽창"
+          ],
+          "claim_text": "455 nm 가시광을 쬐면 30% 늘어난다",
+          "abstract_says": "30% contraction to 455 nm visible light",
+          "abstract_source": "crossref",
+          "truth_doi": "10.3390/act14040171",
+          "cited_by": 5,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m4_polymer_ko#02",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[9]",
+          "type": "CLAIM_OK",
+          "match": [
+            "140배"
+          ],
+          "value": [
+            "140"
+          ],
+          "claim_text": "자기 무게의 140배를 들어 올렸다",
+          "abstract_says": "lifting up to 140 times their own weight",
+          "abstract_source": "crossref",
+          "truth_doi": "10.3390/polym17040494",
+          "cited_by": 6,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m4_polymer_ko#03",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[1]",
+          "type": "OK",
+          "match": [
+            "[1]",
+            "Choi"
+          ],
+          "truth_doi": "10.7317/pk.2025.49.4.450",
+          "cited_by": 0,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m4_polymer_ko#04",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[2]",
+          "type": "OK",
+          "match": [
+            "[2]",
+            "Xu"
+          ],
+          "truth_doi": "10.7317/pk.2025.49.5.536",
+          "cited_by": 0,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m4_polymer_ko#05",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[3]",
+          "type": "WRONG_YEAR",
+          "match": [
+            "[3]",
+            "Jing"
+          ],
+          "problem": "폴리머 49(1) 17–26은 2025년 발행, 2023년이 아님.",
+          "fix": "연도를 2025로 고친다.",
+          "truth_doi": "10.7317/pk.2025.49.1.17",
+          "cited_by": 0,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "cited_year": 2023,
+          "true_year": 2025,
+          "id": "v2m4_polymer_ko#06",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[4]",
+          "type": "OK",
+          "match": [
+            "[4]",
+            "Koo"
+          ],
+          "truth_doi": "10.7317/pk.2025.49.2.205",
+          "cited_by": 0,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m4_polymer_ko#07",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[5]",
+          "type": "OK",
+          "match": [
+            "[5]",
+            "Lee, J."
+          ],
+          "truth_doi": "10.7317/pk.2025.49.3.325",
+          "cited_by": 0,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m4_polymer_ko#08",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[6]",
+          "type": "OK",
+          "match": [
+            "[6]",
+            "Hong"
+          ],
+          "truth_doi": "10.7317/pk.2025.49.5.626",
+          "cited_by": 0,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m4_polymer_ko#09",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[7]",
+          "type": "OK",
+          "match": [
+            "[7]",
+            "Kim, Y."
+          ],
+          "truth_doi": "10.7317/pk.2025.49.4.387",
+          "cited_by": 0,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m4_polymer_ko#10",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[8]",
+          "type": "OK",
+          "match": [
+            "[8]",
+            "Zhan"
+          ],
+          "truth_doi": "10.3390/act14040171",
+          "cited_by": 5,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m4_polymer_ko#11",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[9]",
+          "type": "OK",
+          "match": [
+            "[9]",
+            "Benecke"
+          ],
+          "truth_doi": "10.3390/polym17040494",
+          "cited_by": 6,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m4_polymer_ko#12",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[10]",
+          "type": "DOI_SWAP",
+          "match": [
+            "[10]",
+            "정유진",
+            "형상기억"
+          ],
+          "problem": "DOI 10.7317/pk.2025.49.5.556은 Lee 외 'Pyridoquinolinedione as a New Building Block…'(유기태양전지)이며, 인용된 제목·저자의 논문은 없음.",
+          "fix": "올바른 문헌으로 바꾸거나 삭제한다.",
+          "truth_doi": "10.7317/pk.2025.49.5.556",
+          "cited_by": 0,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m4_polymer_ko#13",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[11]",
+          "type": "FAB_DOI",
+          "match": [
+            "[11]",
+            "김민준",
+            "pk.2025.49.6.781"
+          ],
+          "problem": "DOI 10.7317/pk.2025.49.6.781은 존재하지 않음(CrossRef 404, doi.org 'DOI does not exist').",
+          "fix": "참고문헌과 해당 문장을 삭제한다.",
+          "truth_doi": null,
+          "id": "v2m4_polymer_ko#14",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[12]",
+          "type": "UNINDEXED_OK",
+          "match": [
+            "[12]",
+            "이장우"
+          ],
+          "truth_doi": null,
+          "source": "https://m.riss.kr/search/detail/DetailView.do?p_mat_type=be54d9b8bc7cdb09&control_no=5fbf1da37fc3dc6dffe0bdc3ef48d419",
+          "id": "v2m4_polymer_ko#15",
+          "expected": "NOT_FLAG"
+        }
+      ]
+    },
+    "v2m5_pvdf_lce_en": {
+      "language": "en",
+      "domain": "materials / PVDF and liquid crystal elastomers",
+      "format": "markdown (IEEE)",
+      "path": "manuscripts/v2m5_pvdf_lce_en.md",
+      "items": [
+        {
+          "ref": "[4]",
+          "type": "CLAIM_DIRECTION",
+          "match": [
+            "[4]",
+            "Luo"
+          ],
+          "value": [
+            "above 48"
+          ],
+          "claim_text": "kept their maximum surface temperature above 48 °C",
+          "abstract_says": "these LCE optical fibers generate 30% contraction strain in 23 s, maintaining maximum surface temperature <48 °C",
+          "abstract_source": "crossref",
+          "truth_doi": "10.1002/adma.202516047",
+          "cited_by": 11,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m5_pvdf_lce_en#01",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[5]",
+          "type": "CLAIM_NUMBER",
+          "match": [
+            "[5]",
+            "Benecke"
+          ],
+          "value": [
+            "13.2"
+          ],
+          "claim_text": "mass-specific work of up to 13.2 J/kg",
+          "abstract_says": "an artificial muscle fiber capable of performing mass specific work of up to 31.2 J kg−1",
+          "abstract_source": "crossref",
+          "truth_doi": "10.1038/s41598-026-54707-6",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m5_pvdf_lce_en#02",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[6]",
+          "type": "CLAIM_OK",
+          "match": [
+            "89.9"
+          ],
+          "value": [
+            "89.9"
+          ],
+          "claim_text": "89.9% in electrospun fibres compared with 78.9%",
+          "abstract_says": "higher β-phase content in electrospun fibers (89.9%) compared to solvent-cast membranes (78.9%)",
+          "abstract_source": "crossref",
+          "truth_doi": "10.1002/ente.202502400",
+          "cited_by": 2,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m5_pvdf_lce_en#03",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[1]",
+          "type": "OK",
+          "match": [
+            "[1]",
+            "Parthasarathy"
+          ],
+          "truth_doi": "10.1002/est2.70461",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m5_pvdf_lce_en#04",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[2]",
+          "type": "OK",
+          "match": [
+            "[2]",
+            "Toru"
+          ],
+          "truth_doi": "10.3390/polym18050617",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m5_pvdf_lce_en#05",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[3]",
+          "type": "OK",
+          "match": [
+            "[3]",
+            "Sezer"
+          ],
+          "truth_doi": "10.51435/turkjac.1760136",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m5_pvdf_lce_en#06",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[4]",
+          "type": "OK",
+          "match": [
+            "[4]",
+            "Luo"
+          ],
+          "truth_doi": "10.1002/adma.202516047",
+          "cited_by": 11,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m5_pvdf_lce_en#07",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[5]",
+          "type": "OK",
+          "match": [
+            "[5]",
+            "Benecke"
+          ],
+          "truth_doi": "10.1038/s41598-026-54707-6",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m5_pvdf_lce_en#08",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[6]",
+          "type": "OK",
+          "match": [
+            "[6]",
+            "Ali"
+          ],
+          "truth_doi": "10.1002/ente.202502400",
+          "cited_by": 2,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m5_pvdf_lce_en#09",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[7]",
+          "type": "WRONG_YEAR",
+          "match": [
+            "[7]",
+            "Yang Y",
+            "Y. Yang"
+          ],
+          "problem": "Appl. Sci. 16(19) 9732 was published in 2026, not 2023.",
+          "fix": "Change the year to 2026.",
+          "truth_doi": "10.3390/app16199732",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "cited_year": 2023,
+          "true_year": 2026,
+          "id": "v2m5_pvdf_lce_en#10",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[8]",
+          "type": "RETRACTED",
+          "match": [
+            "[8]",
+            "Sujitha"
+          ],
+          "problem": "Retracted (CrossRef updated-by: retraction).",
+          "fix": "Remove it.",
+          "truth_doi": "10.1007/s00289-023-04888-1",
+          "cited_by": 19,
+          "year": 2024,
+          "years": {
+            "published-print": 2024,
+            "published-online": 2023,
+            "issued": 2023
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m5_pvdf_lce_en#11",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[9]",
+          "type": "FAB_DOI",
+          "match": [
+            "[9]",
+            "Ortega",
+            "polym18091377"
+          ],
+          "problem": "DOI 10.3390/polym18091377 does not exist; no such paper.",
+          "fix": "Remove the reference and the sentence.",
+          "truth_doi": null,
+          "id": "v2m5_pvdf_lce_en#12",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[10]",
+          "type": "UNINDEXED_OK",
+          "match": [
+            "[10]",
+            "2510.20370",
+            "self-poisoning"
+          ],
+          "truth_doi": null,
+          "source": "https://arxiv.org/abs/2510.20370",
+          "id": "v2m5_pvdf_lce_en#13",
+          "expected": "NOT_FLAG"
+        }
+      ]
+    },
+    "v2m6_rehab_latex": {
+      "language": "en",
+      "domain": "biomedicine / rehabilitation pilot trials",
+      "format": "LaTeX + BibTeX",
+      "path": "manuscripts/v2m6_rehab_latex/main.tex",
+      "bib": "manuscripts/v2m6_rehab_latex/references.bib",
+      "items": [
+        {
+          "ref": "yang2025repairs",
+          "type": "CLAIM_UNIT",
+          "match": [
+            "yang2025repairs",
+            "naproxen"
+          ],
+          "value": [
+            "500 µg",
+            "500 μg",
+            "\\micro\\gram",
+            "microgram"
+          ],
+          "claim_text": "naproxen 500 µg every 12 hours",
+          "abstract_says": "a non-opioid regimen of naproxen 500 mg 12 hourly for 7 days",
+          "abstract_source": "crossref",
+          "truth_doi": "10.1186/s13018-025-06193-1",
+          "cited_by": 2,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m6_rehab_latex#01",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "yang2025repairs",
+          "type": "CLAIM_NUMBER",
+          "match": [
+            "yang2025repairs",
+            "REPAIRS"
+          ],
+          "value": [
+            "41%",
+            "41\\%"
+          ],
+          "claim_text": "a recruitment rate of 41%",
+          "abstract_says": "of which 72 were eligible and 53 were recruited (recruitment rate = 21%)",
+          "abstract_source": "crossref",
+          "truth_doi": "10.1186/s13018-025-06193-1",
+          "cited_by": 2,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m6_rehab_latex#02",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "ryu2026robot",
+          "type": "CLAIM_DIRECTION",
+          "match": [
+            "ryu2026robot",
+            "Ryu",
+            "adhesive capsulitis"
+          ],
+          "value": [
+            "declined"
+          ],
+          "claim_text": "external rotation declined over time in the treatment group",
+          "abstract_says": "external rotation significantly improved over time in the case group (P = .042)",
+          "abstract_source": "crossref",
+          "truth_doi": "10.1097/md.0000000000050120",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m6_rehab_latex#03",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "tamuleviciute2026",
+          "type": "CLAIM_OK",
+          "match": [
+            "336"
+          ],
+          "value": [
+            "336"
+          ],
+          "claim_text": "100 of 336 patients screened were randomized",
+          "abstract_says": "Out of 336 assessed for eligibility, 100 patients ... were randomized",
+          "abstract_source": "crossref",
+          "truth_doi": "10.1186/s12877-026-07192-5",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m6_rehab_latex#04",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "yang2025repairs",
+          "type": "OK",
+          "match": [
+            "yang2025repairs"
+          ],
+          "truth_doi": "10.1186/s13018-025-06193-1",
+          "cited_by": 2,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m6_rehab_latex#05",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "tamuleviciute2026",
+          "type": "OK",
+          "match": [
+            "tamuleviciute2026"
+          ],
+          "truth_doi": "10.1186/s12877-026-07192-5",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m6_rehab_latex#06",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "noda2022sts",
+          "type": "WRONG_YEAR",
+          "match": [
+            "noda2022sts",
+            "Noda"
+          ],
+          "problem": "J Exerc Rehabil 21(4) 210–218 was published in 2025, not 2022.",
+          "fix": "Change the year to 2025.",
+          "truth_doi": "10.12965/jer.2550446.223",
+          "cited_by": 0,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "cited_year": 2022,
+          "true_year": 2025,
+          "id": "v2m6_rehab_latex#07",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "ryu2026robot",
+          "type": "OK",
+          "match": [
+            "ryu2026robot"
+          ],
+          "truth_doi": "10.1097/md.0000000000050120",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m6_rehab_latex#08",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "suk2025vr",
+          "type": "WRONG_AUTHOR",
+          "match": [
+            "suk2025vr"
+          ],
+          "problem": "First author is Suk, Kyung-Soo; the entry lists Park, Jinyoung first.",
+          "fix": "Put Suk, Kyung-Soo first.",
+          "truth_doi": "10.1186/s12984-025-01716-7",
+          "cited_by": 6,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m6_rehab_latex#09",
+          "true_first_author": "Suk",
+          "cited_first_author": "Park",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "kilkki2025",
+          "type": "OK",
+          "match": [
+            "kilkki2025",
+            "Kilkki"
+          ],
+          "truth_doi": "10.2196/78091",
+          "cited_by": 4,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m6_rehab_latex#10",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "luney2025",
+          "type": "DOI_SWAP",
+          "match": [
+            "luney2025",
+            "Luney"
+          ],
+          "problem": "The DOI 10.3390/geriatrics10040095 is Yayan & Biancosino (2025), age-related outcomes in pleural empyema; Luney et al. is 10.1213/XAA.0000000000001891.",
+          "fix": "Use 10.1213/XAA.0000000000001891.",
+          "truth_doi": "10.1213/xaa.0000000000001891",
+          "cited_by": 0,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "cited_doi": "10.3390/geriatrics10040095",
+          "id": "v2m6_rehab_latex#11",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "aloraini2025",
+          "type": "OK",
+          "match": [
+            "aloraini2025",
+            "Aloraini"
+          ],
+          "truth_doi": "10.3390/healthcare13192465",
+          "cited_by": 3,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m6_rehab_latex#12",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "mahmoud2025",
+          "type": "OK",
+          "match": [
+            "mahmoud2025",
+            "Mahmoud"
+          ],
+          "truth_doi": "10.3390/medicina61040602",
+          "cited_by": 5,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m6_rehab_latex#13",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "goodstein2025",
+          "type": "RETRACTED",
+          "match": [
+            "goodstein2025",
+            "Goodstein",
+            "upstaging"
+          ],
+          "problem": "Retracted (CrossRef updated-by: retraction).",
+          "fix": "Remove it.",
+          "truth_doi": "10.1016/j.clgc.2025.102422",
+          "cited_by": 0,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m6_rehab_latex#14",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "lindgren2025",
+          "type": "FAB_NODOI",
+          "match": [
+            "lindgren2025",
+            "Lindgren",
+            "eccentric"
+          ],
+          "problem": "No such paper (no CrossRef record with this title).",
+          "fix": "Remove the entry and the sentence.",
+          "truth_doi": null,
+          "cited_title": "Home-based eccentric training after hip arthroplasty in adults over 75: a pilot randomized trial",
+          "id": "v2m6_rehab_latex#15",
+          "expected": "FLAG"
+        }
+      ]
+    },
+    "v2m7_ceramic_ko": {
+      "language": "ko",
+      "domain": "materials / ceramics and thin films",
+      "format": "markdown (Korean, numbered)",
+      "path": "manuscripts/v2m7_ceramic_ko.md",
+      "items": [
+        {
+          "ref": "[6]",
+          "type": "CLAIM_DIRECTION",
+          "match": [
+            "[6]",
+            "Sekar",
+            "SiC"
+          ],
+          "value": [
+            "4.24%에서 2%",
+            "줄었다"
+          ],
+          "claim_text": "밀링 시간이 길어질수록 질량 손실이 4.24%에서 2%로 줄었다",
+          "abstract_says": "Milling for a longer time caused mass loss to increase, ranging from 2% to 4.24%",
+          "abstract_source": "crossref",
+          "truth_doi": "10.3311/ppch.38835",
+          "cited_by": 2,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m7_ceramic_ko#01",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[7]",
+          "type": "CLAIM_UNIT",
+          "match": [
+            "[7]",
+            "Qadir",
+            "SAW"
+          ],
+          "value": [
+            "377 MHz"
+          ],
+          "claim_text": "5 mT에서 최대 377 MHz의 주파수 이동",
+          "abstract_says": "a maximum frequency shift of 377 kHz at 5 mT",
+          "abstract_source": "crossref",
+          "truth_doi": "10.3390/mi17050537",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m7_ceramic_ko#02",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[8]",
+          "type": "CLAIM_NUMBER",
+          "match": [
+            "[8]",
+            "Sun",
+            "EuTiO3"
+          ],
+          "value": [
+            "41 K"
+          ],
+          "claim_text": "퀴리 온도는 약 41 K",
+          "abstract_says": "Films grown under low oxygen pressure exhibit a peak in the Curie temperature (Tc) around 4.1 K",
+          "abstract_source": "crossref",
+          "truth_doi": "10.1590/1517-7076-rmat-2024-0777",
+          "cited_by": 0,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m7_ceramic_ko#03",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[9]",
+          "type": "CLAIM_OK",
+          "match": [
+            "13 GPa"
+          ],
+          "value": [
+            "13 GPa"
+          ],
+          "claim_text": "40 μm 두께 표면층의 경도가 13 GPa",
+          "abstract_says": "production of a 40 µm thick surface layer with hardness of 13 GPa",
+          "abstract_source": "crossref",
+          "truth_doi": "10.3390/plasma9030026",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m7_ceramic_ko#04",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[1]",
+          "type": "OK",
+          "match": [
+            "[1]",
+            "Kim, H."
+          ],
+          "truth_doi": "10.1007/s43207-025-00545-7",
+          "cited_by": 8,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m7_ceramic_ko#05",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[2]",
+          "type": "WRONG_AUTHOR",
+          "match": [
+            "[2]",
+            "Xu, Q",
+            "Kang"
+          ],
+          "problem": "First author is Kang, H.-S.; the reference lists Xu, Q. first.",
+          "fix": "Put Kang, H.-S. first.",
+          "truth_doi": "10.1007/s43207-025-00478-1",
+          "cited_by": 5,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m7_ceramic_ko#06",
+          "true_first_author": "Kang",
+          "cited_first_author": "Xu",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[3]",
+          "type": "OK",
+          "match": [
+            "[3]",
+            "Seo"
+          ],
+          "truth_doi": "10.1007/s43207-025-00576-0",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m7_ceramic_ko#07",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[4]",
+          "type": "OK",
+          "match": [
+            "[4]",
+            "Kwon"
+          ],
+          "truth_doi": "10.1007/s43207-025-00570-6",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m7_ceramic_ko#08",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[5]",
+          "type": "OK",
+          "match": [
+            "[5]",
+            "Kim, S.-Y.",
+            "P3HT"
+          ],
+          "truth_doi": "10.1007/s43207-026-00612-7",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m7_ceramic_ko#09",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[6]",
+          "type": "OK",
+          "match": [
+            "[6]",
+            "Sekar"
+          ],
+          "truth_doi": "10.3311/ppch.38835",
+          "cited_by": 2,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m7_ceramic_ko#10",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[7]",
+          "type": "OK",
+          "match": [
+            "[7]",
+            "Qadir"
+          ],
+          "truth_doi": "10.3390/mi17050537",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m7_ceramic_ko#11",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[8]",
+          "type": "OK",
+          "match": [
+            "[8]",
+            "Sun, G."
+          ],
+          "truth_doi": "10.1590/1517-7076-rmat-2024-0777",
+          "cited_by": 0,
+          "year": 2025,
+          "years": {
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m7_ceramic_ko#12",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[9]",
+          "type": "OK",
+          "match": [
+            "[9]",
+            "Metel"
+          ],
+          "truth_doi": "10.3390/plasma9030026",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m7_ceramic_ko#13",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[10]",
+          "type": "TITLELESS_WRONG_VOLPAGE",
+          "match": [
+            "[10]",
+            "Kang",
+            "88, 625"
+          ],
+          "problem": "S. J. Kang et al., J. Korean Phys. Soc. 88 starts on page 652, not 625 (doi:10.1007/s40042-025-01537-w).",
+          "fix": "Change the page to 652.",
+          "truth_doi": "10.1007/s40042-025-01537-w",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "cited_volume": "88",
+          "cited_page": "625",
+          "id": "v2m7_ceramic_ko#14",
+          "true_volume": "88",
+          "true_page": "652",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[11]",
+          "type": "FAB_DOI",
+          "match": [
+            "[11]",
+            "Choi, J.",
+            "00671-3",
+            "BaTiO3–glass"
+          ],
+          "problem": "DOI 10.1007/s43207-025-00671-3 does not exist; no such paper.",
+          "fix": "Remove the reference and the sentence.",
+          "truth_doi": null,
+          "id": "v2m7_ceramic_ko#15",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[12]",
+          "type": "UNINDEXED_OK",
+          "match": [
+            "[12]",
+            "박성민"
+          ],
+          "truth_doi": null,
+          "source": "https://m.riss.kr/search/detail/DetailView.do?control_no=fe70ea7986d1a8f9ffe0bdc3ef48d419&p_mat_type=be54d9b8bc7cdb09",
+          "id": "v2m7_ceramic_ko#16",
+          "expected": "NOT_FLAG"
+        }
+      ]
+    },
+    "v2m8_magnetism_en": {
+      "language": "en",
+      "domain": "physics / thin-film magnetism and plasma",
+      "format": "markdown (physics style, no titles)",
+      "path": "manuscripts/v2m8_magnetism_en.md",
+      "items": [
+        {
+          "ref": "[1]",
+          "type": "CLAIM_DIRECTION",
+          "match": [
+            "[1]",
+            "Galivarapu",
+            "GdFeCo"
+          ],
+          "value": [
+            "thinner than 90"
+          ],
+          "claim_text": "PMA dominates near room temperature only in films thinner than 90 nm",
+          "abstract_says": "PMA begins to dominate at around room temperature for films with a thickness greater than 90 nm",
+          "abstract_source": "crossref",
+          "truth_doi": "10.1088/1361-6463/add7e9",
+          "cited_by": 2,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m8_magnetism_en#01",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[2]",
+          "type": "CLAIM_NUMBER",
+          "match": [
+            "[2]",
+            "Ichinose",
+            "CoFe/Fe"
+          ],
+          "value": [
+            "61 fJ"
+          ],
+          "claim_text": "a voltage-controlled magnetic anisotropy coefficient of 61 fJ/Vm",
+          "abstract_says": "a voltage-controlled magnetic anisotropy coefficient of 161 fJ/Vm even after annealing at 673 K",
+          "abstract_source": "crossref",
+          "truth_doi": "10.1063/5.0326956",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m8_magnetism_en#02",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[3]",
+          "type": "CLAIM_UNIT",
+          "match": [
+            "[3]",
+            "Han",
+            "CoNi"
+          ],
+          "value": [
+            "1.5 kV"
+          ],
+          "claim_text": "within a voltage window of 1.5 kV",
+          "abstract_says": "Within a voltage window of 1.5 V (from 3.0 V to 1.5 V), both remanent magnetization and coercivity are suppressed to zero",
+          "abstract_source": "crossref",
+          "truth_doi": "10.3390/ma19143012",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m8_magnetism_en#03",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[4]",
+          "type": "CLAIM_OK",
+          "match": [
+            "7.82"
+          ],
+          "value": [
+            "7.82"
+          ],
+          "claim_text": "an effective anisotropy of about 7.82 × 10⁵ erg/cc",
+          "abstract_says": "A maximum effective PMA energy density (Keff) of ≈7.82 × 105 erg/cc",
+          "abstract_source": "crossref",
+          "truth_doi": "10.3390/nano16090558",
+          "cited_by": 1,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m8_magnetism_en#04",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[1]",
+          "type": "OK",
+          "match": [
+            "[1]",
+            "Galivarapu"
+          ],
+          "truth_doi": "10.1088/1361-6463/add7e9",
+          "cited_by": 2,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m8_magnetism_en#05",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[2]",
+          "type": "OK",
+          "match": [
+            "[2]",
+            "Ichinose"
+          ],
+          "truth_doi": "10.1063/5.0326956",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m8_magnetism_en#06",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[3]",
+          "type": "OK",
+          "match": [
+            "[3]",
+            "Han"
+          ],
+          "truth_doi": "10.3390/ma19143012",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m8_magnetism_en#07",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[4]",
+          "type": "OK",
+          "match": [
+            "[4]",
+            "Saravanan"
+          ],
+          "truth_doi": "10.3390/nano16090558",
+          "cited_by": 1,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m8_magnetism_en#08",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[5]",
+          "type": "TITLELESS_WRONG_VOLPAGE",
+          "match": [
+            "[5]",
+            "Navrátil",
+            "Navratil"
+          ],
+          "problem": "Navrátil et al., Plasma Sources Sci. Technol. 015013 is in volume 34 (2025), not 35 (doi:10.1088/1361-6595/adaa9b).",
+          "fix": "Change the volume to 34.",
+          "truth_doi": "10.1088/1361-6595/adaa9b",
+          "cited_by": 4,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "published-online": 2025,
+            "issued": 2025
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "cited_volume": "35",
+          "cited_page": "015013",
+          "id": "v2m8_magnetism_en#09",
+          "true_volume": "34",
+          "true_page": "015013",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[6]",
+          "type": "OK",
+          "match": [
+            "[6]",
+            "Zhou"
+          ],
+          "truth_doi": "10.1088/1361-6595/ae5d6a",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m8_magnetism_en#10",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[7]",
+          "type": "OK",
+          "match": [
+            "[7]",
+            "Huang"
+          ],
+          "truth_doi": "10.3390/plasma9030036",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m8_magnetism_en#11",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[8]",
+          "type": "TITLELESS_WRONG_VOLPAGE",
+          "match": [
+            "[8]",
+            "Hwang",
+            "1072"
+          ],
+          "problem": "Hwang et al., J. Korean Phys. Soc. 88 starts on page 1027, not 1072 (doi:10.1007/s40042-026-01566-z).",
+          "fix": "Change the page to 1027.",
+          "truth_doi": "10.1007/s40042-026-01566-z",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "cited_volume": "88",
+          "cited_page": "1072",
+          "id": "v2m8_magnetism_en#12",
+          "true_volume": "88",
+          "true_page": "1027",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[9]",
+          "type": "OK",
+          "match": [
+            "[9]",
+            "Park"
+          ],
+          "truth_doi": "10.1007/s40042-026-01570-3",
+          "cited_by": 0,
+          "year": 2026,
+          "years": {
+            "published-print": 2026,
+            "published-online": 2026,
+            "issued": 2026
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m8_magnetism_en#13",
+          "expected": "NOT_FLAG"
+        },
+        {
+          "ref": "[10]",
+          "type": "RETRACTED",
+          "match": [
+            "[10]",
+            "Alwany"
+          ],
+          "problem": "Retracted (CrossRef updated-by: retraction).",
+          "fix": "Remove it.",
+          "truth_doi": "10.1007/s10904-024-03325-8",
+          "cited_by": 5,
+          "year": 2025,
+          "years": {
+            "published-print": 2025,
+            "published-online": 2024,
+            "issued": 2024
+          },
+          "recall_check": "not recognised before fetching (author of the set)",
+          "id": "v2m8_magnetism_en#14",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[11]",
+          "type": "FAB_NODOI",
+          "match": [
+            "[11]",
+            "Castellanos",
+            "skyrmion"
+          ],
+          "problem": "No such paper (no CrossRef record with this title).",
+          "fix": "Remove the reference and the sentence.",
+          "truth_doi": null,
+          "cited_title": "Voltage-gated skyrmion nucleation in ultrathin CoFeB/Pd multilayers",
+          "id": "v2m8_magnetism_en#15",
+          "expected": "FLAG"
+        },
+        {
+          "ref": "[12]",
+          "type": "UNINDEXED_OK",
+          "match": [
+            "[12]",
+            "2609.05383",
+            "Panchwanee"
+          ],
+          "truth_doi": null,
+          "source": "https://arxiv.org/abs/2609.05383",
+          "id": "v2m8_magnetism_en#16",
+          "expected": "NOT_FLAG"
+        }
+      ]
+    }
+  }
+}

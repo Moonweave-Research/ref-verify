@@ -4,6 +4,9 @@ This folder measures what an agent actually reports when a researcher hands it a
 asks it to check the references, with and without the ref-verify skill. It is a measurement,
 not a test: nothing here runs in CI, and nothing here changes the engine or `SKILL.md`.
 
+`v2/` repeats it with obscure 2025–2026 papers the model does not know, and adds a condition
+without web tools or a shell.
+
 ## Set
 
 Eight short manuscripts in `manuscripts/`, 11–12 references each (92 references, 21 cited
