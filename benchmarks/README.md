@@ -6,8 +6,8 @@ fabricated, retracted, and unindexed references against live CrossRef.
 | Set | Items | Role |
 |---|---|---|
 | `references-regress-v3.jsonl` | 23 | **Regression set for the search-path and Hangul-title fixes.** Not a held-out score: it holds the failure cases found by the E2E evaluation (#37) and holdout-v2 (a same-title letter or review taken for the paper, an SI component taken for the paper, a book matched to a journal review of it, a Korean reference with a title read as title-less) and close-call controls where the cited record really is a letter, a review, a book, or a preprint. Frozen before the before/after runs. |
-| `references-holdout-v2.jsonl` | 99 | **Held-out set v2.** Written and committed before any run, after #30 and #33 were tuned on holdout-v1's misses. It shares no paper (DOI or title) with the other two sets and stresses title-less physics/chemistry citations (13 real, 8 fabricated), group authors, particle surnames, Korean-titled Korean journal papers with Hangul authors, books, conference papers, retractions marked in CrossRef only through Retraction Watch data, and retractions CrossRef cannot mark (KISTI, ISTIC, and DataCite DOIs). Measured once, on 1.3.1; the README scorecard is not yet switched to it. |
-| `references-holdout-v1.jsonl` | 86 | **Held-out set v1, now in-sample:** its misses were used to tune #30 and #33. Originally written and committed before the tool was run on it; no paper in it appears in the development set, and it uses other journals, fields, and citation styles (IEEE, Nature, Harvard, Chicago, biblatex, and physics/chemistry styles that omit the article title). The README headline numbers and chart come from this set. |
+| `references-holdout-v2.jsonl` | 99 | **Held-out set v2.** Written and committed before any run, after #30 and #33 were tuned on holdout-v1's misses. It shares no paper (DOI or title) with the other two sets and stresses title-less physics/chemistry citations (13 real, 8 fabricated), group authors, particle surnames, Korean-titled Korean journal papers with Hangul authors, books, conference papers, retractions marked in CrossRef only through Retraction Watch data, and retractions CrossRef cannot mark (KISTI, ISTIC, and DataCite DOIs). Measured once, on 1.3.1; the README headline numbers and chart come from this set. |
+| `references-holdout-v1.jsonl` | 86 | **Held-out set v1, now in-sample:** its misses were used to tune #30 and #33. Originally written and committed before the tool was run on it; no paper in it appears in the development set, and it uses other journals, fields, and citation styles (IEEE, Nature, Harvard, Chicago, biblatex, and physics/chemistry styles that omit the article title). |
 | `references-v1.jsonl` | 142 | **Development set (used while fixing the tool).** Its misses drove the matching fixes in #27, so its scores are in-sample and are shown only as a secondary line. |
 
 Rules for the held-out set: it is frozen at the commit that added it, and items are
@@ -26,7 +26,9 @@ measure again after the tool is tuned against v1's misses.
   before the held-out set existed).
 - `../scripts/benchmark_references.py`: runs a set (standard library only).
 - `../scripts/render_scorecard.py`: draws `.github/assets/scorecard-{light,dark}.svg`
-  from a held-out results file, with the development-set result as a footnote.
+  from a held-out results file, with the development-set result as a footnote. The README chart
+  is drawn from `results/2026-10-09-8170e66-holdout-v2.json` with
+  `--dev results/2026-10-09-8170e66-v1.json`.
 
 ## Holdout-v2 measurement (2026-10-09, ref-verify 1.3.1)
 
