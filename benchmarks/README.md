@@ -6,7 +6,7 @@ fabricated, retracted, and unindexed references against live CrossRef.
 | Set | Items | Role |
 |---|---|---|
 | `references-holdout-v2.jsonl` | 99 | **Held-out set v2.** Written and committed before any run, after #30 and #33 were tuned on holdout-v1's misses. It shares no paper (DOI or title) with the other two sets and stresses title-less physics/chemistry citations (13 real, 8 fabricated), group authors, particle surnames, Korean-titled Korean journal papers with Hangul authors, books, conference papers, retractions marked in CrossRef only through Retraction Watch data, and retractions CrossRef cannot mark (KISTI, ISTIC, and DataCite DOIs). Measured once, on 1.3.1; the README scorecard is not yet switched to it. |
-| `references-holdout-v1.jsonl` | 86 | **Held-out set v1, now in-sample:** its misses were used to tune #30 and #33. Originally Written and committed before the tool was run on it; no paper in it appears in the development set, and it uses other journals, fields, and citation styles (IEEE, Nature, Harvard, Chicago, biblatex, and physics/chemistry styles that omit the article title). The README headline numbers and chart come from this set. |
+| `references-holdout-v1.jsonl` | 86 | **Held-out set v1, now in-sample:** its misses were used to tune #30 and #33. Originally written and committed before the tool was run on it; no paper in it appears in the development set, and it uses other journals, fields, and citation styles (IEEE, Nature, Harvard, Chicago, biblatex, and physics/chemistry styles that omit the article title). The README headline numbers and chart come from this set. |
 | `references-v1.jsonl` | 142 | **Development set (used while fixing the tool).** Its misses drove the matching fixes in #27, so its scores are in-sample and are shown only as a secondary line. |
 
 Rules for the held-out set: it is frozen at the commit that added it, and items are
@@ -26,6 +26,23 @@ measure again after the tool is tuned against v1's misses.
 - `../scripts/benchmark_references.py`: runs a set (standard library only).
 - `../scripts/render_scorecard.py`: draws `.github/assets/scorecard-{light,dark}.svg`
   from a held-out results file, with the development-set result as a footnote.
+
+## Holdout-v2 measurement (2026-10-09, ref-verify 1.3.1)
+
+All three sets were run once on commit `8170e66` (main `6a13a86` plus the frozen set), each
+on a fresh cache without `REF_VERIFY_MAILTO`. Only holdout-v2 is out of sample.
+
+| Set | Real PASS | Real REJECT | Fabricated flagged | Retracted caught* | Unindexed REJECT |
+|---|---|---|---|---|---|
+| holdout-v2 (out of sample) | 40/45 (77–95%) | 0/45 (0–8%) | 29/29 (88–100%) | 8/8 (68–100%) | 0/13 (0–23%) |
+| holdout-v1 (in-sample) | 40/40 (91–100%) | 0/40 (0–9%) | 26/26 (87–100%) | 10/10 (72–100%) | 0/10 (0–28%) |
+| v1 (in-sample) | 66/66 (95–100%) | 0/66 (0–6%) | 43/43 (92–100%) | 16/16 (81–100%) | 1/17 (1–27%) |
+
+Parentheses are 95% Wilson intervals. *Retractions CrossRef marks; holdout-v2 also has four
+retractions Retraction Watch lists that CrossRef cannot mark (KISTI, ISTIC, and DataCite DOIs,
+and a FASEB abstract DOI aliased to its withdrawal notice), reported separately: none of the
+four got `PAPER_RETRACTED`. Per-item results:
+`results/2026-10-09-8170e66-{holdout-v2,holdout-v1,v1}.json`.
 
 ## Item fields
 
