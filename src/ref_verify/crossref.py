@@ -190,11 +190,17 @@ def _clean_title(value: str | None) -> str | None:
 
 
 # Records that share a paper's title without being the paper: peer-review reports, Faculty
-# Opinions recommendations, and correction notices ("Addendum: <title>").
-_ABOUT_OTHER_WORK_RELATIONS = {"is-review-of", "is-comment-on"}
+# Opinions recommendations, replies, and correction or retraction notices ("Addendum: <title>",
+# "Retraction—<title>"). A retracted paper's own "RETRACTED:" prefix is not one of these.
+_ABOUT_OTHER_WORK_RELATIONS = {"is-review-of", "is-comment-on", "is-reply-to"}
 _ABOUT_OTHER_WORK_TITLE = re.compile(
     r"^\s*(?:review (?:of|for)\b|decision letter\b|author response\b|reviewer report\b|"
-    r"faculty opinions recommendation\b|(?:addendum|erratum|corrigendum|correction)\b\s*(?::|to\b|for\b))",
+    r"faculty opinions recommendation\b|"
+    r"(?:addendum|erratum|corrigendum|correction|retraction(?: note| notice)?|expression of concern)\b"
+    r"\s*(?::|[–—]|-\s|to\b|for\b)|"
+    # Only quoted or explicit targets: "Response to selection ..." is an ordinary title.
+    r"(?:comment on|reply to|response to)\s*[\"'“‘]|(?:reply to|response to) (?:the )?comments?\b|"
+    r"reply\s*:|in reply\b|authors?['’]? reply\b)",
     re.IGNORECASE,
 )
 

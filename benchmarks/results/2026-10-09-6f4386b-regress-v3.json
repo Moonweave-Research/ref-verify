@@ -1,0 +1,621 @@
+{
+  "tool": "ref-verify check-bib",
+  "tool_version": "1.3.1",
+  "commit": "6f4386b",
+  "dirty": false,
+  "date": "2026-10-09",
+  "generated_at": "2026-10-09T05:45:42+00:00",
+  "python": "3.14.3",
+  "dataset": "benchmarks/references-regress-v3.jsonl",
+  "dataset_sha256": "96978e905d6b7c1200f70e84beab191b96f92d411b216a9bd6a71e74ed42237a",
+  "workers": 4,
+  "first_attempt_infra_errors": [],
+  "timing": {
+    "first_run_seconds": 22.07,
+    "cached_run_seconds": 0.07,
+    "median_seconds_per_reference_first": 1.056,
+    "median_seconds_per_reference_cached": 0.0038
+  },
+  "aggregates": {
+    "infra_errors": 0,
+    "composition": {
+      "FABRICATED": {
+        "n": 6,
+        "pass": 0,
+        "warn": 6,
+        "reject": 0
+      },
+      "NOT_IN_CROSSREF": {
+        "n": 4,
+        "pass": 2,
+        "warn": 2,
+        "reject": 0
+      },
+      "REAL": {
+        "n": 12,
+        "pass": 10,
+        "warn": 2,
+        "reject": 0
+      },
+      "RETRACTED": {
+        "n": 1,
+        "pass": 0,
+        "warn": 1,
+        "reject": 0
+      }
+    },
+    "fabricated_flagged": {
+      "k": 6,
+      "n": 6,
+      "rate": 1.0,
+      "ci95": [
+        0.6096569663469354,
+        0.9999999999999999
+      ]
+    },
+    "fabricated_flagged_by_type": {
+      "component_near_miss": {
+        "k": 3,
+        "n": 3,
+        "rate": 1.0,
+        "ci95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "korean_titled_doi_swap": {
+        "k": 2,
+        "n": 2,
+        "rate": 1.0,
+        "ci95": [
+          0.34237195288961925,
+          1.0
+        ]
+      },
+      "korean_titleless_doi_swap": {
+        "k": 1,
+        "n": 1,
+        "rate": 1.0,
+        "ci95": [
+          0.20654329147389294,
+          1.0
+        ]
+      }
+    },
+    "retracted_rejected": {
+      "k": 0,
+      "n": 1,
+      "rate": 0.0,
+      "ci95": [
+        0.0,
+        0.7934567085261071
+      ]
+    },
+    "retracted_not_marked_by_crossref": 0,
+    "real_clean_pass": {
+      "k": 10,
+      "n": 12,
+      "rate": 0.8333333333333334,
+      "ci95": [
+        0.5519636426153274,
+        0.9530358523851776
+      ]
+    },
+    "real_needs_check": {
+      "k": 2,
+      "n": 12,
+      "rate": 0.16666666666666666,
+      "ci95": [
+        0.04696414761482223,
+        0.44803635738467273
+      ]
+    },
+    "real_wrongly_rejected": {
+      "k": 0,
+      "n": 12,
+      "rate": 0.0,
+      "ci95": [
+        0.0,
+        0.2425007574992425
+      ]
+    },
+    "unindexed_rejected": {
+      "k": 0,
+      "n": 4,
+      "rate": 0.0,
+      "ci95": [
+        0.0,
+        0.48990002040399916
+      ]
+    },
+    "pass_on_wrong_record": [
+      "r3-ctrl-07"
+    ]
+  },
+  "results": [
+    {
+      "id": "r3-wrong-01",
+      "category": "RETRACTED",
+      "subtype": "same_title_letter",
+      "input_format": "bib",
+      "expected": "REJECT",
+      "crossref_marks_retraction": true,
+      "truth_doi": "10.1016/s0140-6736(97)11096-0",
+      "verdict": "WARN",
+      "status": "RESOLVED",
+      "error_code": "REFERENCE_RESOLVED",
+      "mismatches": [
+        "first_author"
+      ],
+      "resolved_doi": "10.1016/s0140-6736(05)77837-5",
+      "fetched_doi": "10.1016/s0140-6736(05)77837-5",
+      "reason": "Matched CrossRef record 10.1016/s0140-6736(05)77837-5 by bibliographic search, but the first author differs (reference: Wakefield; CrossRef: Sabra).",
+      "seconds": 0.929,
+      "outcome": "warn",
+      "seconds_cached": 0.0031,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-wrong-02",
+      "category": "REAL",
+      "subtype": "same_title_correspondence",
+      "input_format": "txt",
+      "expected": "PASS",
+      "crossref_marks_retraction": null,
+      "truth_doi": "10.1056/nejmoa2007764",
+      "verdict": "WARN",
+      "status": "RESOLVED",
+      "error_code": "REFERENCE_RESOLVED",
+      "mismatches": [
+        "first_author"
+      ],
+      "resolved_doi": "10.1056/nejmc2022236",
+      "fetched_doi": "10.1056/nejmc2022236",
+      "reason": "Matched CrossRef record 10.1056/nejmc2022236 by bibliographic search, but the first author differs (CrossRef: none listed).",
+      "seconds": 1.0671,
+      "outcome": "warn",
+      "seconds_cached": 0.0053,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-wrong-03",
+      "category": "REAL",
+      "subtype": "book_with_reviews",
+      "input_format": "txt",
+      "expected": "PASS",
+      "crossref_marks_retraction": null,
+      "truth_doi": "10.1007/978-0-387-84858-7",
+      "verdict": "WARN",
+      "status": "RESOLVED",
+      "error_code": "REFERENCE_RESOLVED",
+      "mismatches": [
+        "year",
+        "first_author"
+      ],
+      "resolved_doi": "10.1111/j.1541-0420.2010.01516.x",
+      "fetched_doi": "10.1111/j.1541-0420.2010.01516.x",
+      "reason": "Matched CrossRef record 10.1111/j.1541-0420.2010.01516.x by bibliographic search, but the first author differs (CrossRef: Rosa) and the year differs (reference: 2009; CrossRef: 2010).",
+      "seconds": 18.9606,
+      "outcome": "warn",
+      "seconds_cached": 0.0611,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-wrong-04",
+      "category": "NOT_IN_CROSSREF",
+      "subtype": "book_only_reviews_indexed",
+      "input_format": "txt",
+      "expected": "NOT_REJECT",
+      "crossref_marks_retraction": null,
+      "truth_doi": null,
+      "verdict": "PASS",
+      "status": "RESOLVED",
+      "error_code": "REFERENCE_RESOLVED",
+      "mismatches": [],
+      "resolved_doi": "10.1063/1.3051743",
+      "fetched_doi": "10.1063/1.3051743",
+      "reason": "Matched CrossRef record 10.1063/1.3051743 by bibliographic search.",
+      "seconds": 19.9928,
+      "outcome": "pass",
+      "seconds_cached": 0.0646,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-wrong-05",
+      "category": "NOT_IN_CROSSREF",
+      "subtype": "book_only_reviews_indexed",
+      "input_format": "txt",
+      "expected": "NOT_REJECT",
+      "crossref_marks_retraction": null,
+      "truth_doi": null,
+      "verdict": "PASS",
+      "status": "RESOLVED",
+      "error_code": "REFERENCE_RESOLVED",
+      "mismatches": [],
+      "resolved_doi": "10.1119/1.19136",
+      "fetched_doi": "10.1119/1.19136",
+      "reason": "Matched CrossRef record 10.1119/1.19136 by bibliographic search.",
+      "seconds": 21.1333,
+      "outcome": "pass",
+      "seconds_cached": 0.0626,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-wrong-06",
+      "category": "NOT_IN_CROSSREF",
+      "subtype": "book_only_reviews_indexed",
+      "input_format": "txt",
+      "expected": "NOT_REJECT",
+      "crossref_marks_retraction": null,
+      "truth_doi": null,
+      "verdict": "WARN",
+      "status": "RESOLVED",
+      "error_code": "REFERENCE_RESOLVED",
+      "mismatches": [
+        "year",
+        "first_author"
+      ],
+      "resolved_doi": "10.1002/bmb.2003.494031049999",
+      "fetched_doi": "10.1002/bmb.2003.494031049999",
+      "reason": "Matched CrossRef record 10.1002/bmb.2003.494031049999 by bibliographic search, but the first author differs (CrossRef: Uzman) and the year differs (reference: 2002; CrossRef: 2003/2006).",
+      "seconds": 2.5041,
+      "outcome": "warn",
+      "seconds_cached": 0.0066,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-wrong-07",
+      "category": "NOT_IN_CROSSREF",
+      "subtype": "book_only_reviews_indexed",
+      "input_format": "txt",
+      "expected": "NOT_REJECT",
+      "crossref_marks_retraction": null,
+      "truth_doi": null,
+      "verdict": "WARN",
+      "status": "RESOLVED",
+      "error_code": "REFERENCE_RESOLVED",
+      "mismatches": [
+        "year"
+      ],
+      "resolved_doi": "10.1063/1.2914118",
+      "fetched_doi": "10.1063/1.2914118",
+      "reason": "Matched CrossRef record 10.1063/1.2914118 by bibliographic search, but the year differs (reference: 1979; CrossRef: 1980/2008).",
+      "seconds": 0.8172,
+      "outcome": "warn",
+      "seconds_cached": 0.0021,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-wrong-08",
+      "category": "FABRICATED",
+      "subtype": "component_near_miss",
+      "input_format": "txt",
+      "expected": "FLAG",
+      "crossref_marks_retraction": null,
+      "truth_doi": null,
+      "verdict": "WARN",
+      "status": "RESOLVED",
+      "error_code": "REFERENCE_RESOLVED",
+      "mismatches": [
+        "first_author"
+      ],
+      "resolved_doi": "10.1021/acs.jcim.5c01019.s003",
+      "fetched_doi": "10.1021/acs.jcim.5c01019.s003",
+      "reason": "Matched CrossRef record 10.1021/acs.jcim.5c01019.s003 by bibliographic search, but the first author differs (CrossRef: none listed).",
+      "seconds": 1.1732,
+      "outcome": "warn",
+      "seconds_cached": 0.0038,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-wrong-09",
+      "category": "FABRICATED",
+      "subtype": "component_near_miss",
+      "input_format": "txt",
+      "expected": "FLAG",
+      "crossref_marks_retraction": null,
+      "truth_doi": null,
+      "verdict": "WARN",
+      "status": "RESOLVED",
+      "error_code": "REFERENCE_RESOLVED",
+      "mismatches": [
+        "first_author"
+      ],
+      "resolved_doi": "10.1021/acs.jcim.9b00237.s001",
+      "fetched_doi": "10.1021/acs.jcim.9b00237.s001",
+      "reason": "Matched CrossRef record 10.1021/acs.jcim.9b00237.s001 by bibliographic search, but the first author differs (CrossRef: none listed).",
+      "seconds": 1.6027,
+      "outcome": "warn",
+      "seconds_cached": 0.005,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-wrong-10",
+      "category": "FABRICATED",
+      "subtype": "component_near_miss",
+      "input_format": "txt",
+      "expected": "FLAG",
+      "crossref_marks_retraction": null,
+      "truth_doi": null,
+      "verdict": "WARN",
+      "status": "UNVERIFIED",
+      "error_code": "REFERENCE_UNMATCHED",
+      "mismatches": [],
+      "resolved_doi": null,
+      "fetched_doi": null,
+      "reason": "No matching CrossRef record was found; verify this reference manually.",
+      "seconds": 1.1746,
+      "outcome": "warn",
+      "seconds_cached": 0.0068,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-ctrl-01",
+      "category": "REAL",
+      "subtype": "letter_cited_as_letter",
+      "input_format": "txt",
+      "expected": "PASS",
+      "crossref_marks_retraction": null,
+      "truth_doi": "10.1016/s0140-6736(05)77837-5",
+      "verdict": "PASS",
+      "status": "RESOLVED",
+      "error_code": "REFERENCE_RESOLVED",
+      "mismatches": [],
+      "resolved_doi": "10.1016/s0140-6736(05)77837-5",
+      "fetched_doi": "10.1016/s0140-6736(05)77837-5",
+      "reason": "Matched CrossRef record 10.1016/s0140-6736(05)77837-5 by bibliographic search.",
+      "seconds": 0.8591,
+      "outcome": "pass",
+      "seconds_cached": 0.0043,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-ctrl-02",
+      "category": "REAL",
+      "subtype": "review_cited_as_review",
+      "input_format": "txt",
+      "expected": "PASS",
+      "crossref_marks_retraction": null,
+      "truth_doi": "10.1126/science.144.3616.280",
+      "verdict": "PASS",
+      "status": "RESOLVED",
+      "error_code": "REFERENCE_RESOLVED",
+      "mismatches": [],
+      "resolved_doi": "10.1126/science.144.3616.280",
+      "fetched_doi": "10.1126/science.144.3616.280",
+      "reason": "Matched CrossRef record 10.1126/science.144.3616.280 by bibliographic search.",
+      "seconds": 0.8661,
+      "outcome": "pass",
+      "seconds_cached": 0.0063,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-ctrl-03",
+      "category": "REAL",
+      "subtype": "book_in_crossref",
+      "input_format": "txt",
+      "expected": "PASS",
+      "crossref_marks_retraction": null,
+      "truth_doi": "10.1093/oso/9780198520597.001.0001",
+      "verdict": "PASS",
+      "status": "RESOLVED",
+      "error_code": "REFERENCE_RESOLVED",
+      "mismatches": [],
+      "resolved_doi": "10.1093/oso/9780198520597.001.0001",
+      "fetched_doi": "10.1093/oso/9780198520597.001.0001",
+      "reason": "Matched CrossRef record 10.1093/oso/9780198520597.001.0001 by bibliographic search.",
+      "seconds": 1.0766,
+      "outcome": "pass",
+      "seconds_cached": 0.0066,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-ctrl-04",
+      "category": "REAL",
+      "subtype": "paper_with_same_title_correspondence",
+      "input_format": "txt",
+      "expected": "PASS",
+      "crossref_marks_retraction": null,
+      "truth_doi": "10.1056/nejmoa2034577",
+      "verdict": "PASS",
+      "status": "RESOLVED",
+      "error_code": "REFERENCE_RESOLVED",
+      "mismatches": [],
+      "resolved_doi": "10.1056/nejmoa2034577",
+      "fetched_doi": "10.1056/nejmoa2034577",
+      "reason": "Matched CrossRef record 10.1056/nejmoa2034577 by bibliographic search.",
+      "seconds": 1.1575,
+      "outcome": "pass",
+      "seconds_cached": 0.0038,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-ctrl-05",
+      "category": "REAL",
+      "subtype": "paper_with_si_component",
+      "input_format": "txt",
+      "expected": "PASS",
+      "crossref_marks_retraction": null,
+      "truth_doi": "10.1021/acs.jcim.9b00237",
+      "verdict": "PASS",
+      "status": "RESOLVED",
+      "error_code": "REFERENCE_RESOLVED",
+      "mismatches": [],
+      "resolved_doi": "10.1021/acs.jcim.9b00237",
+      "fetched_doi": "10.1021/acs.jcim.9b00237",
+      "reason": "Matched CrossRef record 10.1021/acs.jcim.9b00237 by bibliographic search.",
+      "seconds": 1.0556,
+      "outcome": "pass",
+      "seconds_cached": 0.001,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-ctrl-06",
+      "category": "REAL",
+      "subtype": "paper_with_si_component",
+      "input_format": "txt",
+      "expected": "PASS",
+      "crossref_marks_retraction": null,
+      "truth_doi": "10.1021/acs.jmedchem.9b00959",
+      "verdict": "PASS",
+      "status": "RESOLVED",
+      "error_code": "REFERENCE_RESOLVED",
+      "mismatches": [],
+      "resolved_doi": "10.1021/acs.jmedchem.9b00959",
+      "fetched_doi": "10.1021/acs.jmedchem.9b00959",
+      "reason": "Matched CrossRef record 10.1021/acs.jmedchem.9b00959 by bibliographic search.",
+      "seconds": 1.4139,
+      "outcome": "pass",
+      "seconds_cached": 0.001,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-ctrl-07",
+      "category": "REAL",
+      "subtype": "preprint_cited_as_preprint",
+      "input_format": "txt",
+      "expected": "PASS",
+      "crossref_marks_retraction": null,
+      "truth_doi": "10.26434/chemrxiv.7940594.v3",
+      "verdict": "PASS",
+      "status": "RESOLVED",
+      "error_code": "REFERENCE_RESOLVED",
+      "mismatches": [],
+      "resolved_doi": "10.1021/acs.jcim.9b00237",
+      "fetched_doi": "10.1021/acs.jcim.9b00237",
+      "reason": "Matched CrossRef record 10.1021/acs.jcim.9b00237 by bibliographic search.",
+      "seconds": 0.8921,
+      "outcome": "pass",
+      "seconds_cached": 0.004,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-hangul-01",
+      "category": "FABRICATED",
+      "subtype": "korean_titled_doi_swap",
+      "input_format": "txt",
+      "expected": "FLAG",
+      "crossref_marks_retraction": null,
+      "truth_doi": null,
+      "verdict": "WARN",
+      "status": "MISMATCH",
+      "error_code": null,
+      "mismatches": [
+        "metadata"
+      ],
+      "resolved_doi": null,
+      "fetched_doi": "10.7317/pk.2021.45.6.897",
+      "reason": "The reference has no article title, and CrossRef's record for this DOI differs in journal (CrossRef: Polymer Korea); first author (CrossRef: Kim).",
+      "seconds": 0.6215,
+      "outcome": "warn",
+      "seconds_cached": 0.0005,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-hangul-02",
+      "category": "REAL",
+      "subtype": "korean_titled_doi",
+      "input_format": "txt",
+      "expected": "PASS",
+      "crossref_marks_retraction": null,
+      "truth_doi": "10.5392/jkca.2024.24.09.361",
+      "verdict": "PASS",
+      "status": "VERIFIED",
+      "error_code": null,
+      "mismatches": [],
+      "resolved_doi": null,
+      "fetched_doi": "10.5392/jkca.2024.24.09.361",
+      "reason": "Provided citation metadata matches the fetched CrossRef record.",
+      "seconds": 0.6079,
+      "outcome": "pass",
+      "seconds_cached": 0.0004,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-hangul-03",
+      "category": "REAL",
+      "subtype": "korean_titled_nodoi",
+      "input_format": "txt",
+      "expected": "PASS",
+      "crossref_marks_retraction": null,
+      "truth_doi": "10.13088/jiis.2024.30.4.097",
+      "verdict": "PASS",
+      "status": "RESOLVED",
+      "error_code": "REFERENCE_RESOLVED",
+      "mismatches": [],
+      "resolved_doi": "10.13088/jiis.2024.30.4.097",
+      "fetched_doi": "10.13088/jiis.2024.30.4.097",
+      "reason": "Matched CrossRef record 10.13088/jiis.2024.30.4.097 by bibliographic search.",
+      "seconds": 0.7005,
+      "outcome": "pass",
+      "seconds_cached": 0.0007,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-hangul-04",
+      "category": "REAL",
+      "subtype": "korean_titleless_doi",
+      "input_format": "txt",
+      "expected": "PASS",
+      "crossref_marks_retraction": null,
+      "truth_doi": "10.7317/pk.2021.45.6.897",
+      "verdict": "PASS",
+      "status": "VERIFIED",
+      "error_code": null,
+      "mismatches": [],
+      "resolved_doi": null,
+      "fetched_doi": "10.7317/pk.2021.45.6.897",
+      "reason": "The reference has no article title; it matches CrossRef's record for this DOI on journal, volume, first page, year, and first author.",
+      "seconds": 0.0004,
+      "outcome": "pass",
+      "seconds_cached": 0.0007,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-hangul-05",
+      "category": "FABRICATED",
+      "subtype": "korean_titleless_doi_swap",
+      "input_format": "txt",
+      "expected": "FLAG",
+      "crossref_marks_retraction": null,
+      "truth_doi": null,
+      "verdict": "WARN",
+      "status": "MISMATCH",
+      "error_code": null,
+      "mismatches": [
+        "metadata",
+        "year"
+      ],
+      "resolved_doi": null,
+      "fetched_doi": "10.7317/pk.2012.36.4.455",
+      "reason": "The reference has no article title, and CrossRef's record for this DOI differs in volume (CrossRef: 36); first page (CrossRef: 455); year (reference: 2021; CrossRef: 2012); first author (CrossRef: Yoon).",
+      "seconds": 0.7165,
+      "outcome": "warn",
+      "seconds_cached": 0.0005,
+      "cached_verdict_differs": false
+    },
+    {
+      "id": "r3-hangul-06",
+      "category": "FABRICATED",
+      "subtype": "korean_titled_doi_swap",
+      "input_format": "txt",
+      "expected": "FLAG",
+      "crossref_marks_retraction": null,
+      "truth_doi": null,
+      "verdict": "WARN",
+      "status": "MISMATCH",
+      "error_code": null,
+      "mismatches": [
+        "metadata",
+        "year"
+      ],
+      "resolved_doi": null,
+      "fetched_doi": "10.7317/pk.2012.36.4.455",
+      "reason": "The reference has no article title, and CrossRef's record for this DOI differs in journal (CrossRef: Polymer Korea); volume (CrossRef: 36); first page (CrossRef: 455); year (reference: 2021; CrossRef: 2012); first author (CrossRef: Yoon).",
+      "seconds": 0.0004,
+      "outcome": "warn",
+      "seconds_cached": 0.0004,
+      "cached_verdict_differs": false
+    }
+  ]
+}

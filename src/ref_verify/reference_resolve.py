@@ -53,6 +53,14 @@ _DEFAULT_RATE_LIMIT_PAUSE_SECONDS = 15.0
 _MAX_RATE_LIMIT_PAUSE_SECONDS = 60.0
 _sleep = time.sleep
 _HANGUL = re.compile(r"[\uac00-\ud7a3]")
+# Hangul words, and runs of Han or kana characters (Chinese and Japanese titles carry no spaces).
+_SCRIPT_WORD = re.compile(r"[\uac00-\ud7a3]+|[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]+")
+# A leading list of Hangul or Han personal names ("최수아, 정민호", "김민형."): two to four
+# characters each, separated by commas or middle dots, and ending before punctuation.
+_SCRIPT_AUTHORS = re.compile(
+    r"^\s*(?:[\uac00-\ud7a3\u4e00-\u9fff]{2,4}\s*[,\u00b7\u30fb\u3001]\s*)*"
+    r"[\uac00-\ud7a3\u4e00-\u9fff]{2,4}(?=\s*(?:[,.(\"\u201c'\u2018\u300c]|$))"
+)
 
 
 class ReferenceClient(Protocol):
@@ -235,12 +243,39 @@ def _missing_from_crossref(entry: ReferenceEntry, doi: str, client: ReferenceCli
 
 
 def _text_names_another_paper(text: str, record: PaperRecord) -> bool:
-    # Hangul text cannot be compared word-for-word with a romanized English record, so it
-    # stays "could not confirm" rather than "different paper".
-    if not text or _HANGUL.search(text):
+    if not text:
         return False
+    if _HANGUL.search(text):
+        # Hangul text cannot be compared with a romanized English record, only with the
+        # record's Korean title when CrossRef has one; without it the answer stays "could
+        # not confirm" rather than "different paper".
+        korean_titles = [title for title in record_titles(record) if _HANGUL.search(title)]
+        if not korean_titles:
+            return False
+        return max(_hangul_overlap(title, text) for title in korean_titles) < _MAX_SWAPPED_TITLE_OVERLAP
     overlap = max(title_token_overlap(title, text) for title in record_titles(record))
     return overlap < _MAX_SWAPPED_TITLE_OVERLAP
+
+
+def _hangul_overlap(title: str, text: str) -> float:
+    # Share of the title's syllable pairs found in the text. Pairs rather than words, because
+    # particles attach to Korean words ("하이드로젤" in the title, "하이드로젤의" in the text).
+    def pairs(value: str) -> set[str]:
+        runs = re.findall(r"[\uac00-\ud7a3]+", value)
+        return {run[index : index + 2] for run in runs for index in range(max(1, len(run) - 1))}
+
+    title_pairs = pairs(title)
+    if not title_pairs:
+        return 0.0
+    return len(title_pairs & pairs(text)) / len(title_pairs)
+
+
+def _script_title_words(text: str) -> int:
+    # Words of a Hangul or CJK title, which the Latin word counts do not see: each Hangul
+    # word counts once, each Han or kana run once per four characters, and the leading
+    # author names are left out.
+    text = _SCRIPT_AUTHORS.sub(" ", text, count=1)
+    return sum(1 if _HANGUL.match(run) else max(1, len(run) // 4) for run in _SCRIPT_WORD.findall(text))
 
 
 def _insufficient_reason(provided: CitationInput, fetched: PaperRecord) -> str:
@@ -288,13 +323,17 @@ def _resolve_reference(entry: ReferenceEntry, client: ReferenceClient) -> Refere
     # Five rows, because review reports and notices about a well-known paper can fill the
     # top three results ahead of the paper itself.
     candidates = client.search_bibliographic(query, rows=5) if query else []
-    for candidate in candidates:
-        if candidate.is_about_other_work:
-            continue
-        if not _candidate_matches(entry, candidate):
-            if _titleless_differences(entry, candidate) == []:
-                return _titleless_resolved(entry, candidate)
-            continue
+    candidates = [candidate for candidate in candidates if _can_be_cited_work(entry, candidate)]
+    matching: list[tuple[int, PaperRecord]] = []
+    for position, candidate in enumerate(candidates):
+        if _candidate_matches(entry, candidate):
+            matching.append((position, candidate))
+        elif not matching and _titleless_differences(entry, candidate) == []:
+            return _titleless_resolved(entry, candidate)
+    if matching:
+        # Search order is not identity: a letter, correspondence, or review can share the
+        # title and outrank the paper, so the record whose first author agrees comes first.
+        candidate = max(matching, key=lambda item: _candidate_rank(entry, item[1], item[0]))[1]
         if candidate.retraction_doi:
             return _retracted(entry, candidate, resolved_doi=candidate.doi)
         mismatches = []
@@ -325,7 +364,7 @@ def _resolve_reference(entry: ReferenceEntry, client: ReferenceClient) -> Refere
         # is accepted from it.
         query, author, year_range = structured
         for candidate in client.search_bibliographic(query, rows=5, author=author, year_range=year_range):
-            if not candidate.is_about_other_work and _titleless_differences(entry, candidate) == []:
+            if _can_be_cited_work(entry, candidate) and _titleless_differences(entry, candidate) == []:
                 return _titleless_resolved(entry, candidate)
     return ReferenceResult(
         entry=entry,
@@ -381,7 +420,9 @@ def _looks_titleless(text: str) -> bool:
     # Volume and page (or article number) must both follow the journal.
     if len(numbers) < 2:
         return False
-    before = tokens[: numbers[0]]
+    first_number = re.search(r"(?<![^\W\d_])\d+(?![^\W\d_])", text)
+    script_words = _script_title_words(text[: first_number.start()] if first_number else text)
+    before = [token for token in tokens[: numbers[0]] if not _SCRIPT_WORD.fullmatch(token)]
     initials = {index for index, token in enumerate(before) if token.isalpha() and token.isupper() and len(token) <= 2}
     words = [
         token
@@ -393,7 +434,7 @@ def _looks_titleless(text: str) -> bool:
         and token.isalpha()
         and token.casefold() not in _JOURNAL_STOPWORDS | _CITATION_FILLER
     ]
-    return len(words) <= _MAX_TITLELESS_JOURNAL_WORDS
+    return len(words) + script_words <= _MAX_TITLELESS_JOURNAL_WORDS
 
 
 def _bibliographic_query(entry: ReferenceEntry) -> str:
@@ -408,15 +449,90 @@ def _candidate_matches(entry: ReferenceEntry, candidate: PaperRecord) -> bool:
     if entry.title:
         if not any(titles_match(entry.title, title) for title in titles):
             return False
-    elif not any(
-        title_in_text(title, entry.raw) or title_token_overlap(title, entry.raw) >= _MIN_TEXT_TITLE_OVERLAP
-        for title in titles
-    ):
-        return False
+    elif not any(title_in_text(title, entry.raw) for title in titles):
+        if not any(title_token_overlap(title, entry.raw) >= _MIN_TEXT_TITLE_OVERLAP for title in titles):
+            return False
+        # A title that only mostly appears in the text ("... for property prediction" against
+        # "... for reaction yield prediction") names this record only if the first author
+        # agrees too; otherwise it is a similar paper, not a typo of this one.
+        if not _first_author_matches(entry, candidate):
+            return False
     candidate_years = record_years(candidate)
     if entry.year is not None and candidate_years:
         return min(abs(entry.year - year) for year in candidate_years) <= 1
     return True
+
+
+# Supplementary files and review reports share a paper's title but are never what a
+# reference list cites.
+_NEVER_CITED_TYPES = {"component", "peer-review"}
+# Records a citation of a book can point to.
+_BOOK_TYPES = {
+    "book", "book-chapter", "book-part", "book-section", "book-series", "book-set", "book-track",
+    "edited-book", "monograph", "reference-book", "other",
+}
+_PREPRINT_WORDS = re.compile(
+    r"\b(?:preprint|arxiv|biorxiv|medrxiv|chemrxiv|ssrn|research\ssquare|preprints\.org|techrxiv|osf\spreprints)\b",
+    re.IGNORECASE,
+)
+_PUBLISHER_WORDS = re.compile(
+    r"\b(?:press|publishers?|publishing|verlag|wiley|springer|elsevier|addison[-\s]wesley|mcgraw[-\s]hill|"
+    r"prentice[-\s]hall|freeman|garland|butterworth[-\s]heinemann|routledge|pearson|dover|benjamin|saunders|"
+    r"world\sscientific|crc)\b|\b\d+(?:st|nd|rd|th)\s+ed(?:\.|ition)|\brev(?:ised)?\.?\s+ed(?:\.|ition)",
+    re.IGNORECASE,
+)
+# Where a journal article sits: "144(3616), 280", "2020;383(19):1813", "vol. 42, no. 6", "60, 742-754".
+_ARTICLE_LOCATOR = re.compile(
+    r"\b\d+\s*\(\s*[\w\s.-]+\)\s*[:,]?\s*[A-Za-z]?\d+|;\s*\d+\s*(?:\([^)]*\))?\s*:\s*[A-Za-z]?\d+|"
+    r"\bvol\.?\s*\d+\s*,\s*(?:no\.|pp\.|\d)|\b\d{1,4}\s*,\s*[A-Za-z]?\d+\s*[-\u2013]\s*[A-Za-z]?\d+",
+    re.IGNORECASE,
+)
+
+
+def _can_be_cited_work(entry: ReferenceEntry, candidate: PaperRecord) -> bool:
+    if candidate.is_about_other_work or candidate.work_type in _NEVER_CITED_TYPES:
+        return False
+    # A book cited without a DOI often shares its title with journal reviews of it ("The
+    # Feynman Lectures on Physics" in Physics Today); only book records can be the book.
+    if _looks_like_book(entry):
+        return candidate.work_type is None or candidate.work_type in _BOOK_TYPES
+    return True
+
+
+def _looks_like_book(entry: ReferenceEntry) -> bool:
+    raw = entry.raw.lstrip()
+    if re.match(r"@\s*(?:book|inbook|incollection)\b", raw, re.IGNORECASE):
+        return True
+    if re.search(r"^TY\s+-\s+(?:BOOK|CHAP|EBOOK|EDBOOK)\b", raw, re.MULTILINE):
+        return True
+    if raw.startswith("@") or re.search(r"^TY\s+-", raw, re.MULTILINE):
+        return False
+    # Plain text: a publisher or an edition, and no journal volume and page.
+    return bool(_PUBLISHER_WORDS.search(raw)) and not _ARTICLE_LOCATOR.search(raw) and not entry.journal
+
+
+def _candidate_rank(entry: ReferenceEntry, candidate: PaperRecord, position: int) -> tuple[bool, bool, bool, bool, int]:
+    candidate_years = record_years(candidate)
+    preprint = bool(_PREPRINT_WORDS.search(entry.raw))
+    if preprint:
+        type_fits = candidate.work_type == "posted-content"
+    else:
+        type_fits = candidate.work_type not in {"posted-content", "reference-entry", "dataset"}
+    return (
+        _first_author_matches(entry, candidate),
+        type_fits,
+        entry.year is not None and entry.year in candidate_years,
+        _container_agrees(entry, candidate),
+        -position,
+    )
+
+
+def _container_agrees(entry: ReferenceEntry, candidate: PaperRecord) -> bool:
+    tokens = _plain_tokens(entry.journal or entry.raw)
+    return any(
+        journal and _journal_run(journal, tokens)
+        for journal in (candidate.journal, *candidate.journal_abbreviations)
+    )
 
 
 def _first_author_matches(entry: ReferenceEntry, candidate: PaperRecord) -> bool:
@@ -476,7 +592,7 @@ def _titleless_differences(entry: ReferenceEntry, record: PaperRecord) -> list[s
         and not token.isdigit()
         and len(token) >= 3
     ]
-    if len(leftover) >= 3:
+    if len(leftover) + _script_title_words(DOI_PATTERN.sub(" ", entry.raw)) >= 3:
         return None
     differences = []
     if not journal_run:
