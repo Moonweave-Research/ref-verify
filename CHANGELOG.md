@@ -11,6 +11,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- An end-to-end skill evaluation (`benchmarks/e2e/`): eight manuscripts (Markdown, LaTeX + BibTeX, Korean) with 40 planted errors and 65 correct references, a harness that runs each through an isolated `claude -p` session with and without the skill (no user hooks, plugins, or MCP servers), a stdlib scorer, and the 2026-10-09 results: 80/80 planted errors caught with the skill and 77/80 without, no false alarms in either, at about twice the time per run. It needs the network and a logged-in Claude Code, and is not run in CI.
 - A browser page (`web/`) that runs `check-bib` on a pasted list or a `.bib`/`.ris`/`.txt` file with no server: the engine runs in Pyodide (pinned 314.0.7 from jsDelivr) inside a Web Worker and calls CrossRef and doi.org directly. It shows progress, the same verdict tables and legend as the HTML report, a Korean/English toggle, and downloads the same HTML report the CLI writes (in English). In Korean, the page shows each reason in Korean from a template table (`web/reasons.js`) with DOIs, years, and titles kept as written, and shows any reason it cannot translate in English marked "(원문)"; `tests/test_web_reasons.py` fails when the engine gains a `check-bib` reason without a Korean template. Nothing is cached or stored in the browser. `scripts/build_web.py` builds the site; `.github/workflows/pages.yml` deploys it once Pages is enabled and the `PAGES_ENABLED` repository variable is `true`.
 
 ## [1.3.1] — 2026-10-08

@@ -1,0 +1,92 @@
+m1_dea_en#01           OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m1_dea_en#02           OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m1_dea_en#03           OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m1_dea_en#04           OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m1_dea_en#05           OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m1_dea_en#06           OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m1_dea_en#07           DOI_SWAP                 WARN                              This DOI belongs to "The Current State of Silicone-Based Dielectric Elastomer Transducers"
+m1_dea_en#08           FAB_DOI                  REJECT     DOI_NOT_FOUND          CrossRef has no record for this DOI (HTTP 404), and doi.org does not list it either.
+m1_dea_en#09           OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m1_dea_en#10           OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m1_dea_en#11           WRONG_YEAR               WARN                              DOI matches, but the year differs (reference: 2013; CrossRef: 2015).
+m1_dea_en#12           OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m2_vaccine_en#01       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m2_vaccine_en#02       WRONG_AUTHOR             UNVERIFIED                        The DOI and title match CrossRef, but its first author (Baden) was not found in the refere
+m2_vaccine_en#03       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m2_vaccine_en#04       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m2_vaccine_en#05       RETRACTED                REJECT     PAPER_RETRACTED        CrossRef records this paper as retracted (notice DOI 10.1016/s0140-6736(20)31324-6); do no
+m2_vaccine_en#06       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m2_vaccine_en#07       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m2_vaccine_en#08       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m2_vaccine_en#09       FAB_NODOI                UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+m2_vaccine_en#10       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m2_vaccine_en#11       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m3_ml_en#01            OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m3_ml_en#02            OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m3_ml_en#03            OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m3_ml_en#04            OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m3_ml_en#05            OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m3_ml_en#06            OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m3_ml_en#07            UNINDEXED_OK             UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+m3_ml_en#08            UNINDEXED_OK             UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+m3_ml_en#09            WRONG_YEAR               WARN                              DOI matches, but the year differs (reference: 2013; CrossRef: 2015).
+m3_ml_en#10            FAB_DOI                  REJECT     DOI_NOT_FOUND          CrossRef has no record for this DOI (HTTP 404), and doi.org does not list it either.
+m3_ml_en#11            DOI_SWAP                 WARN                              This DOI belongs to "Long Short-Term Memory" (Hochreiter, 1997), which this reference does
+m3_ml_en#12            OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m4_physics_en#01       OK                       PASS       REFERENCE_RESOLVED     Matched CrossRef record 10.1103/physrev.108.1175 by bibliographic search; the reference ha
+m4_physics_en#02       OK                       PASS       REFERENCE_RESOLVED     Matched CrossRef record 10.1103/physrev.47.777 by bibliographic search; the reference has 
+m4_physics_en#03       OK                       PASS       REFERENCE_RESOLVED     Matched CrossRef record 10.1086/300499 by bibliographic search; the reference has no artic
+m4_physics_en#04       OK                       PASS       REFERENCE_RESOLVED     Matched CrossRef record 10.1086/307221 by bibliographic search; the reference has no artic
+m4_physics_en#05       OK                       PASS       REFERENCE_RESOLVED     Matched CrossRef record 10.1126/science.1102896 by bibliographic search; the reference has
+m4_physics_en#06       OK                       UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+m4_physics_en#07       OK                       PASS       REFERENCE_RESOLVED     Matched CrossRef record 10.1103/revmodphys.82.3045 by bibliographic search; the reference 
+m4_physics_en#08       TITLELESS_WRONG_VOLPAGE  UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+m4_physics_en#09       TITLELESS_WRONG_VOLPAGE  UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+m4_physics_en#10       RETRACTED                REJECT     PAPER_RETRACTED        CrossRef records this paper as retracted (notice DOI 10.1038/s41586-022-05294-9); do not u
+m4_physics_en#11       FAB_NODOI                UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+m5_dea_latex#01        OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m5_dea_latex#02        OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m5_dea_latex#03        OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m5_dea_latex#04        OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m5_dea_latex#05        OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m5_dea_latex#06        OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m5_dea_latex#07        WRONG_AUTHOR             REJECT                            DOI resolves to a materially different paper than provided: the first author differs (refe
+m5_dea_latex#08        OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m5_dea_latex#09        DOI_SWAP                 REJECT                            DOI resolves to a materially different paper than provided: the title differs (CrossRef: "
+m5_dea_latex#10        OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m5_dea_latex#11        FAB_DOI                  REJECT     DOI_NOT_FOUND          CrossRef has no record for this DOI (HTTP 404), and doi.org does not list it either.
+m5_dea_latex#12        RETRACTED                REJECT     PAPER_RETRACTED        CrossRef records this paper as retracted (notice DOI 10.1038/s41586-023-06774-2); do not u
+m6_biomed_latex#01     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m6_biomed_latex#02     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m6_biomed_latex#03     WRONG_YEAR               WARN                              DOI matches, but the year differs (reference: 2016; CrossRef: 2014).
+m6_biomed_latex#04     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m6_biomed_latex#05     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m6_biomed_latex#06     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m6_biomed_latex#07     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m6_biomed_latex#08     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m6_biomed_latex#09     FAB_NODOI                UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+m6_biomed_latex#10     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m6_biomed_latex#11     OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m6_biomed_latex#12     RETRACTED                WARN       REFERENCE_RESOLVED     Matched CrossRef record 10.1016/s0140-6736(05)77837-5 by bibliographic search, but the fir
+m7_polymer_ko#01       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m7_polymer_ko#02       WRONG_YEAR               WARN                              DOI matches, but the year differs (reference: 2019; CrossRef: 2021).
+m7_polymer_ko#03       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m7_polymer_ko#04       UNINDEXED_OK             UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+m7_polymer_ko#05       UNINDEXED_OK             UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+m7_polymer_ko#06       OK                       PASS       REFERENCE_RESOLVED     Matched CrossRef record 10.1002/marc.200900425 by bibliographic search; the reference has 
+m7_polymer_ko#07       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m7_polymer_ko#08       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m7_polymer_ko#09       FAB_DOI                  REJECT     DOI_NOT_FOUND          CrossRef has no record for this DOI (HTTP 404), and doi.org does not list it either.
+m7_polymer_ko#10       DOI_SWAP                 WARN                              The reference has no article title, and CrossRef's record for this DOI differs in journal 
+m7_polymer_ko#11       OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m8_ml_ko#01            OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m8_ml_ko#02            WRONG_AUTHOR             UNVERIFIED                        The DOI and title match CrossRef, but its first author (LeCun) was not found in the refere
+m8_ml_ko#03            OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m8_ml_ko#04            OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m8_ml_ko#05            OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m8_ml_ko#06            OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
+m8_ml_ko#07            UNINDEXED_OK             UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+m8_ml_ko#08            FAB_DOI                  REJECT     DOI_NOT_FOUND          CrossRef has no record for this DOI (HTTP 404), and doi.org does not list it either.
+m8_ml_ko#09            FAB_NODOI                WARN       REFERENCE_RESOLVED     Matched CrossRef record 10.1021/acs.jcim.5c01019.s003 by bibliographic search, but the fir
+m8_ml_ko#10            TITLELESS_WRONG_VOLPAGE  UNVERIFIED REFERENCE_UNMATCHED    No matching CrossRef record was found; verify this reference manually.
+m8_ml_ko#11            OK                       PASS                              Provided citation metadata matches the fetched CrossRef record.
