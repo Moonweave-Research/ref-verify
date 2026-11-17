@@ -9,6 +9,17 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+## [1.3.3] — 2026-11-17
+
+### Fixed
+
+- Prevent false claim ACCEPTs for explicit absence-of-evidence and unlikely frames across text, general numeric, and strain-percentage checks; numeric checks also recognize cannot/unable and contracted negation. Independent positive evidence in another sentence remains eligible.
+- Treat registration-agency lookup failures as UNVERIFIED/WARN instead of declaring a non-CrossRef DOI missing.
+- Check CrossRef DOI identity and known retraction metadata even when selecting an abstract source manually. Keep selected-source evidence available during a CrossRef outage, but downgrade a would-be ACCEPT to WARN when retraction metadata is unavailable; preserve existing source errors.
+- Correct the security policy to describe executable code, cache/report writes, external requests, and environment-provided credentials.
+
+These checks cover explicit language patterns, not general semantic entailment or all retraction databases.
+
 ## [1.3.2] — 2026-10-09
 
 ### Added

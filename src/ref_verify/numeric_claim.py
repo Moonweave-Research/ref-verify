@@ -59,6 +59,16 @@ _NON_SUBJECT_TERMS = {
 }
 
 _UNSUPPORTED_FRAME_PATTERNS = (
+    r"\bcannot\b",
+    r"\bcan not\b",
+    r"\bcould not\b",
+    r"\bunable to\b",
+    r"\b(?:didn t|don t|doesn t|isn t|aren t|wasn t|weren t)\b",
+    r"\bno (?:\w+ ){0,3}(?:evidence|support|indication|proof)\b",
+    r"\b(?:insufficient|inadequate|little) (?:\w+ ){0,2}(?:evidence|support|proof)\b",
+    r"\bevidence\b.*\b(?:is|was|remains?) (?:\w+ ){0,2}(?:lacking|absent|insufficient)\b",
+    r"\bhypothesis\b.*\b(?:is|was|were|has been) (?:rejected|refuted)\b",
+    r"\bunlikely\b",
     r"\baccording to\b",
     r"\bwhether\b",
     r"\bnot true that\b",

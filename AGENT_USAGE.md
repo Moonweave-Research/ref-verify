@@ -146,6 +146,8 @@ Common routing:
 - `NO_ABSTRACT`: no trusted DOI-bound abstract evidence was available.
 - `DOI_NOT_FOUND`: neither CrossRef nor doi.org knows the DOI, or the selected source did not find a DOI-bound record.
 - `PAPER_RETRACTED`: CrossRef lists a retraction notice for the DOI; the claim is rejected before any abstract is read.
+- `REGISTRATION_LOOKUP_FAILED`: CrossRef has no record and the registration agency could not be checked; WARN does not establish that the DOI is missing.
+- `RETRACTION_CHECK_UNAVAILABLE`: a manually selected abstract supports the claim, but CrossRef retraction metadata could not be checked; WARN retains the evidence for manual review. Source selection still checks known CrossRef retractions when metadata is available.
 - `DOI_MISMATCH`: selected DOI-bound record did not match the requested DOI.
 - `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_RATE_LIMITED`, `SOURCE_UNSUPPORTED`: source lookup failed, timed out, was rate-limited, or could not be used.
 - `ROW_CHECK_ERROR`: one row could not be checked, but other rows may still have results.

@@ -172,6 +172,11 @@ _GENERIC_PERCENTAGE_CLAIM_NON_SUBJECT_STEMS = {
 }
 
 _UNSUPPORTED_CLAIM_FRAME_PATTERNS = (
+    r"\bno (?:\w+ ){0,3}(?:evidence|support|indication|proof)\b",
+    r"\b(?:insufficient|inadequate|little) (?:\w+ ){0,2}(?:evidence|support|proof)\b",
+    r"\bevidence\b.*\b(?:is|was|remains?) (?:\w+ ){0,2}(?:lacking|absent|insufficient)\b",
+    r"\bhypothesis\b.*\b(?:is|was|were|has been) (?:rejected|refuted)\b",
+    r"\bunlikely\b",
     r"\baccording to\b",
     r"\bwhether\b",
     r"\bif\b",

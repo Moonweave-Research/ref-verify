@@ -21,7 +21,10 @@ from ref_verify.doi_check import (
     titles_match,
     verify_doi_metadata,
 )
-from ref_verify.crossref import not_in_crossref_reason, other_registration_agency
+from ref_verify.crossref import (
+    REGISTRATION_LOOKUP_FAILED_REASON, RegistrationAgencyLookupError,
+    not_in_crossref_reason, other_registration_agency,
+)
 from ref_verify.http import retry_after_seconds as _retry_after_seconds
 from ref_verify.models import CitationInput, PaperRecord
 from ref_verify.reference_parse import DOI_PATTERN, ReferenceEntry
@@ -223,7 +226,13 @@ def _check_doi_reference(entry: ReferenceEntry, doi: str, client: ReferenceClien
 
 
 def _missing_from_crossref(entry: ReferenceEntry, doi: str, client: ReferenceClient) -> ReferenceResult:
-    agency = other_registration_agency(client, doi)
+    try:
+        agency = other_registration_agency(client, doi)
+    except RegistrationAgencyLookupError:
+        return ReferenceResult(
+            entry=entry, status="UNVERIFIED", verdict="WARN",
+            reason=REGISTRATION_LOOKUP_FAILED_REASON, error_code="REGISTRATION_LOOKUP_FAILED",
+        )
     if agency:
         return ReferenceResult(
             entry=entry,
