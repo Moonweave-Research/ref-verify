@@ -74,7 +74,7 @@ order, and keep the first command that prints help:
 3. **From PyPI through uv**:
 
    ```bash
-   uvx --from 'ref-verify>=1.3.2' ref-verify --help
+   uvx --from 'ref-verify>=1.3.3' ref-verify --help
    ```
 
 The commands below use the bundled form; with engine 2 or 3, replace
@@ -150,8 +150,10 @@ Single claim check against a DOI abstract:
 PYTHONPATH="$SKILL_DIR/src" python3 -m ref_verify.cli check-claim <doi> --claim "<specific factual claim>" --json
 ```
 
-`--source crossref|openalex|semantic-scholar|pubmed` forces one source (it
-bypasses CrossRef), for debugging a single source's failure.
+`--source crossref|openalex|semantic-scholar|pubmed` selects one abstract source
+for debugging. CrossRef DOI identity and known retractions are still checked.
+If that metadata lookup fails, the selected-source evidence remains available,
+but a would-be ACCEPT becomes WARN (`RETRACTION_CHECK_UNAVAILABLE`).
 
 Route the result:
 
@@ -181,6 +183,8 @@ decide the next step:
 - `NO_ABSTRACT`: attempted DOI-bound sources did not provide abstract text.
 - `DOI_NOT_FOUND`: neither CrossRef nor doi.org knows the DOI, or the selected source did not find a DOI-bound record.
 - `PAPER_RETRACTED`: CrossRef lists a retraction notice for the DOI; the claim is rejected before any abstract is read.
+- `REGISTRATION_LOOKUP_FAILED`: CrossRef has no record and the registration agency could not be checked; WARN does not establish that the DOI is missing.
+- `RETRACTION_CHECK_UNAVAILABLE`: a manually selected abstract supports the claim, but CrossRef retraction metadata could not be checked; WARN retains the evidence for manual review. Source selection still checks known CrossRef retractions when metadata is available.
 - `DOI_MISMATCH`: the primary or explicitly selected DOI-bound record did not
   match the requested DOI.
 - `SOURCE_API_ERROR`, `SOURCE_TIMEOUT`, `SOURCE_RATE_LIMITED`, `SOURCE_UNSUPPORTED`: source lookup

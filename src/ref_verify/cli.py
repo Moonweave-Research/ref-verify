@@ -24,8 +24,11 @@ from ref_verify.batch import (
 )
 from ref_verify.cache import ResponseCache, default_cache
 from ref_verify.claim_check import check_claim_support, retracted_claim_result
-from ref_verify.crossref import CrossrefClient, not_in_crossref_reason, other_registration_agency
-from ref_verify.doi_check import normalize_doi, verify_doi_metadata
+from ref_verify.crossref import (
+    CrossrefClient, REGISTRATION_LOOKUP_FAILED_REASON, RegistrationAgencyLookupError,
+    not_in_crossref_reason, other_registration_agency,
+)
+from ref_verify.doi_check import doi_matches, normalize_doi, verify_doi_metadata
 from ref_verify.models import CitationInput, ClaimSupportResult
 from ref_verify.openalex import OpenAlexClient
 from ref_verify.pubmed import PubMedClient
@@ -185,7 +188,13 @@ def _verify_doi(args: argparse.Namespace, client: CrossrefClient) -> int:
     except HTTPError as exc:
         if not _is_not_found(exc):
             raise
-        agency = other_registration_agency(client, lookup_doi)
+        try:
+            agency = other_registration_agency(client, lookup_doi)
+        except RegistrationAgencyLookupError:
+            _emit({"status": "UNVERIFIED", "verdict": "WARN", "mismatches": [],
+                   "reason": REGISTRATION_LOOKUP_FAILED_REASON, "provided": provided.to_dict(),
+                   "fetched": None, "error_code": "REGISTRATION_LOOKUP_FAILED"}, as_json=args.json)
+            return 2
         if agency:
             _emit(
                 {
@@ -380,7 +389,12 @@ def _run_claim_check(
         except HTTPError as exc:
             if not _is_not_found(exc):
                 raise
-            agency = other_registration_agency(client, lookup_doi)
+            try:
+                agency = other_registration_agency(client, lookup_doi)
+            except RegistrationAgencyLookupError:
+                payload = _row_error_payload(claim, REGISTRATION_LOOKUP_FAILED_REASON)
+                payload["error_code"] = "REGISTRATION_LOOKUP_FAILED"
+                return payload
             if not agency:
                 return _doi_not_found_payload(claim)
             return _not_in_crossref_claim(lookup_doi, claim, agency, selected_clients)
@@ -394,7 +408,29 @@ def _run_claim_check(
             return payload
         lookup_result = lookup_abstract(lookup_doi, fetched, selected_clients)
     else:
+        # Source selection chooses the abstract, not whether retraction metadata matters.
+        try:
+            fetched = client.fetch_work(lookup_doi)
+        except Exception:
+            fetched = None
+        if fetched is not None and doi_matches(lookup_doi, fetched.doi) and fetched.retraction_doi:
+            payload = retracted_claim_result(fetched, claim).to_dict()
+            payload.update(abstract_source=None, source_attempts=[], error_code="PAPER_RETRACTED")
+            return payload
         lookup_result = lookup_selected_abstract(lookup_doi, selected_clients)
+        if fetched is not None and not doi_matches(lookup_doi, fetched.doi):
+            payload = _row_error_payload(claim, "CrossRef returned a different DOI; identity could not be checked.")
+            payload["error_code"] = "DOI_MISMATCH"
+            return payload
+        if fetched is None:
+            payload = _claim_payload(check_claim_support(lookup_result.record, claim), lookup_result)
+            payload["retraction_check"] = "UNAVAILABLE"
+            if payload["verdict"] == "ACCEPT":
+                payload.update(
+                    status="UNVERIFIABLE", verdict="WARN", error_code="RETRACTION_CHECK_UNAVAILABLE",
+                    reason="CrossRef retraction metadata could not be checked; the selected source result does not establish that the paper is safe to cite.",
+                )
+            return payload
     if lookup_result.error_code == "DOI_MISMATCH":
         result = ClaimSupportResult(
             status="UNVERIFIABLE",

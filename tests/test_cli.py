@@ -43,6 +43,10 @@ class FailingClient:
         raise self.error
 
 
+    def registration_agency(self, doi):
+        return None
+
+
 class AgencyClient(FailingClient):
     # CrossRef returns 404; doi.org names the agency that registered the DOI.
     def __init__(self, agency):
@@ -769,7 +773,7 @@ class CliTests(unittest.TestCase):
             "API_ERROR",
         ])
 
-    def test_check_claim_explicit_source_bypasses_crossref_failure(self):
+    def test_check_claim_explicit_source_keeps_evidence_but_warns_on_crossref_failure(self):
         semantic_record = PaperRecord(
             doi="10.1000/example",
             title="Dielectric elastomer actuators",
@@ -797,7 +801,9 @@ class CliTests(unittest.TestCase):
             )
 
         payload = json.loads(output.getvalue())
-        self.assertEqual(exit_code, 0)
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(payload["verdict"], "WARN")
+        self.assertEqual(payload["error_code"], "RETRACTION_CHECK_UNAVAILABLE")
         self.assertEqual(payload["abstract_source"], "semantic_scholar")
         self.assertEqual(payload["source_attempts"][0]["source"], "semantic_scholar")
         self.assertEqual(payload["source_attempts"][0]["status"], "FOUND")

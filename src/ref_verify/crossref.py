@@ -6,6 +6,7 @@ import re
 import threading
 import time
 from typing import Any
+from urllib.error import HTTPError
 from urllib.parse import quote, urlencode
 
 from ref_verify.cache import ResponseCache
@@ -98,14 +99,28 @@ def _pace_search(interval: float) -> None:
         _last_search_started[0] = time.monotonic()
 
 
+REGISTRATION_LOOKUP_FAILED_REASON = (
+    "CrossRef has no record for this DOI, but its registration agency could not be checked; "
+    "the DOI has not been confirmed missing. Try again or check doi.org manually."
+)
+
+
+class RegistrationAgencyLookupError(Exception):
+    pass
+
+
 def other_registration_agency(client: Any, doi: str) -> str | None:
     # arXiv and Zenodo (DataCite), many Korean (KISTI) and Japanese (JaLC) DOIs are registered
     # outside CrossRef, so a CrossRef 404 alone does not make them dead. Returns that agency,
-    # or None when doi.org names CrossRef, says the DOI does not exist, or cannot be reached.
+    # or None when doi.org names CrossRef or says the DOI does not exist.
     try:
         agency = client.registration_agency(doi)
-    except Exception:
-        return None
+    except HTTPError as exc:
+        if exc.code == 404:
+            return None
+        raise RegistrationAgencyLookupError(REGISTRATION_LOOKUP_FAILED_REASON) from exc
+    except Exception as exc:
+        raise RegistrationAgencyLookupError(REGISTRATION_LOOKUP_FAILED_REASON) from exc
     if agency and agency.casefold() != "crossref":
         return agency
     return None

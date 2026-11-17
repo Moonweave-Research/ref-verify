@@ -2,7 +2,11 @@
 
 ## Scope
 
-`ref-verify` is a skill (prompt instructions) for AI agents. It makes read-only HTTP requests to public academic APIs — CrossRef, Semantic Scholar, Unpaywall, arXiv, and PubMed. It does not execute code, store credentials, or write files.
+`ref-verify` includes instructions for AI agents, an executable Python CLI, and an optional browser interface. The CLI queries CrossRef, doi.org, OpenAlex, Semantic Scholar, and PubMed. The manual skill workflow can also consult publisher pages, Unpaywall, and arXiv.
+
+The CLI reads the reference or claim files selected by the user. Bibliographic search sends reference-derived text to CrossRef; DOI and abstract lookups send identifiers to the relevant public APIs. It writes an on-disk HTTP response cache by default and writes HTML or Markdown reports when `--report` is requested. Use `--no-cache` or `REF_VERIFY_NO_CACHE=1` to disable the cache. Reports can contain the user's reference and claim text.
+
+The CLI reads optional API keys and contact emails from environment variables and sends them to their designated API providers. It does not provision or persist those credentials. The browser interface runs the Python engine in Pyodide, loads its runtime from jsDelivr, and queries CrossRef and doi.org directly. Uploaded files are processed in browser memory; the page does not persist them after it is closed. Downloading a report writes the selected output through the browser.
 
 **In scope for security reports:**
 

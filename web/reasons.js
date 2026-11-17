@@ -6,6 +6,10 @@
 
 const REASONS = [
   {
+    en: "CrossRef has no record for this DOI, but its registration agency could not be checked; the DOI has not been confirmed missing. Try again or check doi.org manually.",
+    ko: "CrossRef에 이 DOI의 기록이 없지만, 등록기관 조회에도 실패해 DOI가 없는지는 확인하지 못했습니다. 다시 시도하거나 doi.org에서 직접 확인하세요.",
+  },
+  {
     en: "Provided citation metadata matches the fetched CrossRef record.",
     ko: "적힌 서지 정보가 CrossRef 기록과 일치합니다.",
   },
